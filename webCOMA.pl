@@ -6,18 +6,20 @@ use strict;
 ##
 #
 # - DESCRIPTION-Meta-Tag sinnvoll füllen
-# - $Farbnamen mal nach dem benennen, was sie färben
 # - table summary="" lokalisieren (de/en)
 # - mehrere DLINKs auf einer Zeile nicht möglich!
 #
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.39 2003-01-19 10:31:32 mitch Exp $
+# $Id: webCOMA.pl,v 1.40 2003-08-31 18:40:16 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.39  2003-01-19 10:31:32  mitch
+# Revision 1.40  2003-08-31 18:40:16  mitch
+# Beginn der Umstellung auf CSS
+#
+# Revision 1.39  2003/01/19 10:31:32  mitch
 # Keyword-Header gefixt, war immer leer
 #
 # Revision 1.38  2002/09/28 09:35:59  mitch
@@ -75,7 +77,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.39 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.40 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -137,7 +139,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.39 $ ';
+my $version   = ' webCOMA $Revision: 1.40 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -183,122 +185,6 @@ sub newsBox($$);
 sub includeSiteMap($);
 sub getLeft($$);
 sub getRight($$);
-
-my $balkenfarbe = "#E0E0E0";
-my $balkentext = "#000000";
-my $balkenlink = "#0057C0";
-my $themename;
-my $boxoutercolor;
-my $boxinnercolor;
-#my $boxtitlecolor;
-my $backgroundcolor;
-#my $textonbgcolor;
-my $linkonbgcolor;
-my $newsonbgcolor;
-my $newslinkcolor;
-my $linkcolor;
-my $alinkcolor;
-my $vlinkcolor;
-my $textcolor;
-my $tableheadercolor;
-
-my $theme = 1;
-
-# Theme: Black'n'White
-if ($theme == 0) {
-    $themename="Black'n'White";
-    $boxoutercolor="#000000";
-    $boxinnercolor="#A0A0A0";
-#    $boxtitlecolor="#FFFFFF";
-    $backgroundcolor="#444444";
-#    $textonbgcolor="#FFFFFF";
-    $linkonbgcolor="#FFFFFF";
-    $newsonbgcolor="#999999";
-    $newslinkcolor="#FFFFFF";
-    $linkcolor="#FFFFFF";
-    $alinkcolor="#000000";
-    $vlinkcolor="#E0E0E0";
-    $textcolor="#000000";
-    $tableheadercolor="#222222";
-}
-
-# Theme: Light Blue
-elsif ($theme == 1) {
-    $themename="Light Blue";
-    $boxoutercolor="#3399FF";
-    $boxinnercolor="#121280";
-#    $boxtitlecolor="#000000";
-    $backgroundcolor="#FFFFFF";
-
-#    $textonbgcolor="#FFFFFF";
-#    $linkonbgcolor="#FFFFFF";
-#    $textonbgcolor="#CCCCCC";
-#    $textonbgcolor="#DDDDFF";
-    $linkonbgcolor="#DDDDFF";
-    $newsonbgcolor="#2077E0";
-    $newslinkcolor="#2077E0";
-    $linkcolor="#0057C0";
-    $alinkcolor="#4099FF";
-    $vlinkcolor="#2077E0";
-    $textcolor="#000000";
-    $tableheadercolor="#000050";
-}
-
-# Theme: Monochrome
-elsif ($theme == 2) {
-    $themename="Monochrome";
-    $boxoutercolor="#000000";
-    $boxinnercolor="#FFFFFF";
-#    $boxtitlecolor="#FFFFFF";
-    $backgroundcolor="#FFFFFF";
-#    $textonbgcolor="#000000";
-    $linkonbgcolor="#000000";
-    $newsonbgcolor="#000000";
-    $newslinkcolor="#000000";
-    $linkcolor="#000000";
-    $alinkcolor="#FFFFFF";
-    $vlinkcolor="#000000";
-    $textcolor="#000000";
-    $tableheadercolor="#000000";
-}
-
-# Theme: Inverted
-elsif ($theme == 3) {
-    $themename="Inverted";
-    $boxoutercolor="#FFFFFF";
-    $boxinnercolor="#000000";
-#    $boxtitlecolor="#000000";
-    $backgroundcolor="#000000";
-#    $textonbgcolor="#FFFFFF";
-    $linkonbgcolor="#FFFFFF";
-    $newsonbgcolor="#FFFFFF";
-    $newslinkcolor="#FFFFFF";
-    $linkcolor="#FFFFFF";
-    $alinkcolor="#000000";
-    $vlinkcolor="#FFFFFF";
-    $textcolor="#FFFFFF";
-    $tableheadercolor="#FFFFFF";
-}
-
-# Theme: Neon
-elsif ($theme == 4) {
-    $themename="Neon";
-    $boxoutercolor="#FF0000";
-    $boxinnercolor="#000000";
-#    $boxtitlecolor="#FFFF00";
-    $backgroundcolor="#000000";
-#    $textonbgcolor="#69D213";
-    $linkonbgcolor="#FFFF00";
-    $newsonbgcolor="#FFFF00";
-    $newslinkcolor="#FFFF00";
-    $linkcolor="#8080FF";
-    $alinkcolor="#800080";
-    $vlinkcolor="#8080FF";
-    $textcolor="#69D213";
-    $tableheadercolor="#FFFF00";
-}
-
-#
 
 
 {
@@ -555,8 +441,9 @@ sub printPage($$)
     $subtitlecount = 0;
     
     print OUT <<"EOF";
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head><title>$sitename - $title</title>
+<link rel="stylesheet" type="text/css" href="style.css">
 <meta name="generator" content="$version">
 <meta name="generating_host" content="$host">
 <meta name="generation_date" content="$date{$lang}">
@@ -567,7 +454,7 @@ sub printPage($$)
 <meta http-equiv="revisit-after" content="$revisit">
 <meta http-equiv="content-language" content="$lang">
 </head>
-<body bgcolor="$backgroundcolor" text="$textcolor" link="$linkcolor" alink="$alinkcolor" vlink="$vlinkcolor">
+<body>
 EOF
     ;
 #<meta name="DESCRIPTION" content="$sitename - $title">
@@ -575,10 +462,7 @@ EOF
     navBar($i, $lang);
 
     print OUT << "EOF";
-<table border=0 cellpadding=5 cellspacing=0 bgcolor="$balkenfarbe" width="100%" summary="page title">
-<tr><td>
-<font color="$balkentext"><b><big>&nbsp;&nbsp;&nbsp;$title</big></b></font>
-</td></tr></table>
+<p class="topbar">&nbsp;&nbsp;&nbsp;$title</p>
 EOF
     ;
 
@@ -737,12 +621,8 @@ EOF
 	}
 	my $sprungmarke=shift @input;
 	
-#	print OUT "<p><br></p>";
-#	print OUT "<center><table align=\"center\" width=\"90%\" border=0 cellpadding=12><tr><td>";
-	print OUT "<h2 align=\"CENTER\">Download</h2>";
-	print OUT "<h1 align=\"CENTER\">$programmname</h1>";
-
-#	    newsBox($pagestructure[$i], $lang);
+	print OUT "<h2 align=\"center\">Download</h2>";
+	print OUT "<h1 align=\"center\">$programmname</h1>";
 
 	# Der Freitext		
 	
@@ -761,15 +641,15 @@ EOF
 	}
 	print OUT "</p>";
 
-	print OUT "<p><br></p><table border=0 cellpadding=2 summary=\"list of files\"><tr>";
+	print OUT "<table class=\"dwn\" summary=\"list of files\"><tr>";
 	if ($autor_schalter eq "JA") {
-	    print OUT "<th valign=\"top\" align=\"left\"><small>$autor_head</small></th>";
+	    print OUT "<th class=\"dwn\" align=\"left\">$autor_head</th>";
 	};
-	print OUT "<th valign=\"top\" align=\"left\"><small>$datum_head</small></th>";
-	print OUT "<th valign=\"top\" align=\"left\"><small>$version_head</small></th>";
-	print OUT "<th valign=\"top\" align=\"left\"><small>$size_head</small></th>";
-	print OUT "<th valign=\"top\" align=\"left\"><small>$name_head</small></th>";
-	print OUT "<th valign=\"top\" align=\"left\"><small>$comment_head</small></th>";
+	print OUT "<th class=\"dwn\">$datum_head</th>";
+	print OUT "<th class=\"dwn\">$version_head</th>";
+	print OUT "<th class=\"dwn\">$size_head</th>";
+	print OUT "<th class=\"dwn\">$name_head</th>";
+	print OUT "<th class=\"dwn\">$comment_head</th>";
 	print OUT "</tr>";
 	
 	# Die einzelnen Zeilen
@@ -802,13 +682,13 @@ EOF
 		
 		print OUT "<tr>";
 		if ($autor_schalter eq "JA") {
-		    print OUT "<td valign=\"top\" align=\"left\">$autor</td>";
+		    print OUT "<td class=\"dwnauthor\">$autor</td>";
 		};
-		print OUT "<td valign=\"top\" align=\"left\">$datum</td>";
-		print OUT "<td valign=\"top\" align=\"left\">$version</td>";
-		print OUT "<td valign=\"top\" align=\"right\">$size</td>";
-		print OUT "<td valign=\"top\" align=\"left\"><a href=\"$url\">$name</a></td>";
-		print OUT "<td valign=\"top\" align=\"left\">$comment</td>";
+		print OUT "<td class=\"dwndate\">$datum</td>";
+		print OUT "<td class=\"dwnversion\">$version</td>";
+		print OUT "<td class=\"dwnsize\">$size</td>";
+		print OUT "<td class=\"dwnlink\"><a href=\"$url\">$name</a></td>";
+		print OUT "<td class=\"dwncomment\">$comment</td>";
 		print OUT "</tr>\n";
 		
 	    }
@@ -844,18 +724,12 @@ EOF
     #
 
     print OUT << "EOF";
-<table border=0 cellpadding=5 cellspacing=0 bgcolor="$balkenfarbe" width="100%" summary="page title">
-<tr><td align="right">
-<b><big>&nbsp;&nbsp;&nbsp;</big></b>
-<font color="$balkentext"><small>
-<a href="mailto:$authormail"><font color="$balkenlink">$author</font></a>
+<p class="bottombar"><a href="mailto:$authormail" class="bottombar">$author</a>
 :
-<a href="webcoma.$lang.html"><font color="$balkenlink">$version</font></a>
+<a href="webcoma.$lang.html" class="bottombar">$version</a>
 :
 $date
-</small>
-</font>
-</td></tr></table>
+</p>
 EOF
     ;
 
@@ -963,16 +837,16 @@ sub navBar($$)
     my $left  = getLeft($i,$lang);
     my $right = getRight($i,$lang);
 
-    print OUT "<table border=0 width=\"100%\" summary=\"page navigation\"><tr><td align=\"left\"><small>\n";
+    print OUT "<table border=0 width=\"100%\" summary=\"page navigation\" class=\"navbar\"><tr><td align=\"left\">\n";
 
     # aktuelle Position
 
     my $uppath="";
     foreach my $upkey (split /!/, $path) {
-	print OUT "<a href=\"$upkey.$lang.html\"><font color=\"$boxoutercolor\">$cache{$uppath.$upkey}{$lang}{'TITLE'}</font></a> :\n" if defined $cache{$uppath.$upkey}{$lang}{'TITLE'};
+	print OUT "<a href=\"$upkey.$lang.html\" class=\"navbar\">$cache{$uppath.$upkey}{$lang}{'TITLE'}</a> :\n" if defined $cache{$uppath.$upkey}{$lang}{'TITLE'};
 	$uppath .= "$upkey!";
     }
-    print OUT "<font color=\"$boxoutercolor\">$cache{$uppath.$me}{$lang}{'TITLE'}</font><br>" if defined $cache{$uppath.$me}{$lang}{'TITLE'};
+    print OUT "$cache{$uppath.$me}{$lang}{'TITLE'}<br>" if defined $cache{$uppath.$me}{$lang}{'TITLE'};
 
 
     # Sprachen
@@ -980,34 +854,29 @@ sub navBar($$)
     foreach my $l (@languages) {
 	if ($l ne $lang) {
 	    if (grep { $pagestructure{$lang}[$i] eq $_ } @{$pagestructure{$l}}) {
-		print OUT "<a href=\"$me.$l.html\"><font color=\"$boxoutercolor\">$l</font></a> :\n";
+		print OUT "<a href=\"$me.$l.html\" class=\"navbar\">$l</a> :\n";
 	    }
 	} else {
-	    print OUT "<font color=\"$boxoutercolor\">$l :</font>\n";
+	    print OUT "$l :\n";
 	}	    
     }
-    print OUT "<a href=\"$sourcepath/$me.txt\"><font color=\"$boxoutercolor\">source</font></a>";
+    print OUT "<a href=\"$sourcepath/$me.txt\" class=\"navbar\">source</a>";
 
-
-    print OUT "</small></td>\n<td align=\"right\" valign=\"top\">";
+    print OUT "</td>\n<td align=\"right\" valign=\"top\">";
 
     if ($right ne "" or $left ne "") {
-
-	print OUT "<small>";
 
 	# NEXT
 	
 	if ($right ne "") {
-	    print OUT "<a href=\"$right.$lang.html\"><font color=\"$boxoutercolor\">$cache{$path.$right}{$lang}{'TITLE'}&nbsp;&gt;&gt;</font></a><br>";
+	    print OUT "<a href=\"$right.$lang.html\" class=\"navbar\">$cache{$path.$right}{$lang}{'TITLE'}&nbsp;&gt;&gt;</a><br>";
 	}
 	
 	# PREV
 	
 	if ($left ne "") {
-	    print OUT "<a href=\"$left.$lang.html\"><font color=\"$boxoutercolor\">&lt;&lt;&nbsp;$cache{$path.$left}{$lang}{'TITLE'}</font></a>";
+	    print OUT "<a href=\"$left.$lang.html\" class=\"navbar\">&lt;&lt;&nbsp;$cache{$path.$left}{$lang}{'TITLE'}</a>";
 	}
-
-	print OUT "</small>";
 
     }
 
@@ -1070,7 +939,7 @@ sub newsBox($$)
 
     if (keys %dates) {
 	
-	print OUT "<p><b>&nbsp;&nbsp;News:</b></p>\n";
+	print OUT "<div id=\"news\"><p class=\"newstitle\">&nbsp;&nbsp;News:</p>\n";
 
 	my $count = 1;
 	my $max   = 3;
@@ -1087,13 +956,13 @@ sub newsBox($$)
 	    }
 	    
 	    foreach my $elem (@{$dates{$date}}) {
-		print OUT "<p><a href=\"$elem->{'LINK'}.$lang.html\">$datum: $elem->{'TITLE'}</a><br>\n";
+		print OUT "<p class=\"newsitem\"><a href=\"$elem->{'LINK'}.$lang.html\">$datum: $elem->{'TITLE'}</a><br>\n";
 		print OUT "$elem->{'TEXT'}</p>\n";
 		$count++ unless $path eq "";
 	    }
 	}
 
-	print OUT "<p><br></p>\n";
+	print OUT "</div>\n";
 
     }
     
