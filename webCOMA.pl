@@ -12,11 +12,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.41 2004-10-16 16:39:51 mitch Exp $
+# $Id: webCOMA.pl,v 1.42 2004-10-16 20:55:02 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.41  2004-10-16 16:39:51  mitch
+# Revision 1.42  2004-10-16 20:55:02  mitch
+# valid/non-valid vermerken
+#
+# Revision 1.41  2004/10/16 16:39:51  mitch
 # add links for valid HTML and valid CSS
 #
 # Revision 1.40  2003/08/31 18:40:16  mitch
@@ -80,7 +83,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.41 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.42 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -142,7 +145,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.41 $ ';
+my $version   = ' webCOMA $Revision: 1.42 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -745,6 +748,12 @@ EOF
 :
 EOF
 ;
+    } else {
+	print OUT << "EOF";
+<a href="http://validator.w3.org/check?uri=referer">HTML not yet validated!</a>
+:
+EOF
+;
     }
     print OUT << "EOF";
 <a href="http://jigsaw.w3.org/css-validator/check/referer">valid CSS</a>
@@ -1023,7 +1032,11 @@ sub includeSiteMap($)
 	    print OUT "</li>\n" unless @oldpath == 1;
 	}
 
-	print OUT "<li><a href=\"$file.$lang.html\">$cache{$page}{$lang}{'TITLE'}</a>\n";
+	print OUT "<li><a href=\"$file.$lang.html\">$cache{$page}{$lang}{'TITLE'}</a>";
+	if ($cache{$page}{$lang}{VALID}) {
+	    print OUT " (V)";
+	}
+	print OUT "\n";
 
     }
     
