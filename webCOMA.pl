@@ -10,11 +10,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.8 2000-11-19 12:46:21 mitch Exp $
+# $Id: webCOMA.pl,v 1.9 2000-11-19 13:47:22 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.8  2000-11-19 12:46:21  mitch
+# Revision 1.9  2000-11-19 13:47:22  mitch
+# Bugfix: zwei RegExps angepaﬂt
+#
+# Revision 1.8  2000/11/19 12:46:21  mitch
 # Revisit ist jetzt variabel (und auf 7 Tage runter)
 # Bugfix:
 # Hostname jetzt ohne Zeilenumbruch
@@ -40,7 +43,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.8 $ ';
+my $version   = ' webCOMA $Revision: 1.9 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch";
@@ -764,8 +767,8 @@ sub expand($$)
     my $zeile = shift;
     my $lang = shift;
 
-    $zeile =~ s/#LINK:(.*)#/<a href="$1.$lang.html">/g;
-    $zeile =~ s/#DLINK:(.*)#/<a href="$1.$lang.html">/g;
+    $zeile =~ s/#LINK:([^#]*)#/<a href="$1.$lang.html">/g;
+    $zeile =~ s/#DLINK:([^#]*)#/<a href="$1.$lang.html">/g;
 
     return $zeile;
 }
