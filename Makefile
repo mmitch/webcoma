@@ -4,7 +4,7 @@ all:	generate zip dist
 
 generate:
 	rm -f out/*.html
-	webCOMA.pl
+	./webCOMA.pl
 #	time tidy -m -e -q -wrap 72 -f tidyerrlog out/*.html || echo "TIDY ERRORS!"
 	cp out/*.html $(DESTPATH)
 	cp in/*.css $(DESTPATH)
