@@ -12,11 +12,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.47 2004-10-16 22:08:07 mitch Exp $
+# $Id: webCOMA.pl,v 1.48 2004-11-06 21:55:18 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.47  2004-10-16 22:08:07  mitch
+# Revision 1.48  2004-11-06 21:55:18  mitch
+# Meta-Tags fuer http://www.seekport.de/seekbot/ optimiert
+#
+# Revision 1.47  2004/10/16 22:08:07  mitch
 # fix download table
 #
 # Revision 1.46  2004/10/16 21:59:36  mitch
@@ -98,7 +101,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.47 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.48 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -160,7 +163,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.47 $ ';
+my $version   = ' webCOMA $Revision: 1.48 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -473,9 +476,10 @@ sub printPage($$)
 <meta name="generating_host" content="$host">
 <meta name="generation_date" content="$date{$lang}">
 <meta name="rcs_tag" content="$cache{$page}{'RCS'}">
-<meta name="ROBOTS" content="FOLLOW">
-<meta name="KEYWORDS" content="@keywords">
+<meta name="robots" content="index,follow">
+<meta name="keywords" content="@keywords">
 <meta name="author" content="$author ($authormail)">
+<meta name="language" content="$lang">
 <meta http-equiv="revisit-after" content="$revisit">
 <meta http-equiv="content-language" content="$lang">
 </head>
