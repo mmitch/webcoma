@@ -13,11 +13,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.35 2002-02-03 21:54:11 mitch Exp $
+# $Id: webCOMA.pl,v 1.36 2002-02-03 22:00:29 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.35  2002-02-03 21:54:11  mitch
+# Revision 1.36  2002-02-03 22:00:29  mitch
+# some additional \n in navBar
+#
+# Revision 1.35  2002/02/03 21:54:11  mitch
 # included RCS tag in meta tags
 #
 # Revision 1.34  2002/01/21 18:45:48  mitch
@@ -63,7 +66,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.35 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.36 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -125,7 +128,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.35 $ ';
+my $version   = ' webCOMA $Revision: 1.36 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -368,7 +371,7 @@ sub scanStructure($$)
 	while (<IN>) {
 	    last if $_ =~ /^#RCS/;
 	}
-	$_ =~ /(\$Id: webCOMA.pl,v 1.35 2002-02-03 21:54:11 mitch Exp $)/;
+	$_ =~ /(\$(Id):.*\$)/;  # (Id) because RCS should not find and substitute this line
         $cache{"$parent$doc"}{'RCS'} = ($1 or die "no rcs tag in $srcpath/$doc.page");
 
 	next unless grep { $lang eq $_ } readTag("LANG", $lang);
@@ -951,13 +954,13 @@ sub navBar($$)
     my $left  = getLeft($i,$lang);
     my $right = getRight($i,$lang);
 
-    print OUT "<table border=0 width=100% summary=\"page navigation\"><tr><td align=\"left\"><small>";
+    print OUT "<table border=0 width=100% summary=\"page navigation\"><tr><td align=\"left\"><small>\n";
 
     # aktuelle Position
 
     my $uppath="";
     foreach my $upkey (split /!/, $path) {
-	print OUT "<a href=\"$upkey.$lang.html\"><font color=\"$boxoutercolor\">$cache{$uppath.$upkey}{$lang}{'TITLE'}</font></a> : " if defined $cache{$uppath.$upkey}{$lang}{'TITLE'};
+	print OUT "<a href=\"$upkey.$lang.html\"><font color=\"$boxoutercolor\">$cache{$uppath.$upkey}{$lang}{'TITLE'}</font></a> :\n" if defined $cache{$uppath.$upkey}{$lang}{'TITLE'};
 	$uppath .= "$upkey!";
     }
     print OUT "<font color=\"$boxoutercolor\">$cache{$uppath.$me}{$lang}{'TITLE'}</font><br>" if defined $cache{$uppath.$me}{$lang}{'TITLE'};
@@ -968,16 +971,16 @@ sub navBar($$)
     foreach my $l (@languages) {
 	if ($l ne $lang) {
 	    if (grep { $pagestructure{$lang}[$i] eq $_ } @{$pagestructure{$l}}) {
-		print OUT "<a href=\"$me.$l.html\"><font color=\"$boxoutercolor\">$l</font></a> : ";
+		print OUT "<a href=\"$me.$l.html\"><font color=\"$boxoutercolor\">$l</font></a> :\n";
 	    }
 	} else {
-	    print OUT "<font color=\"$boxoutercolor\">$l : </font> ";
+	    print OUT "<font color=\"$boxoutercolor\">$l :</font>\n";
 	}	    
     }
     print OUT "<a href=\"$sourcepath/$me.txt\"><font color=\"$boxoutercolor\">source</font></a>";
 
 
-    print OUT "</small></td><td align=\"right\" valign=\"top\">";
+    print OUT "</small></td>\n<td align=\"right\" valign=\"top\">";
 
     if ($right ne "" or $left ne "") {
 
@@ -999,7 +1002,7 @@ sub navBar($$)
 
     }
 
-    print OUT "</td></tr></table>";
+    print OUT "</td>\n</tr></table>\n";
 }
 
 
