@@ -10,12 +10,15 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.20 2001-02-06 22:20:25 mitch Exp $
+# $Id: webCOMA.pl,v 1.21 2001-02-13 22:56:40 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.20  2001-02-06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.19 $
+# Revision 1.21  2001-02-13 22:56:40  mitch
+# W3C-Konformität
+#
+# Revision 1.20  2001/02/06 22:20:25  mitch
+# webCOMA v1.19 statt webCOMA $Revision: 1.21 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -77,9 +80,11 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.20 $';
+my $version   = ' webCOMA $Revision: 1.21 $ ';
 $version =~ tr/$//d;
-$version =~ s/\$Revision: /v/;
+$version =~ s/Revision: /v/;
+$version =~ s/^\s+//;
+$version =~ s/\s+$//;
 
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
@@ -458,10 +463,11 @@ sub printPage($$)
     my @keywords = $temp[0];
     
     print OUT <<"EOF";
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html><head><title>$sitename - $title</title>
 <meta name="generator" content="$version">
-<meta name="generating host" content="$host">
-<meta name="generation date" content="$date{$lang}">
+<meta name="generating_host" content="$host">
+<meta name="generation_date" content="$date{$lang}">
 <meta name="ROBOTS" content="FOLLOW">
 <meta name="KEYWORDS" content="keywords">
 <meta name="author" content="$author ($authormail)">
@@ -1023,7 +1029,7 @@ sub includeSiteMap($)
 	print OUT "<li><a href=\"$file.$lang.html\">$cache{$page}{$lang}{'TITLE'}</a></li>\n";
 
     }
-
+    
     foreach (@oldpath) {
 	print OUT "</ul>\n";
     }
