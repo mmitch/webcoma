@@ -11,11 +11,15 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.14 2000-11-30 22:12:37 mitch Exp $
+# $Id: webCOMA.pl,v 1.15 2000-12-05 21:00:21 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.14  2000-11-30 22:12:37  mitch
+# Revision 1.15  2000-12-05 21:00:21  mitch
+# Datum/Zeit auf einer Seite bezieht sich auf die letzte
+# Quellcodeänderung
+#
+# Revision 1.14  2000/11/30 22:12:37  mitch
 # Aktuelles Datum wird in META-Tag gespeichert
 #
 # Revision 1.13  2000/11/25 14:04:46  mitch
@@ -59,7 +63,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.14 $ ';
+my $version   = ' webCOMA $Revision: 1.15 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch";
@@ -85,6 +89,7 @@ my $dotfile = "homepage.dot";
 sub scanStructure($$);
 sub printPage($$);
 sub initDates();
+sub convertDate($$);
 sub readTag($$);
 sub navBar($$$$$);
 sub expand($$);
@@ -272,6 +277,9 @@ sub scanStructure($$)
 
     my @files;
 
+    my $filedate = `$date_cmd -r "$srcpath/$doc.page" +%Y%m%d\\ %H:%M:%S`;
+    
+
     foreach my $lang (@languages) {
 	
 	open IN, "<$srcpath/$doc.page" or die "can't open <$srcpath/$doc.page>: $!";
@@ -317,6 +325,8 @@ sub scanStructure($$)
 	
 	@temp = readTag("TITLE", $lang);
 	$cache{"$parent$doc"}{$lang}{'TITLE'} = $temp[0];
+
+	$cache{"$parent$doc"}{$lang}{'DATE'} = convertDate($lang, $filedate);
 	
 	@temp = readTag("KEYWORDS", $lang);
 	my @keywords = $temp[0];
@@ -408,6 +418,7 @@ sub printPage($$)
 	}
     }
 
+    my $date = $cache{$pagestructure{$lang}[$i]}{$lang}{'DATE'};
     my $typ = $cache{$pagestructure{$lang}[$i]}{$lang}{'TYPE'};
     my $title = $cache{$pagestructure{$lang}[$i]}{$lang}{'TITLE'};
     my $gbAlign = 1;
@@ -426,7 +437,7 @@ sub printPage($$)
 <html><head><title>$sitename - $title</title>
 <meta name="generator" content="$version">
 <meta name="generating host" content="$host">
-<meta name="generation date" content="$date{$today}">
+<meta name="generation date" content="$date{$lang}">
 <meta name="ROBOTS" content="FOLLOW">
 <meta name="KEYWORDS" content="keywords">
 <meta name="author" content="$author ($authormail)">
@@ -678,7 +689,7 @@ EOF
 
     print OUT <<"EOF";
 <table width="100%"><tr>
-<td width="33%" align="left"><font color="$textonbgcolor">$date{$lang}</font></td>
+<td width="33%" align="left"><font color="$textonbgcolor">$date</font></td>
 <td width="34%" align="center"><font color="$textonbgcolor">$version</font></td>
 <td width="33%" align="right"><a href="mailto:$authormail"><font color="$linkonbgcolor">$author</font></a></td>
 </tr></table>
@@ -696,14 +707,27 @@ EOF
 sub initDates()
 {
     foreach my $lang (@languages) {
-	if ($lang eq "de") {
-	    $date{$lang} = `$date_cmd +%c`;
-	} else {
-	    $date{$lang} = `LANG=EN $date_cmd`;
-	}
-	print "$lang: $date{$lang}";
+	$date{$lang} = convertDate($lang, `$date_cmd +%Y%m%d\\ %H:%M:%S`);
+	print "$lang: $date{$lang}\n";
 	chomp $date{$lang};
     }
+}
+
+
+#
+
+sub convertDate($$)
+{
+    my $lang = shift;
+    chomp(my $date = shift);
+    my $ret;
+    if ($lang eq "de") {
+	$ret = `$date_cmd +%c -d "$date"`;
+    } else {
+	$ret = `LANG=EN $date_cmd -d "$date"`;
+    }
+    chomp $ret;
+    return $ret;
 }
 
 
