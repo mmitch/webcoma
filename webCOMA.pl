@@ -10,11 +10,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.23 2001-03-22 13:55:40 mitch Exp $
+# $Id: webCOMA.pl,v 1.24 2001-06-01 20:04:43 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.23  2001-03-22 13:55:40  mitch
+# Revision 1.24  2001-06-01 20:04:43  mitch
+# Checksummenprüfung für ISBN-Nummern
+#
+# Revision 1.23  2001/03/22 13:55:40  mitch
 # Quellcode für jede Seite verfügbar; webCOMA-Link auf jeder Seite gesetzt
 #
 # Revision 1.22  2001/03/18 17:00:22  mitch
@@ -24,7 +27,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.23 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.24 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -86,7 +89,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.23 $ ';
+my $version   = ' webCOMA $Revision: 1.24 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -550,7 +553,7 @@ EOF
 		    print OUT "<td $align><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y $align2 hspace=5 vspace=5>";
 		} else {
 		    my $link = $amazon_link;
-		    die "wrong ASIN length: <$amazon> @ GRAPHBOX in $page:\n$x!$y!$file!$amazon$alt\n" unless length $amazon == 10;
+		    die "wrong ASIN chksum: <$amazon> @ GRAPHBOX in $page:\n$x!$y!$file!$amazon$alt\n" unless CheckISBN($amazon);
 		    $link =~ s/%/$amazon/;
 		    print OUT "<td $align><a href=\"$link\"><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y $align2 hspace=5 vspace=5 border=0></a>";
 		}
@@ -565,7 +568,7 @@ EOF
 		if (($amazon ne "") && ($lang eq "de")) {
 		    my $link = $amazon_link;
 		    $link =~ s/%/$amazon/;
-		    die "wrong ASIN length: <$amazon> @ GRAPHBOX in $page:\n$x!$y!$file!$amazon$alt\n" unless length $amazon == 10;
+		    die "wrong ASIN chksum: <$amazon> @ GRAPHBOX in $page:\n$x!$y!$file!$amazon$alt\n" unless CheckISBN($amazon);
 		    print OUT "<ul><li><small>Einkaufen bei <a href=\"$link\">amazon.de</a>";
 		    if (@amazon)
 		    {
@@ -575,7 +578,7 @@ EOF
 			    my ($ep, $amazon) = split /:/, shift @amazon;
 			    my $link = $amazon_link;
 			    $link =~ s/%/$amazon/;
-			    die "wrong ASIN length: <$ep:$amazon> @ GRAPHBOX in $page:\n$x!$y!$file![...]$alt\n" unless length $amazon == 10;
+			    die "wrong ASIN chksum: <$ep:$amazon> @ GRAPHBOX in $page:\n$x!$y!$file![...]$alt\n" unless CheckISBN($amazon);
 			    print OUT "<a href=\"$link\">$ep</a>";
 			    print OUT " - " if (@amazon);
 			}
@@ -1044,5 +1047,38 @@ sub includeSiteMap($)
     foreach (@oldpath) {
 	print OUT "</ul>\n";
     }
+
+}
+
+
+#
+
+
+sub CheckISBN($)
+{
+
+    return 0 unless (my $isbn = $_[0]);
+    return 0 unless ($isbn =~ /^(\d{9})([\dxX])$/);
+
+    my ($nummer, $pruef) = ($1, $2);
+
+    my $erg=0;
+    my $stelle=2;
+
+    while ($nummer) {
+	$erg    += (substr $nummer, -1, 1) * $stelle;
+	$nummer  =  substr $nummer, 0, length($nummer) - 1;
+	$stelle++;
+    }
+
+    $erg = 11 - $erg % 11;
+
+    if ($erg eq "10") {
+	$erg = "X";
+    } elsif ($erg == 11) {
+	$erg = 0;
+    }
+
+    return ((lc $erg) eq (lc $pruef));
 
 }
