@@ -13,11 +13,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.38 2002-09-28 09:35:59 mitch Exp $
+# $Id: webCOMA.pl,v 1.39 2003-01-19 10:31:32 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.38  2002-09-28 09:35:59  mitch
+# Revision 1.39  2003-01-19 10:31:32  mitch
+# Keyword-Header gefixt, war immer leer
+#
+# Revision 1.38  2002/09/28 09:35:59  mitch
 # Versionsnummern auf Downloadseiten jetzt linksbündig.
 #
 # Revision 1.37  2002/07/26 17:54:28  mitch
@@ -72,7 +75,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.38 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.39 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -134,7 +137,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.38 $ ';
+my $version   = ' webCOMA $Revision: 1.39 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -559,7 +562,7 @@ sub printPage($$)
 <meta name="generation_date" content="$date{$lang}">
 <meta name="rcs_tag" content="$cache{$page}{'RCS'}">
 <meta name="ROBOTS" content="FOLLOW">
-<meta name="KEYWORDS" content="keywords">
+<meta name="KEYWORDS" content="@keywords">
 <meta name="author" content="$author ($authormail)">
 <meta http-equiv="revisit-after" content="$revisit">
 <meta http-equiv="content-language" content="$lang">
