@@ -10,18 +10,21 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.22 2001-03-18 17:00:22 mitch Exp $
+# $Id: webCOMA.pl,v 1.23 2001-03-22 13:55:40 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.22  2001-03-18 17:00:22  mitch
+# Revision 1.23  2001-03-22 13:55:40  mitch
+# Quellcode für jede Seite verfügbar; webCOMA-Link auf jeder Seite gesetzt
+#
+# Revision 1.22  2001/03/18 17:00:22  mitch
 # Navigationspfeile eingebaut
 #
 # Revision 1.21  2001/02/13 22:56:40  mitch
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.22 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.23 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -83,7 +86,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.22 $ ';
+my $version   = ' webCOMA $Revision: 1.23 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -98,6 +101,7 @@ my $srcpath   = "in";
 my $destpath  = "out";
 my $startdoc  = "index";
 my $template  = "$srcpath/TEMPLATE";
+my $sourcepath= "source";
 my %pagestructure;
 my %date;
 my $date_cmd  = "date";
@@ -500,8 +504,9 @@ EOF
 	    }
 	} else {
 	    print OUT "<font color=\"$linkcolor\">[$l]</font> ";
-	}
+	}	    
     }
+    print OUT "<a href=\"$sourcepath/$file.txt\"><font color=\"$boxtitlecolor\">[source]</font></a> ";
 
     print OUT << "EOF";
 </td></tr><tr><td colspan=2>
@@ -765,9 +770,12 @@ EOF
 
     print OUT <<"EOF";
 <table width="100%"><tr>
-<td width="33%" align="left"><font color="$textonbgcolor"><small>$lastedited{$lang}</small><br>$date</font></td>
-<td width="34%" align="center"><font color="$textonbgcolor"><small>$generatedby{$lang}</small><br>$version</font></td>
-<td width="33%" align="right"><font color="$textonbgcolor"><small>$author{$lang}</small><br></font><a href="mailto:$authormail"><font color="$linkonbgcolor">$author</font></a></td>
+<td width="33%" align="left"><font color="$textonbgcolor"><small>$lastedited{$lang}</small><br>
+$date</font></td>
+<td width="34%" align="center"><font color="$textonbgcolor"><small>$generatedby{$lang}</small><br>
+<a href="webcoma.$lang.html"><font color="$linkonbgcolor">$version</font></a></font></td>
+<td width="33%" align="right"><font color="$textonbgcolor"><small>$author{$lang}</small><br>
+</font><a href="mailto:$authormail"><font color="$linkonbgcolor">$author</font></a></td>
 </tr></table>
 </body></html>
 EOF
