@@ -10,11 +10,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.9 2000-11-19 13:47:22 mitch Exp $
+# $Id: webCOMA.pl,v 1.10 2000-11-19 14:09:40 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.9  2000-11-19 13:47:22  mitch
+# Revision 1.10  2000-11-19 14:09:40  mitch
+# Newsbox auf download-Seiten
+#
+# Revision 1.9  2000/11/19 13:47:22  mitch
 # Bugfix: zwei RegExps angepaﬂt
 #
 # Revision 1.8  2000/11/19 12:46:21  mitch
@@ -43,7 +46,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.9 $ ';
+my $version   = ' webCOMA $Revision: 1.10 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch";
@@ -613,6 +616,8 @@ EOF
 	    die "\n\nOBACHT! ES SIND $fehler FEHLER AUFGETRETEN!\n\n";
 	    
 	}
+
+	newsBox($page, $lang);
 
     } else {
 	die "UNKNOWN TYPE <$typ>\n";
