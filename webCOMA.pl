@@ -10,11 +10,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.19 2001-01-14 23:01:12 mitch Exp $
+# $Id: webCOMA.pl,v 1.20 2001-02-06 22:20:25 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.19  2001-01-14 23:01:12  mitch
+# Revision 1.20  2001-02-06 22:20:25  mitch
+# webCOMA v1.19 statt webCOMA $Revision: 1.19 $
+#
+# Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
 #
 # Revision 1.18  2001/01/14 20:30:45  mitch
@@ -74,7 +77,10 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.19 $ ';
+my $version   = ' webCOMA $Revision: 1.20 $';
+$version =~ tr/$//d;
+$version =~ s/\$Revision: /v/;
+
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch";
@@ -382,7 +388,8 @@ sub scanStructure($$)
 	    $linkcache{$file} = "";
 	    if (! -e "$srcpath/$file.page") {
 		system("$copy_cmd $template $srcpath/$file.page") == 0 or die "copy failed: $?";
-		print "CREATING NEW TEMPLATE FOR $srcpath/$file.page\n";
+		warn "CREATING NEW TEMPLATE FOR $srcpath/$file.page\n";
+		my $taste=<STDIN>;
 	    }
 
 	    {
