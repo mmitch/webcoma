@@ -12,11 +12,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.45 2004-10-16 21:54:05 mitch Exp $
+# $Id: webCOMA.pl,v 1.46 2004-10-16 21:59:36 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.45  2004-10-16 21:54:05  mitch
+# Revision 1.46  2004-10-16 21:59:36  mitch
+# fix typo
+#
+# Revision 1.45  2004/10/16 21:54:05  mitch
 # mehr CSS
 #
 # Revision 1.44  2004/10/16 21:40:09  mitch
@@ -92,7 +95,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.45 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.46 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -154,7 +157,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.45 $ ';
+my $version   = ' webCOMA $Revision: 1.46 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -660,7 +663,7 @@ EOF
 	}
 	print OUT "</p>";
 
-	print OUT "<table class=\"noborder\"><tr><td align=\"center\"">
+	print OUT "<table class=\"noborder\"><tr><td align=\"center\">";
 	print OUT "<table class=\"dwn\" summary=\"list of files\"><tr>";
 	if ($autor_schalter eq "JA") {
 	    print OUT "<th class=\"dwn\" align=\"left\">$autor_head</th>";
