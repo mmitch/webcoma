@@ -10,15 +10,18 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.21 2001-02-13 22:56:40 mitch Exp $
+# $Id: webCOMA.pl,v 1.22 2001-03-18 17:00:22 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.21  2001-02-13 22:56:40  mitch
+# Revision 1.22  2001-03-18 17:00:22  mitch
+# Navigationspfeile eingebaut
+#
+# Revision 1.21  2001/02/13 22:56:40  mitch
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.21 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.22 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -80,7 +83,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.21 $ ';
+my $version   = ' webCOMA $Revision: 1.22 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -872,7 +875,7 @@ sub navBar($$$$$)
     print OUT '<td width="33%" align="right">';
     if ($left ne "") {
 	my $leftkey = "$path$left";
-	print OUT "<br><a href=\"$left.$lang.html\"><font color=\"$boxoutercolor\">$cache{$leftkey}{$lang}{'TITLE'}</font></a>";
+	print OUT "<br><a href=\"$left.$lang.html\"><font color=\"$boxoutercolor\">&lt;&lt;&nbsp;$cache{$leftkey}{$lang}{'TITLE'}</font></a>";
     } else {
 	print OUT "&nbsp;";
     }
@@ -883,7 +886,7 @@ sub navBar($$$$$)
 	my $upkey = $path;
 #	$upkey =~ s/([^!]*)!//;
 	$upkey =~ s/!$//;
-	print OUT "<a href=\"$up.$lang.html\"><font color=\"$boxoutercolor\">$cache{$upkey}{$lang}{'TITLE'}</font></a>" if defined $cache{$upkey}{$lang}{'TITLE'};
+	print OUT "<a href=\"$up.$lang.html\"><font color=\"$boxoutercolor\">^^&nbsp;$cache{$upkey}{$lang}{'TITLE'}&nbsp;^^</font></a>" if defined $cache{$upkey}{$lang}{'TITLE'};
     } else {
 	print OUT "&nbsp;";
     }
@@ -892,7 +895,7 @@ sub navBar($$$$$)
     print OUT '<td width="33%" align="left">';
     if ($right ne "") {
 	my $rightkey = "$path$right";
-	print OUT "<br><a href=\"$right.$lang.html\"><font color=\"$boxoutercolor\">$cache{$rightkey}{$lang}{'TITLE'}</font></a>";
+	print OUT "<br><a href=\"$right.$lang.html\"><font color=\"$boxoutercolor\">$cache{$rightkey}{$lang}{'TITLE'}&nbsp;&gt;&gt;</font></a>";
     } else {
 	print OUT "&nbsp;";
     }
