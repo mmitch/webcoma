@@ -13,11 +13,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.32 2001-10-06 19:23:46 mitch Exp $
+# $Id: webCOMA.pl,v 1.33 2001-10-07 15:50:04 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.32  2001-10-06 19:23:46  mitch
+# Revision 1.33  2001-10-07 15:50:04  mitch
+# Minimale Designänderung
+#
+# Revision 1.32  2001/10/06 19:23:46  mitch
 # Sitemap nochmal repariert
 #
 # Revision 1.31  2001/10/06 19:19:21  mitch
@@ -54,7 +57,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.32 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.33 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -116,7 +119,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.32 $ ';
+my $version   = ' webCOMA $Revision: 1.33 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -547,7 +550,6 @@ EOF
     navBar($i, $lang);
 
     print OUT << "EOF";
-<p>&nbsp;</p>
 <table border=0 cellpadding=5 cellspacing=0 bgcolor="$balkenfarbe" width="100%" summary="page title">
 <tr><td>
 <font color="$balkentext"><b><big>&nbsp;&nbsp;&nbsp;$title</big></b></font>
@@ -817,7 +819,6 @@ EOF
     #
 
     print OUT << "EOF";
-<p>&nbsp;</p>
 <table border=0 cellpadding=5 cellspacing=0 bgcolor="$balkenfarbe" width="100%" summary="page title">
 <tr><td align="right">
 <b><big>&nbsp;&nbsp;&nbsp;</big></b>
