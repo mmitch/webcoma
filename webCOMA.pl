@@ -1,11 +1,14 @@
 #!/usr/bin/perl -w
 use strict;
 
-# $Id: webCOMA.pl,v 1.4 2000-11-16 20:39:54 mitch Exp $
+# $Id: webCOMA.pl,v 1.5 2000-11-18 11:00:53 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.4  2000-11-16 20:39:54  mitch
+# Revision 1.5  2000-11-18 11:00:53  mitch
+# Graphboxen für Literatur/Video eingebaut
+#
+# Revision 1.4  2000/11/16 20:39:54  mitch
 # Sauberes HTML wird erzeugt (weblint-geprüft)
 #
 # Revision 1.3  2000/11/16 15:08:54  mitch
@@ -13,7 +16,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.4 $ ';
+my $version   = ' webCOMA $Revision: 1.5 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch on da netz";
@@ -326,6 +329,7 @@ sub printPage($)
     foreach my $lang (@languages) {
 	my $typ = $cache{$pagestructure[$i]}{$lang}{'TYPE'};
 	my $title = $cache{$pagestructure[$i]}{$lang}{'TITLE'};
+	my $gbAlign = 1;
 	
 	print "$file.$lang.html\t<$title>\t[$typ]\n";
 
@@ -380,11 +384,30 @@ EOF
 
 	if (($typ eq "plain") or ($typ eq "news")) {
 
-	    foreach my $line (readTag("PLAIN", $lang)) {
+	    my @lines = readTag("PLAIN", $lang);
+	    while (@lines) {
+		my $line = shift @lines;
 		$line = expand($line, $lang);
-
 		if ($line =~ /#SITEMAP#/) {
 		    includeSiteMap($lang);
+		} elsif ($line =~ /\#GRAPHBOX</) {
+		    my ($x, $y, $file, $alt) = split /!/, shift @lines, 4;
+		    
+		    print OUT "<center><table width=\"95%\" border=0><tr>\n";
+		    if ($gbAlign) {
+			$gbAlign = 0;
+			print OUT "<td align=\"left\"><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y align=\"left\" hspace=5 vspace=5>";
+		    } else {
+			$gbAlign = 1;
+			print OUT "<td align=\"right\"><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y align=\"right\" hspace=5 vspace=5>";
+		    }
+		    while (@lines) {
+			my $line = shift @lines;
+			last if $line =~ /\#GRAPHBOX>/;
+			$line = expand($line, $lang);
+			print OUT "$line\n";
+		    }
+		    print OUT "</td></tr></table></center>\n";
 		} elsif ($line =~ /#NEWS#/) {
 		    if ($typ eq "plain") {
 			newsBox($pagestructure[$i], $lang);
@@ -554,8 +577,7 @@ EOF
 	    }
 
 	} else {
-	    print STDERR "unknown type <$typ>\n";
-	    print OUT "unknown type <$typ>\n";
+	    die "UNKNOWN TYPE <$typ>\n";
 	}
 
 
