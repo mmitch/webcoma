@@ -13,11 +13,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.33 2001-10-07 15:50:04 mitch Exp $
+# $Id: webCOMA.pl,v 1.34 2002-01-21 18:45:48 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.33  2001-10-07 15:50:04  mitch
+# Revision 1.34  2002-01-21 18:45:48  mitch
+# Fixed bug with all "grep"s: Looked for .*$a.* instead of just $a
+#
+# Revision 1.33  2001/10/07 15:50:04  mitch
 # Minimale Designänderung
 #
 # Revision 1.32  2001/10/06 19:23:46  mitch
@@ -57,7 +60,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.33 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.34 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -119,7 +122,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.33 $ ';
+my $version   = ' webCOMA $Revision: 1.34 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -359,7 +362,7 @@ sub scanStructure($$)
 	
 	open IN, "<$srcpath/$doc.page" or die "can't open <$srcpath/$doc.page>: $!";
 
-	next unless grep /$lang/, readTag("LANG", $lang);
+	next unless grep { $lang eq $_ } readTag("LANG", $lang);
 
 	print "$lang:  $parent$doc\n";
 	push @{$pagestructure{$lang}}, "$parent$doc";
@@ -437,7 +440,7 @@ sub scanStructure($$)
 	    if ($line =~ /#LINK:([^#]*)#/) {
 		my $link = $1;
 		$link =~ s/\!.*$//;
-		if ((grep /$link/, @files) == 0 ) {
+		if ((grep {$link eq $_} @files) == 0 ) {
 		    push @files, $link;
 		}
 	    }
@@ -954,7 +957,7 @@ sub navBar($$)
 
     foreach my $l (@languages) {
 	if ($l ne $lang) {
-	    if (grep /$pagestructure{$lang}[$i]/, @{$pagestructure{$l}}) {
+	    if (grep { $pagestructure{$lang}[$i] eq $_ } @{$pagestructure{$l}}) {
 		print OUT "<a href=\"$me.$l.html\"><font color=\"$boxoutercolor\">$l</font></a> : ";
 	    }
 	} else {
