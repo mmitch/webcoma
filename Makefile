@@ -2,6 +2,6 @@ DESTPATH=/home/mitch/html/homepage
 
 all:
 	rm -f out/*.html
-	site.pl
+	webCOMA.pl
 	cp out/*.html $(DESTPATH)
 	shuttleupdate
