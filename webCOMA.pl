@@ -13,11 +13,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.37 2002-07-26 17:54:28 mitch Exp $
+# $Id: webCOMA.pl,v 1.38 2002-09-28 09:35:59 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.37  2002-07-26 17:54:28  mitch
+# Revision 1.38  2002-09-28 09:35:59  mitch
+# Versionsnummern auf Downloadseiten jetzt linksbündig.
+#
+# Revision 1.37  2002/07/26 17:54:28  mitch
 # width=100% zu width="100%" gequoted
 #
 # Revision 1.36  2002/02/03 22:00:29  mitch
@@ -69,7 +72,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.37 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.38 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -131,7 +134,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.37 $ ';
+my $version   = ' webCOMA $Revision: 1.38 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -799,7 +802,7 @@ EOF
 		    print OUT "<td valign=\"top\" align=\"left\">$autor</td>";
 		};
 		print OUT "<td valign=\"top\" align=\"left\">$datum</td>";
-		print OUT "<td valign=\"top\" align=\"right\">$version</td>";
+		print OUT "<td valign=\"top\" align=\"left\">$version</td>";
 		print OUT "<td valign=\"top\" align=\"right\">$size</td>";
 		print OUT "<td valign=\"top\" align=\"left\"><a href=\"$url\">$name</a></td>";
 		print OUT "<td valign=\"top\" align=\"left\">$comment</td>";
