@@ -10,11 +10,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.10 2000-11-19 14:09:40 mitch Exp $
+# $Id: webCOMA.pl,v 1.11 2000-11-19 14:19:33 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.10  2000-11-19 14:09:40  mitch
+# Revision 1.11  2000-11-19 14:19:33  mitch
+# (D)LINKS unterstützen #-named references
+#
+# Revision 1.10  2000/11/19 14:09:40  mitch
 # Newsbox auf download-Seiten
 #
 # Revision 1.9  2000/11/19 13:47:22  mitch
@@ -46,7 +49,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.10 $ ';
+my $version   = ' webCOMA $Revision: 1.11 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch";
@@ -301,12 +304,16 @@ sub scanStructure($$)
 	while (my $line = <IN>) {
 
 	    if ($line =~ /#LINK:([^#]*)#/) {
-		if ((grep /$1/, @files) == 0 ) {
-		    push @files, $1;
+		my $link = $1;
+		$link =~ s/\!.*$//;
+		if ((grep /$link/, @files) == 0 ) {
+		    push @files, $link;
 		}
 	    }
 	    if ($line =~ /#DLINK:([^#]*)#/) {
-		$dlinkcache{$1} = "";
+		my $link = $1;
+		$link =~ s/\!.*$//;
+		$dlinkcache{$link} = "";
 	    }
 	}
 	close IN or die "can't close <$srcpath/$doc.page>: $!";
@@ -772,8 +779,11 @@ sub expand($$)
     my $zeile = shift;
     my $lang = shift;
 
-    $zeile =~ s/#LINK:([^#]*)#/<a href="$1.$lang.html">/g;
-    $zeile =~ s/#DLINK:([^#]*)#/<a href="$1.$lang.html">/g;
+    if ($zeile =~ /#D?LINK:([^#]*)#/) {
+	my $link = $1;
+	$link =~ s/\!/#/;
+	$zeile =~ s/#D?LINK:[^#]*#/<a href="$link.$lang.html">/;
+    }
 
     return $zeile;
 }
