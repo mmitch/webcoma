@@ -1,11 +1,16 @@
 #!/usr/bin/perl -w
 use strict;
 
-# $Id: webCOMA.pl,v 1.5 2000-11-18 11:00:53 mitch Exp $
+# $Id: webCOMA.pl,v 1.6 2000-11-18 11:43:01 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.5  2000-11-18 11:00:53  mitch
+# Revision 1.6  2000-11-18 11:43:01  mitch
+# Seiten können jetzt komplett in einer Sprache gehalten werden,
+# sie tauchen dann weder in der Sitemap noch in der Navbar der
+# anderen Sprache auf.
+#
+# Revision 1.5  2000/11/18 11:00:53  mitch
 # Graphboxen für Literatur/Video eingebaut
 #
 # Revision 1.4  2000/11/16 20:39:54  mitch
@@ -16,7 +21,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.5 $ ';
+my $version   = ' webCOMA $Revision: 1.6 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch on da netz";
@@ -25,7 +30,7 @@ my $srcpath   = "in";
 my $destpath  = "out";
 my $startdoc  = "index";
 my $template  = "$srcpath/TEMPLATE";
-my @pagestructure;
+my %pagestructure;
 my %date;
 my $date_cmd  = "date";
 my $copy_cmd  = "cp";
@@ -37,7 +42,7 @@ my %dlinkcache;
 my %news;
 
 sub scanStructure($$);
-sub printPage($);
+sub printPage($$);
 sub initDates();
 sub readTag($$);
 sub navBar($$$$$);
@@ -164,8 +169,11 @@ elsif ($theme == 4) {
 
     print "Scanning site structure:\n";
     scanStructure($startdoc,"");
-    print (scalar @pagestructure);
-    print " pages found.\n";
+    foreach my $lang (@languages) {
+	print "$lang: ";
+	print (scalar @{$pagestructure{$lang}});
+	print " pages found.\n";
+    }
     print "\n";
 
     print "Scanning dlink integrity: ";
@@ -192,8 +200,10 @@ elsif ($theme == 4) {
     print "OK\n\n";
 
     print "Generating pages:\n";
-    for (my $page = 0; $page < @pagestructure; $page++) {
-	printPage($page);
+    foreach my $lang (@languages) {
+	for (my $page = 0; $page < @{$pagestructure{$lang}}; $page++) {
+	    printPage($page,$lang);
+	}
     }
     print "\n";
 
@@ -210,15 +220,17 @@ sub scanStructure($$)
     my $doc    = shift;
     my $parent = shift;
 
-    print "  $parent$doc\n";
-    push @pagestructure, "$parent$doc";
-
     my @files;
 
     foreach my $lang (@languages) {
 	
 	open IN, "<$srcpath/$doc.page" or die "can't open <$srcpath/$doc.page>: $!";
-	
+
+	next unless grep /$lang/, readTag("LANG", $lang);
+
+	print "$lang:  $parent$doc\n";
+	push @{$pagestructure{$lang}}, "$parent$doc";
+
 	my @temp;
 	@temp = readTag("TYPE", $lang);
 	
@@ -293,12 +305,13 @@ sub scanStructure($$)
 #
 
 
-sub printPage($)
+sub printPage($$)
 {
     my $i       = shift;
-    my $page    = $pagestructure[$i];
+    my $lang    = shift;
+    my $page    = $pagestructure{$lang}[$i];
 
-    my @elements = split /!/, $pagestructure[$i];
+    my @elements = split /!/, $pagestructure{$lang}[$i];
     my $file = pop @elements;
     my $parent  = "";
     if (@elements) {
@@ -308,7 +321,7 @@ sub printPage($)
 
     my $left="";
     for (my $j = $i-1; $j >= 0; $j--) {
-	my @elements = split /!/, $pagestructure[$j];
+	my @elements = split /!/, $pagestructure{$lang}[$j];
 	my $file = pop @elements;
 	if ((join '!', @elements) eq $path) {
 	    $left = $file;
@@ -317,31 +330,30 @@ sub printPage($)
     }
     
     my $right="";
-    for (my $j = $i + 1; defined $pagestructure[$j]; $j++) {
-	my @elements = split /!/, $pagestructure[$j];
+    for (my $j = $i + 1; defined $pagestructure{$lang}[$j]; $j++) {
+	my @elements = split /!/, $pagestructure{$lang}[$j];
 	my $file = pop @elements;
 	if ((join '!', @elements) eq $path) {
 	    $right = $file;
-	    $j = @pagestructure + 1;
+	    $j = @{$pagestructure{$lang}} + 1;
 	}
     }
 
-    foreach my $lang (@languages) {
-	my $typ = $cache{$pagestructure[$i]}{$lang}{'TYPE'};
-	my $title = $cache{$pagestructure[$i]}{$lang}{'TITLE'};
-	my $gbAlign = 1;
-	
-	print "$file.$lang.html\t<$title>\t[$typ]\n";
+    my $typ = $cache{$pagestructure{$lang}[$i]}{$lang}{'TYPE'};
+    my $title = $cache{$pagestructure{$lang}[$i]}{$lang}{'TITLE'};
+    my $gbAlign = 1;
+    
+    print "$file.$lang.html\t<$title>\t[$typ]\n";
 
-	open IN, "<$srcpath/$file.page" or die "can't open <$srcpath/$file.page>: $!";
-	open OUT, ">$destpath/$file.$lang.html" or die "can't open <$destpath/$file.$lang.html>: $!";
-	
-	my @news = readTag("NEWS", $lang);
-	
-	my @temp = readTag("KEYWORDS", $lang);
-	my @keywords = $temp[0];
-	
-	print OUT <<"EOF";
+    open IN, "<$srcpath/$file.page" or die "can't open <$srcpath/$file.page>: $!";
+    open OUT, ">$destpath/$file.$lang.html" or die "can't open <$destpath/$file.$lang.html>: $!";
+    
+    my @news = readTag("NEWS", $lang);
+    
+    my @temp = readTag("KEYWORDS", $lang);
+    my @keywords = $temp[0];
+    
+    print OUT <<"EOF";
 <html><head><title>$sitename - $title</title>
 <meta name="generator" content="$version">
 <meta name="generating host" content="$host">
@@ -356,10 +368,10 @@ sub printPage($)
 <p><br></p>
 EOF
     ;
-	
-	navBar($left, $parent, $right, $path, $lang);
+    
+    navBar($left, $parent, $right, $path, $lang);
 
-	print OUT << "EOF";
+    print OUT << "EOF";
 <center><table border=0 cellpadding=2 cellspacing=0 bgcolor="$boxoutercolor" width="95%">
 <tr><td>
 &nbsp;&nbsp;&nbsp;<font color="$boxtitlecolor"><b><big>$title</big></b></font>
@@ -367,230 +379,232 @@ EOF
 EOF
     ;
 
-	foreach my $l (@languages) {
-	    if ($l ne $lang) {
+    foreach my $l (@languages) {
+	if ($l ne $lang) {
+	    if (grep /$pagestructure{$lang}[$i]/, @{$pagestructure{$l}}) {
 		print OUT "<a href=\"$file.$l.html\"><font color=\"$boxtitlecolor\">[$l]</font></a> ";
-	    } else {
-		print OUT "<font color=\"$linkcolor\">[$l]</font> ";
 	    }
+	} else {
+	    print OUT "<font color=\"$linkcolor\">[$l]</font> ";
 	}
+    }
 
-	print OUT << "EOF";
+    print OUT << "EOF";
 </td></tr><tr><td colspan=2>
 <table border=0 cellpadding=10 cellspacing=0 width="100%" bgcolor="$boxinnercolor">
 <tr><td>
 EOF
     ;
 
-	if (($typ eq "plain") or ($typ eq "news")) {
+    if (($typ eq "plain") or ($typ eq "news")) {
 
-	    my @lines = readTag("PLAIN", $lang);
-	    while (@lines) {
-		my $line = shift @lines;
-		$line = expand($line, $lang);
-		if ($line =~ /#SITEMAP#/) {
-		    includeSiteMap($lang);
-		} elsif ($line =~ /\#GRAPHBOX</) {
-		    my ($x, $y, $file, $alt) = split /!/, shift @lines, 4;
-		    
-		    print OUT "<center><table width=\"95%\" border=0><tr>\n";
-		    if ($gbAlign) {
-			$gbAlign = 0;
-			print OUT "<td align=\"left\"><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y align=\"left\" hspace=5 vspace=5>";
-		    } else {
-			$gbAlign = 1;
-			print OUT "<td align=\"right\"><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y align=\"right\" hspace=5 vspace=5>";
-		    }
-		    while (@lines) {
-			my $line = shift @lines;
-			last if $line =~ /\#GRAPHBOX>/;
-			$line = expand($line, $lang);
-			print OUT "$line\n";
-		    }
-		    print OUT "</td></tr></table></center>\n";
-		} elsif ($line =~ /#NEWS#/) {
-		    if ($typ eq "plain") {
-			newsBox($pagestructure[$i], $lang);
-		    } else {
-			newsBox("", $lang);
-		    }
+	my @lines = readTag("PLAIN", $lang);
+	while (@lines) {
+	    my $line = shift @lines;
+	    $line = expand($line, $lang);
+	    if ($line =~ /#SITEMAP#/) {
+		includeSiteMap($lang);
+	    } elsif ($line =~ /\#GRAPHBOX</) {
+		my ($x, $y, $file, $alt) = split /!/, shift @lines, 4;
+		
+		print OUT "<center><table width=\"95%\" border=0><tr>\n";
+		if ($gbAlign) {
+		    $gbAlign = 0;
+		    print OUT "<td align=\"left\"><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y align=\"left\" hspace=5 vspace=5>";
 		} else {
+		    $gbAlign = 1;
+		    print OUT "<td align=\"right\"><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y align=\"right\" hspace=5 vspace=5>";
+		}
+		while (@lines) {
+		    my $line = shift @lines;
+		    last if $line =~ /\#GRAPHBOX>/;
+		    $line = expand($line, $lang);
 		    print OUT "$line\n";
 		}
-	    }
+		print OUT "</td></tr></table></center>\n";
+	    } elsif ($line =~ /#NEWS#/) {
+		     if ($typ eq "plain") {
+			 newsBox($pagestructure{$lang}[$i], $lang);
+		     } else {
+			 newsBox("", $lang);
+		     }
+		 } else {
+		     print OUT "$line\n";
+		 }
+	}
 
-	} elsif ($typ eq "oldschool") {
+    } elsif ($typ eq "oldschool") {
 
-	    my ($autor_head, $datum_head, $version_head, $size_head, $name_head, $comment_head);
-	    if ($lang eq "de") {
-		# Deutsch
-		
-		$autor_head =	"Autor";
-		$datum_head =	"Datum";
-		$version_head =	"Version";
-		$size_head =	"Gr&ouml;&szlig;e";
-		$name_head =	"Datei";
-		$comment_head =	"Hinweise";
-		
-	    } else {
-		# Englisch
-		
-		$autor_head =	"author";
-		$datum_head =	"date";
-		$version_head =	"version";
-		$size_head =	"size";
-		$name_head =	"file";
-		$comment_head =	"notes";
-		
-	    };
+	my ($autor_head, $datum_head, $version_head, $size_head, $name_head, $comment_head);
+	if ($lang eq "de") {
+	    # Deutsch
 	    
-	    # Vorlage durchgehen
-	    my @input = readTag("OLDSCHOOL", $lang);
-
-	    my $zeile= shift @input;
-	    while ($zeile !~ /^<!--.BEG/) {
-		$zeile= shift @input;
-	    }
-	    print OUT "$zeile";
+	    $autor_head =	"Autor";
+	    $datum_head =	"Datum";
+	    $version_head =	"Version";
+	    $size_head =	"Gr&ouml;&szlig;e";
+	    $name_head =	"Datei";
+	    $comment_head =	"Hinweise";
+	    
+	} else {
+	    # Englisch
+	    
+	    $autor_head =	"author";
+	    $datum_head =	"date";
+	    $version_head =	"version";
+	    $size_head =	"size";
+	    $name_head =	"file";
+	    $comment_head =	"notes";
+	    
+	};
 	
-	    # Autor-Spalte ?
-	    
-	    my $autor_schalter;
-	    if ($zeile =~ /\ EXT\ /) {
-		$autor_schalter = "JA";
-	    } else {
-		$autor_schalter = "NEIN";
-	    };
-	    
-	    # Tabellenkopf
-	    
-	    my $fehler = 0;
+	# Vorlage durchgehen
+	my @input = readTag("OLDSCHOOL", $lang);
 
-	    my $typ = shift @input;
-	    if ($typ ne "PROGRAMMNAME") {
-		$fehler++;
-		print "\n\nFEHLER [$fehler]: PROGRAMMNAME fehlt\n\n";
-	    }
-	    my $programmname=shift @input;
-	    
-	    $typ = shift @input;
-	    if ($typ ne "SPRUNGMARKE") {
-		$fehler++;
-		print "\n\nFEHLER [$fehler]: SPRUNGMARKE fehlt\n\n";
-	    }
-	    my $sprungmarke=shift @input;
-	    
-	    print OUT "<p><br></p>";
-	    print OUT "<center><table align=\"center\" width=\"90%\" border=0 cellpadding=12><tr><td>";
-	    print OUT "<h2 align=\"CENTER\">Download</h2>";
-	    print OUT "<h1 align=\"CENTER\">$programmname</h1>";
+	my $zeile= shift @input;
+	while ($zeile !~ /^<!--.BEG/) {
+	    $zeile= shift @input;
+	}
+	print OUT "$zeile";
+	
+	# Autor-Spalte ?
+	
+	my $autor_schalter;
+	if ($zeile =~ /\ EXT\ /) {
+	    $autor_schalter = "JA";
+	} else {
+	    $autor_schalter = "NEIN";
+	};
+	
+	# Tabellenkopf
+	
+	my $fehler = 0;
+
+	my $typ = shift @input;
+	if ($typ ne "PROGRAMMNAME") {
+	    $fehler++;
+	    print "\n\nFEHLER [$fehler]: PROGRAMMNAME fehlt\n\n";
+	}
+	my $programmname=shift @input;
+	
+	$typ = shift @input;
+	if ($typ ne "SPRUNGMARKE") {
+	    $fehler++;
+	    print "\n\nFEHLER [$fehler]: SPRUNGMARKE fehlt\n\n";
+	}
+	my $sprungmarke=shift @input;
+	
+	print OUT "<p><br></p>";
+	print OUT "<center><table align=\"center\" width=\"90%\" border=0 cellpadding=12><tr><td>";
+	print OUT "<h2 align=\"CENTER\">Download</h2>";
+	print OUT "<h1 align=\"CENTER\">$programmname</h1>";
 
 #	    newsBox($pagestructure[$i], $lang);
 
-	    # Der Freitext		
-	    
-	    $typ = shift @input;
-	    if ($typ ne "FREITEXT") {
-		$fehler++;
-		printf "\n\nFEHLER [$fehler]: FREITEXT fehlt\n\n";
-	    }
-
-	    print OUT "<p>";
-	    $zeile = shift @input;
-	    while ($zeile ne "ZEILE") {
-		$zeile = expand($zeile,$lang);
-		print OUT "$zeile\n";	
-		$zeile = shift @input;
-	    }
-	    print OUT "</p>";
-
-	    print OUT "<p><br></p><table border=0 cellpadding=2><tr>";
-	    if ($autor_schalter eq "JA") {
-		print OUT "<th valign=\"top\" align=\"left\"><small>$autor_head</small></th>";
-	    };
-	    print OUT "<th valign=\"top\" align=\"left\"><small>$datum_head</small></th>";
-	    print OUT "<th valign=\"top\" align=\"left\"><small>$version_head</small></th>";
-	    print OUT "<th valign=\"top\" align=\"left\"><small>$size_head</small></th>";
-	    print OUT "<th valign=\"top\" align=\"left\"><small>$name_head</small></th>";
-	    print OUT "<th valign=\"top\" align=\"left\"><small>$comment_head</small></th>";
-	    print OUT "</tr>";
+	# Der Freitext		
 	
-	    # Die einzelnen Zeilen
-	
-	    $typ = $zeile;
-	    while (($typ eq "ZEILE") || ($typ eq "--HLINE--")) {
-
-		if ($typ eq "--HLINE--") {
-		    
-		    print OUT "<tr><td colspan=";
-		    if ($autor_schalter eq "JA") {
-			print OUT "6";
-		    } else {
-			print OUT "5";
-		    }
-		    print OUT "><hr></td></tr>\n";
-		    
-		} else {
-		    
-		    my $autor;
-		    if ($autor_schalter eq "JA") {
-			$autor = shift @input;
-		    };
-		    my $datum = shift @input;
-		    my $version = shift @input;
-		    my $size = shift @input;
-		    my $url = shift @input;
-		    my $name = shift @input;
-		    my $comment = shift @input;
-		    
-		    print OUT "<tr>";
-		    if ($autor_schalter eq "JA") {
-			print OUT "<td valign=\"top\" align=\"left\">$autor</td>";
-		    };
-		    print OUT "<td valign=\"top\" align=\"left\">$datum</td>";
-		    print OUT "<td valign=\"top\" align=\"right\">$version</td>";
-		    print OUT "<td valign=\"top\" align=\"right\">$size</td>";
-		    print OUT "<td valign=\"top\" align=\"left\"><a href=\"$url\">$name</a></td>";
-		    print OUT "<td valign=\"top\" align=\"left\">$comment</td>";
-		    print OUT "</tr>\n";
-		    
-		}
-	    
-		$typ = shift @input;
-	    }
-	
-	    # Tabellenfuß
-	    
-	    if ($typ !~ /^<!--.END/) {
-		$fehler++;
-		print "\n\nFEHLER [$fehler]: <!--END oder ZEILE fehlt \n\n";
-	    }
-	    
-	    print OUT "</table><p><br></p></td></tr></table></center>\n";
-	    print OUT "$typ\n";
-	    
-
-	    if ($fehler > 0) {
-		
-		die "\n\nOBACHT! ES SIND $fehler FEHLER AUFGETRETEN!\n\n";
-		
-	    }
-
-	} else {
-	    die "UNKNOWN TYPE <$typ>\n";
+	$typ = shift @input;
+	if ($typ ne "FREITEXT") {
+	    $fehler++;
+	    printf "\n\nFEHLER [$fehler]: FREITEXT fehlt\n\n";
 	}
 
+	print OUT "<p>";
+	$zeile = shift @input;
+	while ($zeile ne "ZEILE") {
+	    $zeile = expand($zeile,$lang);
+	    print OUT "$zeile\n";	
+	    $zeile = shift @input;
+	}
+	print OUT "</p>";
 
-	print OUT "</td></tr></table></td></tr></table></center>\n";
-	print OUT "<p><br></p>\n";
+	print OUT "<p><br></p><table border=0 cellpadding=2><tr>";
+	if ($autor_schalter eq "JA") {
+	    print OUT "<th valign=\"top\" align=\"left\"><small>$autor_head</small></th>";
+	};
+	print OUT "<th valign=\"top\" align=\"left\"><small>$datum_head</small></th>";
+	print OUT "<th valign=\"top\" align=\"left\"><small>$version_head</small></th>";
+	print OUT "<th valign=\"top\" align=\"left\"><small>$size_head</small></th>";
+	print OUT "<th valign=\"top\" align=\"left\"><small>$name_head</small></th>";
+	print OUT "<th valign=\"top\" align=\"left\"><small>$comment_head</small></th>";
+	print OUT "</tr>";
+	
+	# Die einzelnen Zeilen
+	
+	$typ = $zeile;
+	while (($typ eq "ZEILE") || ($typ eq "--HLINE--")) {
 
-	navBar($left, $parent, $right, $path, $lang);
+	    if ($typ eq "--HLINE--") {
+		
+		print OUT "<tr><td colspan=";
+		if ($autor_schalter eq "JA") {
+		    print OUT "6";
+		} else {
+		    print OUT "5";
+		}
+		print OUT "><hr></td></tr>\n";
+		
+	    } else {
+		
+		my $autor;
+		if ($autor_schalter eq "JA") {
+		    $autor = shift @input;
+		};
+		my $datum = shift @input;
+		my $version = shift @input;
+		my $size = shift @input;
+		my $url = shift @input;
+		my $name = shift @input;
+		my $comment = shift @input;
+		
+		print OUT "<tr>";
+		if ($autor_schalter eq "JA") {
+		    print OUT "<td valign=\"top\" align=\"left\">$autor</td>";
+		};
+		print OUT "<td valign=\"top\" align=\"left\">$datum</td>";
+		print OUT "<td valign=\"top\" align=\"right\">$version</td>";
+		print OUT "<td valign=\"top\" align=\"right\">$size</td>";
+		print OUT "<td valign=\"top\" align=\"left\"><a href=\"$url\">$name</a></td>";
+		print OUT "<td valign=\"top\" align=\"left\">$comment</td>";
+		print OUT "</tr>\n";
+		
+	    }
+	    
+	    $typ = shift @input;
+	}
+	
+	# Tabellenfuß
+	
+	if ($typ !~ /^<!--.END/) {
+	    $fehler++;
+	    print "\n\nFEHLER [$fehler]: <!--END oder ZEILE fehlt \n\n";
+	}
+	
+	print OUT "</table><p><br></p></td></tr></table></center>\n";
+	print OUT "$typ\n";
+	
 
-	#
-	# Seitenfuß
-	#
+	if ($fehler > 0) {
+	    
+	    die "\n\nOBACHT! ES SIND $fehler FEHLER AUFGETRETEN!\n\n";
+	    
+	}
 
-        print OUT <<"EOF";
+    } else {
+	die "UNKNOWN TYPE <$typ>\n";
+    }
+
+
+    print OUT "</td></tr></table></td></tr></table></center>\n";
+    print OUT "<p><br></p>\n";
+
+    navBar($left, $parent, $right, $path, $lang);
+
+    #
+    # Seitenfuß
+    #
+
+    print OUT <<"EOF";
 <table width="100%"><tr>
 <td width="33%" align="left"><font color="$textonbgcolor">$date{$lang}</font></td>
 <td width="34%" align="center"><font color="$textonbgcolor">$version</font></td>
@@ -599,9 +613,8 @@ EOF
 </body></html>
 EOF
     ;
-	close IN or die "can't close <$srcpath/$file.page>: $!";
-	close OUT or die "can't close <$destpath/$file.$lang.html>: $!";
-    }
+    close IN or die "can't close <$srcpath/$file.page>: $!";
+    close OUT or die "can't close <$destpath/$file.$lang.html>: $!";
 }
 
 
@@ -686,9 +699,7 @@ sub navBar($$$$$)
 	$path .= "!";
     }
 
-    print OUT << "EOF";
-<center><table border=0 width="100%"><tr>
-EOF
+    print OUT '<center><table border=0 width="100%"><tr>';
     print OUT '<td width="33%" align="right">';
     if ($left ne "") {
 	my $leftkey = "$path$left";
@@ -813,7 +824,7 @@ sub includeSiteMap($)
 {
     my $lang = shift;
     my @oldpath = ("");
-    my @list = @pagestructure;
+    my @list = @{$pagestructure{$lang}};
     print OUT "<ul>\n";
     while (my $page = shift @list) {
 
