@@ -7,15 +7,19 @@ use strict;
 #
 # - DESCRIPTION-Meta-Tag sinnvoll füllen
 # - $Farbnamen mal nach dem benennen, was sie färben
+# - table summary="" lokalisieren (de/en)
 #
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.29 2001-08-24 18:54:25 mitch Exp $
+# $Id: webCOMA.pl,v 1.30 2001-10-06 19:04:55 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.29  2001-08-24 18:54:25  mitch
+# Revision 1.30  2001-10-06 19:04:55  mitch
+# Table-summaries, allgemein saubereres HTML
+#
+# Revision 1.29  2001/08/24 18:54:25  mitch
 # #DLINKs sind jetzt auch in Newsartikeln möglich
 #
 # Revision 1.28  2001/07/23 19:36:43  mitch
@@ -43,7 +47,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.29 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.30 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -105,7 +109,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.29 $ ';
+my $version   = ' webCOMA $Revision: 1.30 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -536,8 +540,8 @@ EOF
     navBar($i, $lang);
 
     print OUT << "EOF";
-<p></p>
-<table border=0 cellpadding=5 cellspacing=0 bgcolor="$balkenfarbe" width="100%">
+<p>&nbsp;</p>
+<table border=0 cellpadding=5 cellspacing=0 bgcolor="$balkenfarbe" width="100%" summary="page title">
 <tr><td>
 <font color="$balkentext"><b><big>&nbsp;&nbsp;&nbsp;$title</big></b></font>
 </td></tr></table>
@@ -723,7 +727,7 @@ EOF
 	}
 	print OUT "</p>";
 
-	print OUT "<p><br></p><table border=0 cellpadding=2><tr>";
+	print OUT "<p><br></p><table border=0 cellpadding=2 summary=\"list of files\"><tr>";
 	if ($autor_schalter eq "JA") {
 	    print OUT "<th valign=\"top\" align=\"left\"><small>$autor_head</small></th>";
 	};
@@ -806,11 +810,11 @@ EOF
     #
 
     print OUT << "EOF";
-<p></p>
-<table border=0 cellpadding=5 cellspacing=0 bgcolor="$balkenfarbe" width="100%">
+<p>&nbsp;</p>
+<table border=0 cellpadding=5 cellspacing=0 bgcolor="$balkenfarbe" width="100%" summary="page title">
 <tr><td align="right">
-<b><big>&nbsp;&nbsp;&nbsp;</big></b><small>
-<font color="$balkentext">
+<b><big>&nbsp;&nbsp;&nbsp;</big></b>
+<font color="$balkentext"><small>
 <a href="mailto:$authormail"><font color="$balkenlink">$author</font></a>
 :
 <a href="webcoma.$lang.html"><font color="$balkenlink">$version</font></a>
@@ -926,7 +930,7 @@ sub navBar($$)
     my $left  = getLeft($i,$lang);
     my $right = getRight($i,$lang);
 
-    print OUT "<table border=0 width=100%><tr><td align=\"left\"><small>";
+    print OUT "<table border=0 width=100% summary=\"page navigation\"><tr><td align=\"left\"><small>";
 
     # aktuelle Position
 
@@ -952,21 +956,29 @@ sub navBar($$)
     print OUT "<a href=\"$sourcepath/$me.txt\"><font color=\"$boxoutercolor\">source</font></a>";
 
 
-    print OUT "</small></td><td align=\"right\" valign=\"top\"><small>";
+    print OUT "</small></td><td align=\"right\" valign=\"top\">";
 
-    # NEXT
+    if ($right ne "" or $left ne "") {
 
-    if ($right ne "") {
-	print OUT "<a href=\"$right.$lang.html\"><font color=\"$boxoutercolor\">$cache{$path.$right}{$lang}{'TITLE'}&nbsp;&gt;&gt;</font></a><br>";
+	print OUT "<small>";
+
+	# NEXT
+	
+	if ($right ne "") {
+	    print OUT "<a href=\"$right.$lang.html\"><font color=\"$boxoutercolor\">$cache{$path.$right}{$lang}{'TITLE'}&nbsp;&gt;&gt;</font></a><br>";
+	}
+	
+	# PREV
+	
+	if ($left ne "") {
+	    print OUT "<a href=\"$left.$lang.html\"><font color=\"$boxoutercolor\">&lt;&lt;&nbsp;$cache{$path.$left}{$lang}{'TITLE'}</font></a>";
+	}
+
+	print OUT "</small>";
+
     }
 
-    # PREV
-
-    if ($left ne "") {
-	print OUT "<a href=\"$left.$lang.html\"><font color=\"$boxoutercolor\">&lt;&lt;&nbsp;$cache{$path.$left}{$lang}{'TITLE'}</font></a>";
-    }
-
-    print OUT "</small></td></tr></table>";
+    print OUT "</td></tr></table>";
 }
 
 
@@ -1079,11 +1091,11 @@ sub includeSiteMap($)
 	if ($path ne $oldpath[0]) {
 	    if ($path !~ /^$oldpath[0]/) {
 		while ($path ne $oldpath[0]) {
-		    print OUT "</ul>\n";
+		    print OUT "</ul></li>\n";
 		    shift @oldpath;
 		}
 	    } else {
-		print OUT "<ul>\n";
+		print OUT "<li><ul>\n";
 		unshift @oldpath, $path;
 	    }
 	}
