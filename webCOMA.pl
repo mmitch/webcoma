@@ -1,13 +1,9 @@
 #!/usr/bin/perl -w
 use strict;
 
-#
-# SiteMap
-#
+# $Id: webCOMA.pl,v 1.2 2000-11-15 16:09:13 mitch Exp $
 
-# $Id: webCOMA.pl,v 1.1 2000-11-15 15:45:23 mitch Exp $
-
-my $version   = "webCOMA $Revision: 1.1 $";
+my $version   = ' webCOMA $Revision: 1.2 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch on da netz";
@@ -34,6 +30,7 @@ sub readTag($$);
 sub navBar($$$$$);
 sub expand($$);
 sub newsBox($$);
+sub includeSiteMap($);
 
 my $themename;
 my $boxoutercolor;
@@ -376,7 +373,9 @@ EOF
 	    foreach my $line (readTag("PLAIN", $lang)) {
 		$line = expand($line, $lang);
 
-		if ($line =~ /#NEWS#/) {
+		if ($line =~ /#SITEMAP#/) {
+		    includeSiteMap($lang);
+		} elsif ($line =~ /#NEWS#/) {
 		    if ($typ eq "plain") {
 			newsBox($pagestructure[$i], $lang);
 		    } else {
@@ -662,7 +661,7 @@ EOF
     print OUT '<td width="33%" align="right">';
     if ($left ne "") {
 	my $leftkey = "$path$left";
-	print OUT "<a href=\"$left.$lang.html\"><font color=\"$boxoutercolor\">$cache{$leftkey}{$lang}{'TITLE'}<font></a>";
+	print OUT "<br><a href=\"$left.$lang.html\"><font color=\"$boxoutercolor\">$cache{$leftkey}{$lang}{'TITLE'}<font></a>";
     } else {
 	print OUT "&nbsp;";
     }
@@ -682,7 +681,7 @@ EOF
     print OUT '<td width="33%" align="left">';
     if ($right ne "") {
 	my $rightkey = "$path$right";
-	print OUT "&nbsp;<a href=\"$right.$lang.html\"><font color=\"$boxoutercolor\">$cache{$rightkey}{$lang}{'TITLE'}<font></a>";
+	print OUT "<br><a href=\"$right.$lang.html\"><font color=\"$boxoutercolor\">$cache{$rightkey}{$lang}{'TITLE'}<font></a>";
     } else {
 	print OUT "&nbsp;";
     }
@@ -773,4 +772,44 @@ EOF
 
     }
     
+}
+
+
+#
+
+
+sub includeSiteMap($)
+{
+    my $lang = shift;
+    my @oldpath = ("");
+    my @list = @pagestructure;
+    print OUT "<ul>\n";
+    while (my $page = shift @list) {
+
+	my ($path, $file);
+
+	if ($page =~ /^(.*)!([^!]*)$/) {
+	    $path = $1;
+	    $file = $2;
+	} else {
+	    $path = "";
+	    $file = $page;
+	}
+	
+	if ($path ne @oldpath[0]) {
+	    if ($path !~ /^$oldpath[0]/) {
+		while ($path ne $oldpath[0]) {
+		    print OUT "</ul>\n";
+		    shift @oldpath;
+		}
+	    } else {
+		print OUT "<ul>\n";
+		unshift @oldpath, $path;
+	    }
+	}
+
+	print OUT "<li><a href=\"$file.$lang.html\">$cache{$page}{$lang}{'TITLE'}</a></li>\n";
+
+    }
+    print OUT "</ul>\n";
 }
