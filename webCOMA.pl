@@ -13,11 +13,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.34 2002-01-21 18:45:48 mitch Exp $
+# $Id: webCOMA.pl,v 1.35 2002-02-03 21:54:11 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.34  2002-01-21 18:45:48  mitch
+# Revision 1.35  2002-02-03 21:54:11  mitch
+# included RCS tag in meta tags
+#
+# Revision 1.34  2002/01/21 18:45:48  mitch
 # Fixed bug with all "grep"s: Looked for .*$a.* instead of just $a
 #
 # Revision 1.33  2001/10/07 15:50:04  mitch
@@ -60,7 +63,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.34 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.35 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -122,7 +125,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.34 $ ';
+my $version   = ' webCOMA $Revision: 1.35 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -362,6 +365,12 @@ sub scanStructure($$)
 	
 	open IN, "<$srcpath/$doc.page" or die "can't open <$srcpath/$doc.page>: $!";
 
+	while (<IN>) {
+	    last if $_ =~ /^#RCS/;
+	}
+	$_ =~ /(\$Id: webCOMA.pl,v 1.35 2002-02-03 21:54:11 mitch Exp $)/;
+        $cache{"$parent$doc"}{'RCS'} = ($1 or die "no rcs tag in $srcpath/$doc.page");
+
 	next unless grep { $lang eq $_ } readTag("LANG", $lang);
 
 	print "$lang:  $parent$doc\n";
@@ -516,9 +525,9 @@ sub printPage($$)
  
     my ($file, $path, @elements) = getStuff($i, $lang);
    
-    my $date = $cache{$pagestructure{$lang}[$i]}{$lang}{'DATE'};
-    my $typ = $cache{$pagestructure{$lang}[$i]}{$lang}{'TYPE'};
-    my $title = $cache{$pagestructure{$lang}[$i]}{$lang}{'TITLE'};
+    my $date = $cache{$page}{$lang}{'DATE'};
+    my $typ = $cache{$page}{$lang}{'TYPE'};
+    my $title = $cache{$page}{$lang}{'TITLE'};
     my $gbAlign = 1;
     
     print "$file.$lang.html\t<$title>\t[$typ]\n";
@@ -539,6 +548,7 @@ sub printPage($$)
 <meta name="generator" content="$version">
 <meta name="generating_host" content="$host">
 <meta name="generation_date" content="$date{$lang}">
+<meta name="rcs_tag" content="$cache{$page}{'RCS'}">
 <meta name="ROBOTS" content="FOLLOW">
 <meta name="KEYWORDS" content="keywords">
 <meta name="author" content="$author ($authormail)">
@@ -631,7 +641,7 @@ EOF
 		print OUT "</td></tr></table></center>\n";
 	    } elsif ($line =~ /\#NEWS\#/) {
 		if ($typ eq "plain") {
-		    newsBox($pagestructure{$lang}[$i], $lang);
+		    newsBox($page, $lang);
 		} else {
 		    newsBox("", $lang);
 		}
