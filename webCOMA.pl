@@ -8,15 +8,19 @@ use strict;
 # - DESCRIPTION-Meta-Tag sinnvoll füllen
 # - $Farbnamen mal nach dem benennen, was sie färben
 # - table summary="" lokalisieren (de/en)
+# - mehrere DLINKs auf einer Zeile nicht möglich!
 #
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.31 2001-10-06 19:19:21 mitch Exp $
+# $Id: webCOMA.pl,v 1.32 2001-10-06 19:23:46 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.31  2001-10-06 19:19:21  mitch
+# Revision 1.32  2001-10-06 19:23:46  mitch
+# Sitemap nochmal repariert
+#
+# Revision 1.31  2001/10/06 19:19:21  mitch
 # Sitemap repariert
 #
 # Revision 1.30  2001/10/06 19:04:55  mitch
@@ -50,7 +54,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.31 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.32 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -112,7 +116,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.31 $ ';
+my $version   = ' webCOMA $Revision: 1.32 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -1110,10 +1114,8 @@ sub includeSiteMap($)
     }
     
     foreach (@oldpath) {
-	print OUT "</ul>\n";
+	print OUT "</li></ul>\n";
     }
-
-    print OUT "</li>\n";
 
 }
 
