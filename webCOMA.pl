@@ -12,11 +12,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.40 2003-08-31 18:40:16 mitch Exp $
+# $Id: webCOMA.pl,v 1.41 2004-10-16 16:39:51 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.40  2003-08-31 18:40:16  mitch
+# Revision 1.41  2004-10-16 16:39:51  mitch
+# add links for valid HTML and valid CSS
+#
+# Revision 1.40  2003/08/31 18:40:16  mitch
 # Beginn der Umstellung auf CSS
 #
 # Revision 1.39  2003/01/19 10:31:32  mitch
@@ -77,7 +80,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.40 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.41 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -139,7 +142,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.40 $ ';
+my $version   = ' webCOMA $Revision: 1.41 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -263,7 +266,10 @@ sub scanStructure($$)
 	
 	open IN, "<$srcpath/$doc.page" or die "can't open <$srcpath/$doc.page>: $!";
 
+	my $valid = 0;
+
 	while (<IN>) {
+	    $valid = 1 if $_ =~ /^#VALID/;
 	    last if $_ =~ /^#RCS/;
 	}
 	$_ =~ /(\$(Id):.*\$)/;  # (Id) because RCS should not find and substitute this line
@@ -277,7 +283,8 @@ sub scanStructure($$)
 	my @temp;
 	@temp = readTag("TYPE", $lang);
 	
-	$cache{"$parent$doc"}{$lang}{'TYPE'} = $temp[0];
+	$cache{"$parent$doc"}{$lang}{'TYPE'}  = $temp[0];
+	$cache{"$parent$doc"}{$lang}{'VALID'} = $valid;
 	
 	{
 	    my $olddate;
@@ -729,10 +736,22 @@ EOF
 <a href="webcoma.$lang.html" class="bottombar">$version</a>
 :
 $date
+:
+EOF
+;
+    if ($cache{$page}{$lang}{VALID}) {
+	print OUT << "EOF";
+<a href="http://validator.w3.org/check?uri=referer">valid HTML 4.01 strict</a>
+:
+EOF
+;
+    }
+    print OUT << "EOF";
+<a href="http://jigsaw.w3.org/css-validator/check/referer">valid CSS</a>
 </p>
 EOF
-    ;
-
+;
+    
     navBar($i, $lang);
 
     print OUT "</body></html>";
