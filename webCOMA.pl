@@ -1,11 +1,14 @@
 #!/usr/bin/perl -w
 use strict;
 
-# $Id: webCOMA.pl,v 1.6 2000-11-18 11:43:01 mitch Exp $
+# $Id: webCOMA.pl,v 1.7 2000-11-18 14:51:31 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.6  2000-11-18 11:43:01  mitch
+# Revision 1.7  2000-11-18 14:51:31  mitch
+# Sitenamen auf 'Master Mitch' gekürzt
+#
+# Revision 1.6  2000/11/18 11:43:01  mitch
 # Seiten können jetzt komplett in einer Sprache gehalten werden,
 # sie tauchen dann weder in der Sitemap noch in der Navbar der
 # anderen Sprache auf.
@@ -21,10 +24,10 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.6 $ ';
+my $version   = ' webCOMA $Revision: 1.7 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
-my $sitename  = "Master Mitch on da netz";
+my $sitename  = "Master Mitch";
 my @languages = ('de', 'en');
 my $srcpath   = "in";
 my $destpath  = "out";
