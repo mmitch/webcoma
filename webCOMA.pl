@@ -1,11 +1,27 @@
 #!/usr/bin/perl -w
 use strict;
 
-# $Id: webCOMA.pl,v 1.7 2000-11-18 14:51:31 mitch Exp $
+##
+##  [ 2do ]
+##
+#
+# - DESCRIPTION-Meta-Tag sinnvoll füllen
+#
+##
+##
+
+# $Id: webCOMA.pl,v 1.8 2000-11-19 12:46:21 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.7  2000-11-18 14:51:31  mitch
+# Revision 1.8  2000-11-19 12:46:21  mitch
+# Revisit ist jetzt variabel (und auf 7 Tage runter)
+# Bugfix:
+# Hostname jetzt ohne Zeilenumbruch
+# 2x falscher Regexp
+# 1x Warning bei undefined
+#
+# Revision 1.7  2000/11/18 14:51:31  mitch
 # Sitenamen auf 'Master Mitch' gekürzt
 #
 # Revision 1.6  2000/11/18 11:43:01  mitch
@@ -24,7 +40,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.7 $ ';
+my $version   = ' webCOMA $Revision: 1.8 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch";
@@ -37,7 +53,9 @@ my %pagestructure;
 my %date;
 my $date_cmd  = "date";
 my $copy_cmd  = "cp";
+my $revisit   = "7 days";
 my $host      = `hostname -f`;
+chomp $host;
 my %cache;
 my %linkcache;
 $linkcache{$startdoc} = "";
@@ -276,12 +294,12 @@ sub scanStructure($$)
 
 	while (my $line = <IN>) {
 
-	    if ($line =~ /#LINK:(.*)#/) {
+	    if ($line =~ /#LINK:([^#]*)#/) {
 		if ((grep /$1/, @files) == 0 ) {
 		    push @files, $1;
 		}
 	    }
-	    if ($line =~ /#DLINK:(.*)#/) {
+	    if ($line =~ /#DLINK:([^#]*)#/) {
 		$dlinkcache{$1} = "";
 	    }
 	}
@@ -361,16 +379,16 @@ sub printPage($$)
 <meta name="generator" content="$version">
 <meta name="generating host" content="$host">
 <meta name="ROBOTS" content="FOLLOW">
-<meta name="DESCRIPTION" content="$sitename - $title">
 <meta name="KEYWORDS" content="keywords">
 <meta name="author" content="$author ($authormail)">
-<meta http-equiv="revisit-after" content="15 days">
+<meta http-equiv="revisit-after" content="$revisit">
 <meta http-equiv="content-language" content="$lang">
 </head>
 <body bgcolor="$backgroundcolor" text="$textcolor" link="$linkcolor" alink="$alinkcolor" vlink="$vlinkcolor">
 <p><br></p>
 EOF
     ;
+#<meta name="DESCRIPTION" content="$sitename - $title">
     
     navBar($left, $parent, $right, $path, $lang);
 
@@ -717,7 +735,7 @@ sub navBar($$$$$)
 	my $upkey = $path;
 #	$upkey =~ s/([^!]*)!//;
 	$upkey =~ s/!$//;
-	print OUT "<a href=\"$up.$lang.html\"><font color=\"$boxoutercolor\">$cache{$upkey}{$lang}{'TITLE'}</font></a>";
+	print OUT "<a href=\"$up.$lang.html\"><font color=\"$boxoutercolor\">$cache{$upkey}{$lang}{'TITLE'}</font></a>" if defined $cache{$upkey}{$lang}{'TITLE'};
     } else {
 	print OUT "&nbsp;";
     }
