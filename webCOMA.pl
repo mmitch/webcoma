@@ -6,15 +6,19 @@ use strict;
 ##
 #
 # - DESCRIPTION-Meta-Tag sinnvoll füllen
+# - angezeigte Bearbeitungszeit der Seite aus Dateidatum entnehmen
 #
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.13 2000-11-25 14:04:46 mitch Exp $
+# $Id: webCOMA.pl,v 1.14 2000-11-30 22:12:37 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.13  2000-11-25 14:04:46  mitch
+# Revision 1.14  2000-11-30 22:12:37  mitch
+# Aktuelles Datum wird in META-Tag gespeichert
+#
+# Revision 1.13  2000/11/25 14:04:46  mitch
 # .dot-Datei für Graphviz (siehe freshmeat) wird erstellt
 #
 # Revision 1.12  2000/11/19 16:18:18  mitch
@@ -55,7 +59,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.13 $ ';
+my $version   = ' webCOMA $Revision: 1.14 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch";
@@ -422,6 +426,7 @@ sub printPage($$)
 <html><head><title>$sitename - $title</title>
 <meta name="generator" content="$version">
 <meta name="generating host" content="$host">
+<meta name="generation date" content="$date{$today}">
 <meta name="ROBOTS" content="FOLLOW">
 <meta name="KEYWORDS" content="keywords">
 <meta name="author" content="$author ($authormail)">
