@@ -11,11 +11,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.27 2001-07-21 10:06:07 mitch Exp $
+# $Id: webCOMA.pl,v 1.28 2001-07-23 19:36:43 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.27  2001-07-21 10:06:07  mitch
+# Revision 1.28  2001-07-23 19:36:43  mitch
+# eMail auf cgarbs.de umgestellt
+#
+# Revision 1.27  2001/07/21 10:06:07  mitch
 # Im Subtitle-TITEL darf jetzt ein Doppelpunkt stehen
 #
 # Revision 1.26  2001/07/21 09:52:04  mitch
@@ -37,7 +40,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.27 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.28 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -99,14 +102,14 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.27 $ ';
+my $version   = ' webCOMA $Revision: 1.28 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
 $version =~ s/\s+$//;
 
 my $author    = "Christian Garbs";
-my $authormail= 'mitch@uni.de';
+my $authormail= 'mitch@cgarbs.de';
 my $sitename  = "Master Mitch";
 my $amazon_link = "http://www.amazon.de/exec/obidos/ASIN/%/mastemitchondane";
 my @languages = ('de', 'en');
