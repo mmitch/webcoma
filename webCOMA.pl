@@ -10,11 +10,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.18 2001-01-14 20:30:45 mitch Exp $
+# $Id: webCOMA.pl,v 1.19 2001-01-14 23:01:12 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.18  2001-01-14 20:30:45  mitch
+# Revision 1.19  2001-01-14 23:01:12  mitch
+# Position der Bilder in der Graphbox (links/rechts) vertauscht.
+#
+# Revision 1.18  2001/01/14 20:30:45  mitch
 # Untersützung von mehreren Bänden bei amazon-Bücherlinks
 #
 # Revision 1.17  2000/12/29 17:02:20  mitch
@@ -71,7 +74,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.18 $ ';
+my $version   = ' webCOMA $Revision: 1.19 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch";
@@ -512,21 +515,23 @@ EOF
 
 		print OUT "<center><table width=\"95%\" border=0><tr>\n";
 
-		my $align;
+		my ($align, $align2);
 		if ($gbAlign) {
 		    $gbAlign = 0;
 		    $align='align="left"';
+		    $align2='align="right"';
 		} else {
 		    $gbAlign = 1;
 		    $align='align="right"';
+		    $align2='align="left"';
 		}
 		if (($amazon eq "") || ($lang ne "de")) {
-		    print OUT "<td $align><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y $align hspace=5 vspace=5>";
+		    print OUT "<td $align><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y $align2 hspace=5 vspace=5>";
 		} else {
 		    my $link = $amazon_link;
 		    die "wrong ASIN length: <$amazon> @ GRAPHBOX in $page:\n$x!$y!$file!$amazon$alt\n" unless length $amazon == 10;
 		    $link =~ s/%/$amazon/;
-		    print OUT "<td $align><a href=\"$link\"><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y $align hspace=5 vspace=5 border=0></a>";
+		    print OUT "<td $align><a href=\"$link\"><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y $align2 hspace=5 vspace=5 border=0></a>";
 		}
 
 		while (@lines) {
@@ -543,7 +548,7 @@ EOF
 		    print OUT "<ul><li><small>Einkaufen bei <a href=\"$link\">amazon.de</a>";
 		    if (@amazon)
 		    {
-			print OUT ": Band ";
+			print OUT ":<br>Band ";
 			while (@amazon)
 			{
 			    my ($ep, $amazon) = split /:/, shift @amazon;
