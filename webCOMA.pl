@@ -10,11 +10,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.11 2000-11-19 14:19:33 mitch Exp $
+# $Id: webCOMA.pl,v 1.12 2000-11-19 16:18:18 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.11  2000-11-19 14:19:33  mitch
+# Revision 1.12  2000-11-19 16:18:18  mitch
+# Bugfix in gehashten (D)LINKS
+#
+# Revision 1.11  2000/11/19 14:19:33  mitch
 # (D)LINKS unterstützen #-named references
 #
 # Revision 1.10  2000/11/19 14:09:40  mitch
@@ -49,7 +52,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.11 $ ';
+my $version   = ' webCOMA $Revision: 1.12 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch";
@@ -780,9 +783,13 @@ sub expand($$)
     my $lang = shift;
 
     if ($zeile =~ /#D?LINK:([^#]*)#/) {
-	my $link = $1;
-	$link =~ s/\!/#/;
-	$zeile =~ s/#D?LINK:[^#]*#/<a href="$link.$lang.html">/;
+	my ($link, $hash) = split /!/, $1, 2;
+	if ($hash) {
+	    $hash = "#$hash";
+	} else {
+	    $hash = "";
+	}
+	$zeile =~ s/#D?LINK:[^#]*#/<a href="$link.$lang.html$hash">/;
     }
 
     return $zeile;
