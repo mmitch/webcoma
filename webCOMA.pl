@@ -12,11 +12,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.30 2001-10-06 19:04:55 mitch Exp $
+# $Id: webCOMA.pl,v 1.31 2001-10-06 19:19:21 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.30  2001-10-06 19:04:55  mitch
+# Revision 1.31  2001-10-06 19:19:21  mitch
+# Sitemap repariert
+#
+# Revision 1.30  2001/10/06 19:04:55  mitch
 # Table-summaries, allgemein saubereres HTML
 #
 # Revision 1.29  2001/08/24 18:54:25  mitch
@@ -47,7 +50,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.30 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.31 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -109,7 +112,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.30 $ ';
+my $version   = ' webCOMA $Revision: 1.31 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -625,7 +628,7 @@ EOF
 		}
 	    } elsif ($line =~ /\#SUBTITLES(\/s)?\#/) {
 		my $count = 0;
-		if ($1 eq "/s") {
+		if (defined $1) {
 		    my %sorthash;
 		    map {$sorthash{$_} = $count++} @{$cache{"$page"}{$lang}{'SUBTITLES'}};
 		    foreach my $key (sort {uc($a) cmp uc($b)} keys %sorthash) {
@@ -1091,22 +1094,26 @@ sub includeSiteMap($)
 	if ($path ne $oldpath[0]) {
 	    if ($path !~ /^$oldpath[0]/) {
 		while ($path ne $oldpath[0]) {
-		    print OUT "</ul></li>\n";
+		    print OUT "</li></ul></li>\n";
 		    shift @oldpath;
 		}
 	    } else {
-		print OUT "<li><ul>\n";
+		print OUT "<ul>\n";
 		unshift @oldpath, $path;
 	    }
+	} else {
+	    print OUT "</li>\n" unless @oldpath == 1;
 	}
 
-	print OUT "<li><a href=\"$file.$lang.html\">$cache{$page}{$lang}{'TITLE'}</a></li>\n";
+	print OUT "<li><a href=\"$file.$lang.html\">$cache{$page}{$lang}{'TITLE'}</a>\n";
 
     }
     
     foreach (@oldpath) {
 	print OUT "</ul>\n";
     }
+
+    print OUT "</li>\n";
 
 }
 
