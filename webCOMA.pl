@@ -12,11 +12,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.42 2004-10-16 20:55:02 mitch Exp $
+# $Id: webCOMA.pl,v 1.43 2004-10-16 21:34:19 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.42  2004-10-16 20:55:02  mitch
+# Revision 1.43  2004-10-16 21:34:19  mitch
+# more strict HTML
+#
+# Revision 1.42  2004/10/16 20:55:02  mitch
 # valid/non-valid vermerken
 #
 # Revision 1.41  2004/10/16 16:39:51  mitch
@@ -83,7 +86,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.42 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.43 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -145,7 +148,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.42 $ ';
+my $version   = ' webCOMA $Revision: 1.43 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -631,8 +634,8 @@ EOF
 	}
 	my $sprungmarke=shift @input;
 	
-	print OUT "<h2 align=\"center\">Download</h2>";
-	print OUT "<h1 align=\"center\">$programmname</h1>";
+	print OUT "<h2 style=\"centered\">Download</h2>";
+	print OUT "<h1 style=\"centered\">$programmname</h1>";
 
 	# Der Freitext		
 	
@@ -921,13 +924,19 @@ sub expand($$)
     my $lang = shift;
 
     if ($zeile =~ /#D?LINK:([^#]*)#/) {
-	my ($link, $hash) = split /!/, $1, 2;
+	my ($link, $hash, $class) = split /!/, $1, 3;
 	if ($hash) {
 	    $hash = "#$hash";
+	    if ($class) {
+		$class=" class=\"$class\"";
+	    } else {
+		$class="";
+	    }
 	} else {
-	    $hash = "";
+	    $hash  = "";
+	    $class = "";
 	}
-	$zeile =~ s/#D?LINK:[^#]*#/<a href="$link.$lang.html$hash">/;
+	$zeile =~ s/#D?LINK:[^#]*#/<a href="$link.$lang.html$hash"${class}>/;
     }
 
     if ($zeile =~ s/#SUBTITLE:(.*):[^:]*:/<a name="$subtitlecount">$1<\/a>/) {
