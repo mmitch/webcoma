@@ -1,16 +1,19 @@
 #!/usr/bin/perl -w
 use strict;
 
-# $Id: webCOMA.pl,v 1.3 2000-11-16 15:08:54 mitch Exp $
+# $Id: webCOMA.pl,v 1.4 2000-11-16 20:39:54 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.3  2000-11-16 15:08:54  mitch
+# Revision 1.4  2000-11-16 20:39:54  mitch
+# Sauberes HTML wird erzeugt (weblint-geprüft)
+#
+# Revision 1.3  2000/11/16 15:08:54  mitch
 # Removed a warning
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.3 $ ';
+my $version   = ' webCOMA $Revision: 1.4 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch on da netz";
@@ -454,10 +457,10 @@ EOF
 	    }
 	    my $sprungmarke=shift @input;
 	    
-	    print OUT "<P><BR><A NAME=\"$sprungmarke\"></A></P>";
-	    print OUT "<CENTER><TABLE ALIGN=CENTER WIDTH=\"90%\" BORDER=0 CELLPADDING=12><TR><TD>";
-	    print OUT "<H2 ALIGN=CENTER>Download</H2>";
-	    print OUT "<H1 ALIGN=CENTER>$programmname</H1>";
+	    print OUT "<p><br></p>";
+	    print OUT "<center><table align=\"center\" width=\"90%\" border=0 cellpadding=12><tr><td>";
+	    print OUT "<h2 align=\"CENTER\">Download</h2>";
+	    print OUT "<h1 align=\"CENTER\">$programmname</h1>";
 
 #	    newsBox($pagestructure[$i], $lang);
 
@@ -469,25 +472,25 @@ EOF
 		printf "\n\nFEHLER [$fehler]: FREITEXT fehlt\n\n";
 	    }
 
-	    print OUT "<P>";
+	    print OUT "<p>";
 	    $zeile = shift @input;
 	    while ($zeile ne "ZEILE") {
 		$zeile = expand($zeile,$lang);
 		print OUT "$zeile\n";	
 		$zeile = shift @input;
 	    }
-	    print OUT "</P>";
+	    print OUT "</p>";
 
-	    print OUT "<P><BR></P><TABLE BORDER=0 CELLPADDING=2><TR>";
+	    print OUT "<p><br></p><table border=0 cellpadding=2><tr>";
 	    if ($autor_schalter eq "JA") {
-		print OUT "<TH VALIGN=TOP ALIGN=LEFT><SMALL>$autor_head</SMALL></TH>";
+		print OUT "<th valign=\"top\" align=\"left\"><small>$autor_head</small></th>";
 	    };
-	    print OUT "<TH VALIGN=TOP ALIGN=LEFT><SMALL>$datum_head</SMALL></TH>";
-	    print OUT "<TH VALIGN=TOP ALIGN=LEFT><SMALL>$version_head</SMALL></TH>";
-	    print OUT "<TH VALIGN=TOP ALIGN=LEFT><SMALL>$size_head</SMALL></TH>";
-	    print OUT "<TH VALIGN=TOP ALIGN=LEFT><SMALL>$name_head</SMALL></TH>";
-	    print OUT "<TH VALIGN=TOP ALIGN=LEFT><SMALL>$comment_head</SMALL></TH>";
-	    print OUT "</TR>";
+	    print OUT "<th valign=\"top\" align=\"left\"><small>$datum_head</small></th>";
+	    print OUT "<th valign=\"top\" align=\"left\"><small>$version_head</small></th>";
+	    print OUT "<th valign=\"top\" align=\"left\"><small>$size_head</small></th>";
+	    print OUT "<th valign=\"top\" align=\"left\"><small>$name_head</small></th>";
+	    print OUT "<th valign=\"top\" align=\"left\"><small>$comment_head</small></th>";
+	    print OUT "</tr>";
 	
 	    # Die einzelnen Zeilen
 	
@@ -496,13 +499,13 @@ EOF
 
 		if ($typ eq "--HLINE--") {
 		    
-		    print OUT "<TR><TD COLSPAN=";
+		    print OUT "<tr><td colspan=";
 		    if ($autor_schalter eq "JA") {
 			print OUT "6";
 		    } else {
 			print OUT "5";
 		    }
-		    print OUT "><HR></TD></TR>\n";
+		    print OUT "><hr></td></tr>\n";
 		    
 		} else {
 		    
@@ -517,16 +520,16 @@ EOF
 		    my $name = shift @input;
 		    my $comment = shift @input;
 		    
-		    print OUT "<TR>";
+		    print OUT "<tr>";
 		    if ($autor_schalter eq "JA") {
-			print OUT "<TD VALIGN=TOP ALIGN=LEFT>$autor</TD>";
+			print OUT "<td valign=\"top\" align=\"left\">$autor</td>";
 		    };
-		    print OUT "<TD VALIGN=TOP ALIGN=LEFT>$datum</TD>";
-		    print OUT "<TD VALIGN=TOP ALIGN=RIGHT>$version</TD>";
-		    print OUT "<TD VALIGN=TOP ALIGN=RIGHT>$size</TD>";
-		    print OUT "<TD VALIGN=TOP ALIGN=LEFT><A TARGET=\"_top\" HREF=\"$url\">$name</A></TD>";
-		    print OUT "<TD VALIGN=TOP ALIGN=LEFT>$comment</TD>";
-		    print OUT "</TR>\n";
+		    print OUT "<td valign=\"top\" align=\"left\">$datum</td>";
+		    print OUT "<td valign=\"top\" align=\"right\">$version</td>";
+		    print OUT "<td valign=\"top\" align=\"right\">$size</td>";
+		    print OUT "<td valign=\"top\" align=\"left\"><a href=\"$url\">$name</a></td>";
+		    print OUT "<td valign=\"top\" align=\"left\">$comment</td>";
+		    print OUT "</tr>\n";
 		    
 		}
 	    
@@ -540,8 +543,7 @@ EOF
 		print "\n\nFEHLER [$fehler]: <!--END oder ZEILE fehlt \n\n";
 	    }
 	    
-	    print OUT "</TABLE><P>";
-	    print OUT "</P></TD></TR></TABLE></CENTER>\n";
+	    print OUT "</table><p><br></p></td></tr></table></center>\n";
 	    print OUT "$typ\n";
 	    
 
@@ -668,7 +670,7 @@ EOF
     print OUT '<td width="33%" align="right">';
     if ($left ne "") {
 	my $leftkey = "$path$left";
-	print OUT "<br><a href=\"$left.$lang.html\"><font color=\"$boxoutercolor\">$cache{$leftkey}{$lang}{'TITLE'}<font></a>";
+	print OUT "<br><a href=\"$left.$lang.html\"><font color=\"$boxoutercolor\">$cache{$leftkey}{$lang}{'TITLE'}</font></a>";
     } else {
 	print OUT "&nbsp;";
     }
@@ -679,7 +681,7 @@ EOF
 	my $upkey = $path;
 #	$upkey =~ s/([^!]*)!//;
 	$upkey =~ s/!$//;
-	print OUT "<a href=\"$up.$lang.html\"><font color=\"$boxoutercolor\">$cache{$upkey}{$lang}{'TITLE'}<font></a>";
+	print OUT "<a href=\"$up.$lang.html\"><font color=\"$boxoutercolor\">$cache{$upkey}{$lang}{'TITLE'}</font></a>";
     } else {
 	print OUT "&nbsp;";
     }
@@ -688,7 +690,7 @@ EOF
     print OUT '<td width="33%" align="left">';
     if ($right ne "") {
 	my $rightkey = "$path$right";
-	print OUT "<br><a href=\"$right.$lang.html\"><font color=\"$boxoutercolor\">$cache{$rightkey}{$lang}{'TITLE'}<font></a>";
+	print OUT "<br><a href=\"$right.$lang.html\"><font color=\"$boxoutercolor\">$cache{$rightkey}{$lang}{'TITLE'}</font></a>";
     } else {
 	print OUT "&nbsp;";
     }
@@ -818,5 +820,9 @@ sub includeSiteMap($)
 	print OUT "<li><a href=\"$file.$lang.html\">$cache{$page}{$lang}{'TITLE'}</a></li>\n";
 
     }
-    print OUT "</ul>\n";
+
+    foreach (@oldpath) {
+	print OUT "</ul>\n";
+    }
+
 }
