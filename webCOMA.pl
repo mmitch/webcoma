@@ -11,11 +11,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.26 2001-07-21 09:52:04 mitch Exp $
+# $Id: webCOMA.pl,v 1.27 2001-07-21 10:06:07 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.26  2001-07-21 09:52:04  mitch
+# Revision 1.27  2001-07-21 10:06:07  mitch
+# Im Subtitle-TITEL darf jetzt ein Doppelpunkt stehen
+#
+# Revision 1.26  2001/07/21 09:52:04  mitch
 # Subtitelverwaltung auf Seitenebene (interne Links + Übersicht).
 #
 # Revision 1.25  2001/07/15 14:07:07  mitch
@@ -34,7 +37,7 @@ use strict;
 # W3C-Konformität
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.26 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.27 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -96,7 +99,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.26 $ ';
+my $version   = ' webCOMA $Revision: 1.27 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -412,7 +415,7 @@ sub scanStructure($$)
 		}
 	    }
 
-	    if ($line =~ /#SUBTITLE:([^:]*):([^:]*):/) {
+	    if ($line =~ /#SUBTITLE:(.*):([^:]*):/) {
 		my ($show, $title) = ($1, $2);
 		if ($title eq "") {
 		    $title = $show;
@@ -957,7 +960,7 @@ sub expand($$)
 	$zeile =~ s/#D?LINK:[^#]*#/<a href="$link.$lang.html$hash">/;
     }
 
-    if ($zeile =~ s/#SUBTITLE:([^:]*):[^:]*:/<a name="$subtitlecount">$1<\/a>/) {
+    if ($zeile =~ s/#SUBTITLE:(.*):[^:]*:/<a name="$subtitlecount">$1<\/a>/) {
 	$subtitlecount++;
     }
 
