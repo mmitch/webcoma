@@ -10,11 +10,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.17 2000-12-29 17:02:20 mitch Exp $
+# $Id: webCOMA.pl,v 1.18 2001-01-14 20:30:45 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.17  2000-12-29 17:02:20  mitch
+# Revision 1.18  2001-01-14 20:30:45  mitch
+# Untersützung von mehreren Bänden bei amazon-Bücherlinks
+#
+# Revision 1.17  2000/12/29 17:02:20  mitch
 # Links zu Amazon.de gesetzt
 #
 # Revision 1.16  2000/12/07 20:50:11  mitch
@@ -68,7 +71,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.17 $ ';
+my $version   = ' webCOMA $Revision: 1.18 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch";
@@ -498,8 +501,14 @@ EOF
 		includeSiteMap($lang);
 	    } elsif ($line =~ /\#GRAPHBOX</) {
 
+		my @amazon;
 		my ($x, $y, $file, $amazon, $alt) = split /!/, shift @lines, 5;
 		die "Error in GRAPHBOX in $page:\n$x!$y!$file!$amazon$alt\n" unless defined $alt;
+
+		if ($amazon =~ /,/)
+		{
+		    ($amazon, @amazon) = split /,/, $amazon;
+		}
 
 		print OUT "<center><table width=\"95%\" border=0><tr>\n";
 
@@ -515,6 +524,7 @@ EOF
 		    print OUT "<td $align><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y $align hspace=5 vspace=5>";
 		} else {
 		    my $link = $amazon_link;
+		    die "wrong ASIN length: <$amazon> @ GRAPHBOX in $page:\n$x!$y!$file!$amazon$alt\n" unless length $amazon == 10;
 		    $link =~ s/%/$amazon/;
 		    print OUT "<td $align><a href=\"$link\"><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y $align hspace=5 vspace=5 border=0></a>";
 		}
@@ -529,7 +539,22 @@ EOF
 		if (($amazon ne "") && ($lang eq "de")) {
 		    my $link = $amazon_link;
 		    $link =~ s/%/$amazon/;
-		    print OUT "<ul><li><small>Einkaufen bei <a href=\"$link\">amazon.de</a></small></li></ul>";
+		    die "wrong ASIN length: <$amazon> @ GRAPHBOX in $page:\n$x!$y!$file!$amazon$alt\n" unless length $amazon == 10;
+		    print OUT "<ul><li><small>Einkaufen bei <a href=\"$link\">amazon.de</a>";
+		    if (@amazon)
+		    {
+			print OUT ": Band ";
+			while (@amazon)
+			{
+			    my ($ep, $amazon) = split /:/, shift @amazon;
+			    my $link = $amazon_link;
+			    $link =~ s/%/$amazon/;
+			    die "wrong ASIN length: <$ep:$amazon> @ GRAPHBOX in $page:\n$x!$y!$file![...]$alt\n" unless length $amazon == 10;
+			    print OUT "<a href=\"$link\">$ep</a>";
+			    print OUT " - " if (@amazon);
+			}
+		    }
+		    print OUT "</small></li></ul>";
 		}
 
 		print OUT "</td></tr></table></center>\n";
