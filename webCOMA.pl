@@ -6,15 +6,19 @@ use strict;
 ##
 #
 # - DESCRIPTION-Meta-Tag sinnvoll f¸llen
+# - $Farbnamen mal nach dem benennen, was sie f‰rben
 #
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.24 2001-06-01 20:04:43 mitch Exp $
+# $Id: webCOMA.pl,v 1.25 2001-07-15 14:07:07 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.24  2001-06-01 20:04:43  mitch
+# Revision 1.25  2001-07-15 14:07:07  mitch
+# Seitendesign ziemlich ge‰ndert
+#
+# Revision 1.24  2001/06/01 20:04:43  mitch
 # Checksummenpr¸fung f¸r ISBN-Nummern
 #
 # Revision 1.23  2001/03/22 13:55:40  mitch
@@ -27,7 +31,7 @@ use strict;
 # W3C-Konformit‰t
 #
 # Revision 1.20  2001/02/06 22:20:25  mitch
-# webCOMA v1.19 statt webCOMA $Revision: 1.24 $
+# webCOMA v1.19 statt webCOMA $Revision: 1.25 $
 #
 # Revision 1.19  2001/01/14 23:01:12  mitch
 # Position der Bilder in der Graphbox (links/rechts) vertauscht.
@@ -89,7 +93,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.24 $ ';
+my $version   = ' webCOMA $Revision: 1.25 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -128,17 +132,22 @@ sub printPage($$);
 sub initDates();
 sub convertDate($$);
 sub readTag($$);
-sub navBar($$$$$);
+sub navBar($$);
 sub expand($$);
 sub newsBox($$);
 sub includeSiteMap($);
+sub getLeft($$);
+sub getRight($$);
 
+my $balkenfarbe = "#E0E0E0";
+my $balkentext = "#000000";
+my $balkenlink = "#0057C0";
 my $themename;
 my $boxoutercolor;
 my $boxinnercolor;
-my $boxtitlecolor;
+#my $boxtitlecolor;
 my $backgroundcolor;
-my $textonbgcolor;
+#my $textonbgcolor;
 my $linkonbgcolor;
 my $newsonbgcolor;
 my $newslinkcolor;
@@ -155,9 +164,9 @@ if ($theme == 0) {
     $themename="Black'n'White";
     $boxoutercolor="#000000";
     $boxinnercolor="#A0A0A0";
-    $boxtitlecolor="#FFFFFF";
+#    $boxtitlecolor="#FFFFFF";
     $backgroundcolor="#444444";
-    $textonbgcolor="#FFFFFF";
+#    $textonbgcolor="#FFFFFF";
     $linkonbgcolor="#FFFFFF";
     $newsonbgcolor="#999999";
     $newslinkcolor="#FFFFFF";
@@ -172,13 +181,14 @@ if ($theme == 0) {
 elsif ($theme == 1) {
     $themename="Light Blue";
     $boxoutercolor="#3399FF";
-    $boxinnercolor="#FFFFFF";
-    $boxtitlecolor="#000000";
-    $backgroundcolor="#121280";
+    $boxinnercolor="#121280";
+#    $boxtitlecolor="#000000";
+    $backgroundcolor="#FFFFFF";
+
 #    $textonbgcolor="#FFFFFF";
 #    $linkonbgcolor="#FFFFFF";
 #    $textonbgcolor="#CCCCCC";
-    $textonbgcolor="#DDDDFF";
+#    $textonbgcolor="#DDDDFF";
     $linkonbgcolor="#DDDDFF";
     $newsonbgcolor="#2077E0";
     $newslinkcolor="#2077E0";
@@ -194,9 +204,9 @@ elsif ($theme == 2) {
     $themename="Monochrome";
     $boxoutercolor="#000000";
     $boxinnercolor="#FFFFFF";
-    $boxtitlecolor="#FFFFFF";
+#    $boxtitlecolor="#FFFFFF";
     $backgroundcolor="#FFFFFF";
-    $textonbgcolor="#000000";
+#    $textonbgcolor="#000000";
     $linkonbgcolor="#000000";
     $newsonbgcolor="#000000";
     $newslinkcolor="#000000";
@@ -212,9 +222,9 @@ elsif ($theme == 3) {
     $themename="Inverted";
     $boxoutercolor="#FFFFFF";
     $boxinnercolor="#000000";
-    $boxtitlecolor="#000000";
+#    $boxtitlecolor="#000000";
     $backgroundcolor="#000000";
-    $textonbgcolor="#FFFFFF";
+#    $textonbgcolor="#FFFFFF";
     $linkonbgcolor="#FFFFFF";
     $newsonbgcolor="#FFFFFF";
     $newslinkcolor="#FFFFFF";
@@ -230,9 +240,9 @@ elsif ($theme == 4) {
     $themename="Neon";
     $boxoutercolor="#FF0000";
     $boxinnercolor="#000000";
-    $boxtitlecolor="#FFFF00";
+#    $boxtitlecolor="#FFFF00";
     $backgroundcolor="#000000";
-    $textonbgcolor="#69D213";
+#    $textonbgcolor="#69D213";
     $linkonbgcolor="#FFFF00";
     $newsonbgcolor="#FFFF00";
     $newslinkcolor="#FFFF00";
@@ -429,34 +439,9 @@ sub printPage($$)
     my $lang    = shift;
     my $page    = $pagestructure{$lang}[$i];
 
-    my @elements = split /!/, $pagestructure{$lang}[$i];
-    my $file = pop @elements;
-    my $parent  = "";
-    if (@elements) {
-	$parent = $elements[-1];
-    }
-    my $path = join '!', @elements;
-
-    my $left="";
-    for (my $j = $i-1; $j >= 0; $j--) {
-	my @elements = split /!/, $pagestructure{$lang}[$j];
-	my $file = pop @elements;
-	if ((join '!', @elements) eq $path) {
-	    $left = $file;
-	    $j = -1;
-	}
-    }
-    
-    my $right="";
-    for (my $j = $i + 1; defined $pagestructure{$lang}[$j]; $j++) {
-	my @elements = split /!/, $pagestructure{$lang}[$j];
-	my $file = pop @elements;
-	if ((join '!', @elements) eq $path) {
-	    $right = $file;
-	    $j = @{$pagestructure{$lang}} + 1;
-	}
-    }
-
+ 
+    my ($file, $path, @elements) = getStuff($i, $lang);
+   
     my $date = $cache{$pagestructure{$lang}[$i]}{$lang}{'DATE'};
     my $typ = $cache{$pagestructure{$lang}[$i]}{$lang}{'TYPE'};
     my $title = $cache{$pagestructure{$lang}[$i]}{$lang}{'TITLE'};
@@ -485,36 +470,18 @@ sub printPage($$)
 <meta http-equiv="content-language" content="$lang">
 </head>
 <body bgcolor="$backgroundcolor" text="$textcolor" link="$linkcolor" alink="$alinkcolor" vlink="$vlinkcolor">
-<p><br></p>
 EOF
     ;
 #<meta name="DESCRIPTION" content="$sitename - $title">
     
-    navBar($left, $parent, $right, $path, $lang);
+    navBar($i, $lang);
 
     print OUT << "EOF";
-<center><table border=0 cellpadding=2 cellspacing=0 bgcolor="$boxoutercolor" width="95%">
+<p></p>
+<table border=0 cellpadding=5 cellspacing=0 bgcolor="$balkenfarbe" width="100%">
 <tr><td>
-&nbsp;&nbsp;&nbsp;<font color="$boxtitlecolor"><b><big>$title</big></b></font>
-</td><td align="right">
-EOF
-    ;
-
-    foreach my $l (@languages) {
-	if ($l ne $lang) {
-	    if (grep /$pagestructure{$lang}[$i]/, @{$pagestructure{$l}}) {
-		print OUT "<a href=\"$file.$l.html\"><font color=\"$boxtitlecolor\">[$l]</font></a> ";
-	    }
-	} else {
-	    print OUT "<font color=\"$linkcolor\">[$l]</font> ";
-	}	    
-    }
-    print OUT "<a href=\"$sourcepath/$file.txt\"><font color=\"$boxtitlecolor\">[source]</font></a> ";
-
-    print OUT << "EOF";
-</td></tr><tr><td colspan=2>
-<table border=0 cellpadding=10 cellspacing=0 width="100%" bgcolor="$boxinnercolor">
-<tr><td>
+<font color="$balkentext"><b><big>&nbsp;&nbsp;&nbsp;$title</big></b></font>
+</td></tr></table>
 EOF
     ;
 
@@ -659,8 +626,8 @@ EOF
 	}
 	my $sprungmarke=shift @input;
 	
-	print OUT "<p><br></p>";
-	print OUT "<center><table align=\"center\" width=\"90%\" border=0 cellpadding=12><tr><td>";
+#	print OUT "<p><br></p>";
+#	print OUT "<center><table align=\"center\" width=\"90%\" border=0 cellpadding=12><tr><td>";
 	print OUT "<h2 align=\"CENTER\">Download</h2>";
 	print OUT "<h1 align=\"CENTER\">$programmname</h1>";
 
@@ -745,7 +712,7 @@ EOF
 	    print "\n\nFEHLER [$fehler]: <!--END oder ZEILE fehlt \n\n";
 	}
 	
-	print OUT "</table><p><br></p></td></tr></table></center>\n";
+	print OUT "</table><p><br></p>";
 	print OUT "$typ\n";
 	
 
@@ -761,28 +728,31 @@ EOF
 	die "UNKNOWN TYPE <$typ>\n";
     }
 
-
-    print OUT "</td></tr></table></td></tr></table></center>\n";
-    print OUT "<p><br></p>\n";
-
-    navBar($left, $parent, $right, $path, $lang);
-
     #
     # Seitenfuﬂ
     #
 
-    print OUT <<"EOF";
-<table width="100%"><tr>
-<td width="33%" align="left"><font color="$textonbgcolor"><small>$lastedited{$lang}</small><br>
-$date</font></td>
-<td width="34%" align="center"><font color="$textonbgcolor"><small>$generatedby{$lang}</small><br>
-<a href="webcoma.$lang.html"><font color="$linkonbgcolor">$version</font></a></font></td>
-<td width="33%" align="right"><font color="$textonbgcolor"><small>$author{$lang}</small><br>
-</font><a href="mailto:$authormail"><font color="$linkonbgcolor">$author</font></a></td>
-</tr></table>
-</body></html>
+    print OUT << "EOF";
+<p></p>
+<table border=0 cellpadding=5 cellspacing=0 bgcolor="$balkenfarbe" width="100%">
+<tr><td align="right">
+<b><big>&nbsp;&nbsp;&nbsp;</big></b><small>
+<font color="$balkentext">
+<a href="mailto:$authormail"><font color="$balkenlink">$author</font></a>
+:
+<a href="webcoma.$lang.html"><font color="$balkenlink">$version</font></a>
+:
+$date
+</small>
+</font>
+</td></tr></table>
 EOF
     ;
+
+    navBar($i, $lang);
+
+    print OUT "</body></html>";
+
     close IN or die "can't close <$srcpath/$file.page>: $!";
     close OUT or die "can't close <$destpath/$file.$lang.html>: $!";
 }
@@ -870,51 +840,60 @@ sub readTag($$)
 #
 
 
-sub navBar($$$$$)
+sub navBar($$)
 {
-    my $left = shift;
-    my $up = shift;
-    my $right = shift;
-    my $path = shift;
-    my $lang = shift;
-    
+    my ($i, $lang) = @_;
+
+    my ($me, $path) = getStuff($i, $lang);
+    $me =~ s/^.*!//;
     if ($path ne "") {
 	$path .= "!";
     }
 
-    print OUT '<center><table border=0 width="100%"><tr>';
-    print OUT '<td width="33%" align="right">';
-    if ($left ne "") {
-	my $leftkey = "$path$left";
-	print OUT "<br><a href=\"$left.$lang.html\"><font color=\"$boxoutercolor\">&lt;&lt;&nbsp;$cache{$leftkey}{$lang}{'TITLE'}</font></a>";
-    } else {
-	print OUT "&nbsp;";
-    }
-    print OUT "</td>";
+    my $left  = getLeft($i,$lang);
+    my $right = getRight($i,$lang);
 
-    print OUT '<td width="34%" align="center">';
-    if ($up ne "") {
-	my $upkey = $path;
-#	$upkey =~ s/([^!]*)!//;
-	$upkey =~ s/!$//;
-	print OUT "<a href=\"$up.$lang.html\"><font color=\"$boxoutercolor\">^^&nbsp;$cache{$upkey}{$lang}{'TITLE'}&nbsp;^^</font></a>" if defined $cache{$upkey}{$lang}{'TITLE'};
-    } else {
-	print OUT "&nbsp;";
-    }
-    print OUT "</td>";
+    print OUT "<table border=0 width=100%><tr><td align=\"left\"><small>";
 
-    print OUT '<td width="33%" align="left">';
+    # aktuelle Position
+
+    my $uppath="";
+    foreach my $upkey (split /!/, $path) {
+	print OUT "<a href=\"$upkey.$lang.html\"><font color=\"$boxoutercolor\">$cache{$uppath.$upkey}{$lang}{'TITLE'}</font></a> : " if defined $cache{$uppath.$upkey}{$lang}{'TITLE'};
+	$uppath .= "$upkey!";
+    }
+    print OUT "<font color=\"$boxoutercolor\">$cache{$uppath.$me}{$lang}{'TITLE'}</font><br>" if defined $cache{$uppath.$me}{$lang}{'TITLE'};
+
+
+    # Sprachen
+
+    foreach my $l (@languages) {
+	if ($l ne $lang) {
+	    if (grep /$pagestructure{$lang}[$i]/, @{$pagestructure{$l}}) {
+		print OUT "<a href=\"$me.$l.html\"><font color=\"$boxoutercolor\">$l</font></a> : ";
+	    }
+	} else {
+	    print OUT "<font color=\"$boxoutercolor\">$l : </font> ";
+	}	    
+    }
+    print OUT "<a href=\"$sourcepath/$me.txt\"><font color=\"$boxoutercolor\">source</font></a>";
+
+
+    print OUT "</small></td><td align=\"right\" valign=\"top\"><small>";
+
+    # NEXT
+
     if ($right ne "") {
-	my $rightkey = "$path$right";
-	print OUT "<br><a href=\"$right.$lang.html\"><font color=\"$boxoutercolor\">$cache{$rightkey}{$lang}{'TITLE'}&nbsp;&gt;&gt;</font></a>";
-    } else {
-	print OUT "&nbsp;";
+	print OUT "<a href=\"$right.$lang.html\"><font color=\"$boxoutercolor\">$cache{$path.$right}{$lang}{'TITLE'}&nbsp;&gt;&gt;</font></a><br>";
     }
-    print OUT "</td>";
 
-    print OUT "</tr></table></center>\n";
+    # PREV
 
-    print OUT "<p><br></p>";
+    if ($left ne "") {
+	print OUT "<a href=\"$left.$lang.html\"><font color=\"$boxoutercolor\">&lt;&lt;&nbsp;$cache{$path.$left}{$lang}{'TITLE'}</font></a>";
+    }
+
+    print OUT "</small></td></tr></table>";
 }
 
 
@@ -942,6 +921,7 @@ sub expand($$)
 
 #
 
+
 sub newsBox($$)
 {
     my $path = shift;
@@ -968,15 +948,7 @@ sub newsBox($$)
 
     if (keys %dates) {
 	
-	print OUT "<p><br></p>\n";
-	print OUT <<"EOF";
-<center>
-<table border=0 cellpadding=2 cellspacing=0 bgcolor="$boxoutercolor" width="95%">
-<tr><td><b>&nbsp;&nbsp;News:</b></td><tr><td>
-<table border=0 cellpadding=10 cellspacing=0 width="100%" bgcolor="$boxinnercolor">
-<tr><td>
-EOF
-    ;
+	print OUT "<p><b>&nbsp;&nbsp;News:</b></p>\n";
 
 	my $count = 1;
 	my $max   = 3;
@@ -999,7 +971,6 @@ EOF
 	    }
 	}
 
-	print OUT "</td></tr></table></td></tr></table></center>\n";
 	print OUT "<p><br></p>\n";
 
     }
@@ -1082,3 +1053,57 @@ sub CheckISBN($)
     return ((lc $erg) eq (lc $pruef));
 
 }
+
+
+#
+
+
+sub getLeft($$)
+{
+    my ($i, $lang) = @_;
+    my ($file, $path, @elements) = getStuff($i, $lang);
+    my $left="";
+    for (my $j = $i-1; $j >= 0; $j--) {
+	my @elements = split /!/, $pagestructure{$lang}[$j];
+	my $file = pop @elements;
+	if ((join '!', @elements) eq $path) {
+	    $left = $file;
+	    $j = -1;
+	}
+    }
+    return $left;
+}
+
+
+#
+
+    
+sub getRight($$)
+{
+    my ($i, $lang) = @_;
+    my ($file, $path, @elements) = getStuff($i, $lang);
+    my $right="";
+    for (my $j = $i + 1; defined $pagestructure{$lang}[$j]; $j++) {
+	my @elements = split /!/, $pagestructure{$lang}[$j];
+	my $file = pop @elements;
+	if ((join '!', @elements) eq $path) {
+	    $right = $file;
+	    $j = @{$pagestructure{$lang}} + 1;
+	}
+    }
+    return $right;
+}
+
+
+#
+
+
+sub getStuff($$)
+{
+    my ($i, $lang) = @_;
+    my @elements = split /!/, $pagestructure{$lang}[$i];
+    my $file = pop @elements;
+    my $path = join '!', @elements;
+    return ($file, $path, @elements);
+}
+
