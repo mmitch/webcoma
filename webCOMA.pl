@@ -1,9 +1,16 @@
 #!/usr/bin/perl -w
 use strict;
 
-# $Id: webCOMA.pl,v 1.2 2000-11-15 16:09:13 mitch Exp $
+# $Id: webCOMA.pl,v 1.3 2000-11-16 15:08:54 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.2 $ ';
+#
+# $Log: webCOMA.pl,v $
+# Revision 1.3  2000-11-16 15:08:54  mitch
+# Removed a warning
+#
+#
+
+my $version   = ' webCOMA $Revision: 1.3 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch on da netz";
@@ -796,7 +803,7 @@ sub includeSiteMap($)
 	    $file = $page;
 	}
 	
-	if ($path ne @oldpath[0]) {
+	if ($path ne $oldpath[0]) {
 	    if ($path !~ /^$oldpath[0]/) {
 		while ($path ne $oldpath[0]) {
 		    print OUT "</ul>\n";
