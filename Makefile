@@ -7,6 +7,7 @@ generate:
 	webCOMA.pl
 #	time tidy -m -e -q -wrap 72 -f tidyerrlog out/*.html || echo "TIDY ERRORS!"
 	cp out/*.html $(DESTPATH)
+	cp in/*.css $(DESTPATH)
 
 dist:
 	shuttleupdate
@@ -21,6 +22,7 @@ zip:
 	cp webCOMA.pl webCOMA
 	chmod 755 webCOMA/webCOMA.pl
 	cp in/*.page webCOMA/in
+	cp in/*.css webCOMA/in
 	cp in/TEMPLATE webCOMA/in
 	tar -c webCOMA -zvf webCOMA.tar.gz
 	rm -rf webCOMA
