@@ -10,11 +10,14 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.12 2000-11-19 16:18:18 mitch Exp $
+# $Id: webCOMA.pl,v 1.13 2000-11-25 14:04:46 mitch Exp $
 
 #
 # $Log: webCOMA.pl,v $
-# Revision 1.12  2000-11-19 16:18:18  mitch
+# Revision 1.13  2000-11-25 14:04:46  mitch
+# .dot-Datei für Graphviz (siehe freshmeat) wird erstellt
+#
+# Revision 1.12  2000/11/19 16:18:18  mitch
 # Bugfix in gehashten (D)LINKS
 #
 # Revision 1.11  2000/11/19 14:19:33  mitch
@@ -52,7 +55,7 @@ use strict;
 #
 #
 
-my $version   = ' webCOMA $Revision: 1.12 $ ';
+my $version   = ' webCOMA $Revision: 1.13 $ ';
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@uni.de';
 my $sitename  = "Master Mitch";
@@ -73,6 +76,7 @@ my %linkcache;
 $linkcache{$startdoc} = "";
 my %dlinkcache;
 my %news;
+my $dotfile = "homepage.dot";
 
 sub scanStructure($$);
 sub printPage($$);
@@ -200,6 +204,12 @@ elsif ($theme == 4) {
     initDates();
     print "\n";
 
+    open DOT, ">$dotfile" or die "can't open dotfile <$dotfile>: $!";
+    print DOT "digraph \"$sitename\" {\n";
+    print DOT "\tsize=\"7,8\";\n";
+    print DOT "\tratio=stretch;\n";
+    print DOT "\t$startdoc [shape=box];\n";
+
     print "Scanning site structure:\n";
     scanStructure($startdoc,"");
     foreach my $lang (@languages) {
@@ -207,7 +217,10 @@ elsif ($theme == 4) {
 	print (scalar @{$pagestructure{$lang}});
 	print " pages found.\n";
     }
+
+    print DOT "}\n";
     print "\n";
+    close DOT or die "can't close dotfile <$dotfile>: $!";
 
     print "Scanning dlink integrity: ";
     foreach my $dlink (keys %dlinkcache) {
@@ -317,6 +330,13 @@ sub scanStructure($$)
 		my $link = $1;
 		$link =~ s/\!.*$//;
 		$dlinkcache{$link} = "";
+
+	    {
+		my ($from, $to) = ($doc, $1);
+		$from =~ s/-/_/g;
+		$to =~ s/-/_/g;
+		print DOT "\t$from -> $to [style=dotted];\n";
+	    }
 	    }
 	}
 	close IN or die "can't close <$srcpath/$doc.page>: $!";
@@ -333,6 +353,14 @@ sub scanStructure($$)
 		system("$copy_cmd $template $srcpath/$file.page") == 0 or die "copy failed: $?";
 		print "CREATING NEW TEMPLATE FOR $srcpath/$file.page\n";
 	    }
+
+	    {
+		my ($from, $to) = ($doc, $file);
+		$from =~ s/-/_/g;
+		$to =~ s/-/_/g;
+		print DOT "\t$from -> $to;\n";
+	    }
+
 	    scanStructure($file, "$parent$doc!");
 	}
     }
