@@ -1,5 +1,6 @@
 #!/usr/bin/perl -w
 use strict;
+use POSIX qw(strftime);
 
 ##
 ##  [ 2do ]
@@ -12,9 +13,9 @@ use strict;
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.49 2005-05-05 12:54:17 mitch Exp $
+# $Id: webCOMA.pl,v 1.50 2005-05-05 14:30:55 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.49 $ ';
+my $version   = ' webCOMA $Revision: 1.50 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -113,6 +114,12 @@ sub getRight($$);
 	for (my $page = 0; $page < @{$pagestructure{$lang}}; $page++) {
 	    printPage($page,$lang);
 	}
+    }
+    print "\n";
+
+    print "Generating RSS feeds:\n";
+    foreach my $lang (@languages) {
+	    rssfeed($lang);
     }
     print "\n";
 
@@ -870,6 +877,90 @@ sub newsBox($$)
 	print OUT "</div>\n";
 
     }
+    
+}
+
+
+#
+
+
+sub rssfeed($$)
+{
+    my $lang = shift;
+
+    my $feedfile = "rssfeed.$lang.xml";
+
+    my %dates;
+
+    foreach my $file (keys %news) {
+	my $link = $file;
+	$link =~ s/.*!//g;
+	foreach my $date (keys %{$news{$file}}) {
+	    if (defined $news{$file}{$date}{$lang}) {
+		push @{$dates{$date}},
+		{
+		    'LINK' => $link,
+		    'TEXT' => $news{$file}{$date}{$lang},
+		    'TITLE'=> $cache{$file}{$lang}{'TITLE'}
+		};
+	    }
+	}
+    }
+
+    open FEED, ">$destpath/$feedfile" or die "can't open <$destpath/$feedfile>: $!";
+
+    my $rsstitle = "Master Mitch on da netz";
+    my $rssdescription = "Mitch's Homepage";
+    my $rssabsolute = "http://www.cgarbs.de";
+    my $rssmax   = 15;
+
+    print FEED <<"EOF";
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<rss version="2.0"
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>$rsstitle</title>
+    <link>$rssabsolute/index.$lang.html</link>
+    <description>$rssdescription</description>
+    <language>$lang</language>
+    <generator>$version</generator>
+EOF
+
+    if (keys %dates) {
+	
+	my $count = 1;
+	foreach my $date (reverse sort keys %dates) {
+	    last if $count > $rssmax;
+	    
+	    my $datum = strftime("%a, %d %b %Y %H:%M:%S +0000", 0, 0, 12, substr($date,8,2), substr($date,5,2)-1, substr($date,0,4)-1900);
+
+	    foreach my $elem (@{$dates{$date}}) {
+
+		print FEED "    <item>\n";
+		print FEED "      <title><![CDATA[$sitename - $elem->{'TITLE'}]]></title>\n";
+#		print FEED "      <description>see content</description>\n"; ## TODO
+		print FEED "      <content:encoded>\n<![CDATA[$elem->{'TEXT'}]]></content:encoded>\n";
+		print FEED "      <pubDate>$datum</pubDate>\n";
+		print FEED "      <dc:creator>$author (mailto:$authormail)</dc:creator>\n";
+#		print FEED "      <category domain=\"URL\">category</category>\n"; ## TODO
+#		print FEED "      <guid isPermaLink="true">URL</guid>\n"; ## TODO
+		print FEED "      <link>$rssabsolute/$elem->{'LINK'}.$lang.html</link>\n";
+#		print FEED "      <comments>URL</comments>\n";
+		print FEED "    </item>\n";
+		$count++;
+		last if $count > $rssmax;
+	    }
+	}
+
+    }
+
+    print FEED "  </channel>\n";
+    print FEED "</rss>\n";
+
+    close FEED or die "can't close <$destpath/$feedfile>: $!";
+
+    print "  $feedfile\n";
     
 }
 
