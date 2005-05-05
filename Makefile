@@ -7,6 +7,7 @@ generate:
 	LANG=C ./webCOMA.pl
 #	time tidy -m -e -q -wrap 72 -f tidyerrlog out/*.html || echo "TIDY ERRORS!"
 	cp out/*.html $(DESTPATH)
+	cp out/*.xml $(DESTPATH)
 	cp in/*.css $(DESTPATH)
 
 dist:
