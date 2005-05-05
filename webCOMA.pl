@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.51 2005-05-05 14:32:52 mitch Exp $
+# $Id: webCOMA.pl,v 1.52 2005-05-05 14:59:51 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.51 $ ';
+my $version   = ' webCOMA $Revision: 1.52 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -24,6 +24,10 @@ $version =~ s/\s+$//;
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@cgarbs.de';
 my $sitename  = "Master Mitch";
+my $rsstitle = "Master Mitch on da netz";
+my $rssdescription = "Mitch's homepage";
+my $rssabsolute = "http://www.cgarbs.de";
+my $rssmax   = 15; # number or articles in file
 my $amazon_link = "http://www.amazon.de/exec/obidos/ASIN/%/mastemitchondane";
 my @languages = ('de', 'en');
 my $srcpath   = "in";
@@ -330,6 +334,7 @@ sub printPage($$)
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head><title>$sitename - $title</title>
 <link rel="stylesheet" type="text/css" href="style.css">
+<link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$rssabsolute/rssfeed.$lang.xml">
 <meta name="generator" content="$version">
 <meta name="generating_host" content="$host">
 <meta name="generation_date" content="$date{$lang}">
@@ -910,11 +915,6 @@ sub rssfeed($$)
     }
 
     open FEED, ">$destpath/$feedfile" or die "can't open <$destpath/$feedfile>: $!";
-
-    my $rsstitle = "Master Mitch on da netz";
-    my $rssdescription = "Mitch's Homepage";
-    my $rssabsolute = "http://www.cgarbs.de";
-    my $rssmax   = 15;
 
     print FEED <<"EOF";
 <?xml version="1.0" encoding="ISO-8859-1"?>
