@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.54 2005-05-13 16:36:50 mitch Exp $
+# $Id: webCOMA.pl,v 1.55 2005-05-13 16:43:45 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.54 $ ';
+my $version   = ' webCOMA $Revision: 1.55 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -345,6 +345,7 @@ sub printPage($$)
 <meta name="language" content="$lang">
 <meta http-equiv="revisit-after" content="$revisit">
 <meta http-equiv="content-language" content="$lang">
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-15">
 </head>
 <body>
 EOF
