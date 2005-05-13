@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.53 2005-05-13 16:25:39 mitch Exp $
+# $Id: webCOMA.pl,v 1.54 2005-05-13 16:36:50 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.53 $ ';
+my $version   = ' webCOMA $Revision: 1.54 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -26,7 +26,7 @@ my $authormail= 'mitch@cgarbs.de';
 my $sitename  = "Master Mitch";
 my $rsstitle = "Master Mitch on da netz";
 my $rssdescription = "Mitch's homepage";
-my $rssabsolute = "http://www.cgarbs.de";
+my $baseurl = "http://www.cgarbs.de";
 my $rssmax   = 15; # number or articles in file
 my $amazon_link = "http://www.amazon.de/exec/obidos/ASIN/%/mastemitchondane";
 my @languages = ('de', 'en');
@@ -334,7 +334,7 @@ sub printPage($$)
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head><title>$sitename - $title</title>
 <link rel="stylesheet" type="text/css" href="style.css">
-<link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$rssabsolute/rssfeed.$lang.xml">
+<link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$baseurl/rssfeed.$lang.xml">
 <meta name="generator" content="$version">
 <meta name="generating_host" content="$host">
 <meta name="generation_date" content="$date{$lang}">
@@ -625,23 +625,24 @@ $date
 :
 EOF
 ;
+    my $uri = "$baseurl/$file.$lang.html";
     if ($cache{$page}{$lang}{VALID}) {
 	print OUT << "EOF";
-<a href="http://validator.w3.org/check?uri=referer">valid HTML</a>
+<a href="http://validator.w3.org/check?uri=$uri">valid HTML</a>
 :
 EOF
 ;
     } else {
 	print OUT << "EOF";
-<a href="http://validator.w3.org/check?uri=referer">HTML not yet validated!</a>
+<a href="http://validator.w3.org/check?uri=$uri">HTML not yet validated!</a>
 :
 EOF
 ;
     }
     print OUT << "EOF";
-<a href="http://jigsaw.w3.org/css-validator/check/referer">valid CSS</a>
+<a href="http://jigsaw.w3.org/css-validator/validator?uri=$uri">valid CSS</a>
 :
-<a href="http://www.feedvalidator.org/check.cgi?url=$rssabsolute/rssfeed.$lang.xml">valid RSS</a>
+<a href="http://www.feedvalidator.org/check.cgi?url=$baseurl/rssfeed.$lang.xml">valid RSS</a>
 </p>
 EOF
 ;
@@ -923,7 +924,7 @@ sub rssfeed($$)
  xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>$rsstitle</title>
-    <link>$rssabsolute/index.$lang.html</link>
+    <link>$baseurl/index.$lang.html</link>
     <description>$rssdescription</description>
     <language>$lang</language>
     <generator>$version</generator>
@@ -947,7 +948,7 @@ EOF
 		print FEED "      <dc:creator>$author (mailto:$authormail)</dc:creator>\n";
 #		print FEED "      <category domain=\"URL\">category</category>\n"; ## TODO
 #		print FEED "      <guid isPermaLink="true">URL</guid>\n"; ## TODO
-		print FEED "      <link>$rssabsolute/$elem->{'LINK'}.$lang.html</link>\n";
+		print FEED "      <link>$baseurl/$elem->{'LINK'}.$lang.html</link>\n";
 #		print FEED "      <comments>URL</comments>\n";
 		print FEED "    </item>\n";
 		$count++;
