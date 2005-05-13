@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.52 2005-05-05 14:59:51 mitch Exp $
+# $Id: webCOMA.pl,v 1.53 2005-05-13 16:25:39 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.52 $ ';
+my $version   = ' webCOMA $Revision: 1.53 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -627,7 +627,7 @@ EOF
 ;
     if ($cache{$page}{$lang}{VALID}) {
 	print OUT << "EOF";
-<a href="http://validator.w3.org/check?uri=referer">valid HTML 4.01 strict</a>
+<a href="http://validator.w3.org/check?uri=referer">valid HTML</a>
 :
 EOF
 ;
@@ -641,7 +641,7 @@ EOF
     print OUT << "EOF";
 <a href="http://jigsaw.w3.org/css-validator/check/referer">valid CSS</a>
 :
-<a href="rssfeed.$lang.xml">RSS feed</a>
+<a href="http://www.feedvalidator.org/check.cgi?url=$rssabsolute/rssfeed.$lang.xml">valid RSS</a>
 </p>
 EOF
 ;
