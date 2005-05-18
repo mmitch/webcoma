@@ -13,14 +13,15 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.55 2005-05-13 16:43:45 mitch Exp $
+# $Id: webCOMA.pl,v 1.56 2005-05-18 17:31:29 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.55 $ ';
+my $version   = ' webCOMA $Revision: 1.56 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
 $version =~ s/\s+$//;
 
+my $favicon = "pics/favicon.ico";  # may also be empty
 my $author    = "Christian Garbs";
 my $authormail= 'mitch@cgarbs.de';
 my $sitename  = "Master Mitch";
@@ -335,6 +336,10 @@ sub printPage($$)
 <html><head><title>$sitename - $title</title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$baseurl/rssfeed.$lang.xml">
+EOF
+;
+    print OUT "<link rel=\"shortcut icon\" type=\"image/ico\" href=\"$favicon\">\n" if $favicon;
+    print OUT <<"EOF";
 <meta name="generator" content="$version">
 <meta name="generating_host" content="$host">
 <meta name="generation_date" content="$date{$lang}">
