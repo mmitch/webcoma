@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.56 2005-05-18 17:31:29 mitch Exp $
+# $Id: webCOMA.pl,v 1.57 2005-05-18 17:32:46 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.56 $ ';
+my $version   = ' webCOMA $Revision: 1.57 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -64,6 +64,7 @@ sub navBar($$);
 sub expand($$);
 sub newsBox($$);
 sub includeSiteMap($);
+sub rssfeed($);
 sub getLeft($$);
 sub getRight($$);
 
@@ -898,7 +899,7 @@ sub newsBox($$)
 #
 
 
-sub rssfeed($$)
+sub rssfeed($)
 {
     my $lang = shift;
 
