@@ -25,7 +25,7 @@ zip:
 	cp in/*.page webCOMA/in
 	cp in/*.css webCOMA/in
 	cp in/TEMPLATE webCOMA/in
-	tar -c webCOMA -zvf webCOMA.tar.gz
+	tar -czvf webCOMA.tar.gz webCOMA
 	rm -rf webCOMA
 
 	cp webCOMA.tar.gz $(DESTPATH)/stuff
