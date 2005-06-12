@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.57 2005-05-18 17:32:46 mitch Exp $
+# $Id: webCOMA.pl,v 1.58 2005-06-12 22:41:11 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.57 $ ';
+my $version   = ' webCOMA $Revision: 1.58 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -358,12 +358,20 @@ EOF
     ;
 #<meta name="DESCRIPTION" content="$sitename - $title">
     
-    navBar($i, $lang);
-
     print OUT << "EOF";
+<table width="100%">
+<tr>
+<td colspan="2" width="100%">
 <p class="topbar">&nbsp;&nbsp;&nbsp;$title</p>
+</td>
+</tr>
+<tr>
+<td width="20%" valign="top">
 EOF
     ;
+
+    navBar($i, $lang);
+    print OUT "</td>\n<td>\n";
 
     if (($typ eq "plain") or ($typ eq "news")) {
 
@@ -624,6 +632,10 @@ EOF
     #
 
     print OUT << "EOF";
+</td>
+</tr>
+<tr>
+<td colspan="2" width="100%">
 <p class="bottombar"><a href="mailto:$authormail" class="bottombar">$author</a>
 :
 <a href="webcoma.$lang.html" class="bottombar">$version</a>
@@ -654,9 +666,9 @@ EOF
 EOF
 ;
     
-    navBar($i, $lang);
+#    navBar($i, $lang);
 
-    print OUT "</body></html>";
+    print OUT "</td></tr></table></body></html>";
 
     close IN or die "can't close <$srcpath/$file.page>: $!";
     close OUT or die "can't close <$destpath/$file.$lang.html>: $!";
@@ -754,6 +766,68 @@ sub navBar($$)
     if ($path ne "") {
 	$path .= "!";
     }
+
+    print OUT "<ul>\n";
+    foreach my $l (@languages) {
+	if ($l ne $lang) {
+	    if (grep { $pagestructure{$lang}[$i] eq $_ } @{$pagestructure{$l}}) {
+		print OUT "<li><a href=\"$me.$l.html\" class=\"navbar\">$l</a></li>\n";
+	    }
+	} else {
+	    print OUT "<li class=\"selected\">$l</li>\n";
+	}	    
+    }
+    print OUT "<li><a href=\"$sourcepath/$me.txt\" class=\"navbar\">source</a></li>\n";
+    print OUT "</ul>\n";
+
+
+    my $depth = $path =~ tr/!/!/;
+    my $olddepth = -1;
+    foreach my $element ( @{$pagestructure{$lang}} ) {
+	my $file = (split /!/, $element)[-1];
+	my $el_depth = $element =~ tr/!/!/;
+	
+	if ($el_depth == $depth) {
+	    # neighbour nodes: check for own tree
+	    next unless $element =~ /^$path/;
+
+	} elsif ($el_depth > $depth) {
+	    # subnodes: check for own tree
+	    
+	    # skip subsubnodes and the like
+	    next if $el_depth > $depth + 1;
+	    # test if subnodes are direct siblings
+	    next unless $element =~ /^$path$me/;
+	} else {
+	    # super nodes: check for own tree
+	    next unless $path =~ /^$element/;
+	}
+
+	while ($el_depth > $olddepth) {
+	    print OUT "<ul>\n";
+	    $olddepth++;
+	}
+	while ($el_depth < $olddepth) {
+	    print OUT "</ul>\n";
+	    $olddepth--;
+	}
+
+	print OUT "<li";
+	print OUT " class=\"selected\"" if $element eq $path.$me;
+	print OUT "><a href=\"$file.$lang.html\" class=\"navbar\">$cache{$element}{$lang}{TITLE}</a></li>\n";
+
+    }
+    while ($olddepth > -1) {
+	print OUT "</ul>\n";
+	$olddepth--;
+    }
+}
+
+sub OLDNAVBAR($$)
+{
+    my ($i, $lang) = @_;
+
+    my ($me, $path) = getStuff($i, $lang);
 
     my $left  = getLeft($i,$lang);
     my $right = getRight($i,$lang);
