@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.68 2005-06-13 21:25:47 mitch Exp $
+# $Id: webCOMA.pl,v 1.69 2005-06-13 21:36:02 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.68 $ ';
+my $version   = ' webCOMA $Revision: 1.69 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -492,7 +492,7 @@ EOF
 	    $autor_head =	"Autor";
 	    $datum_head =	"Datum";
 	    $version_head =	"Version";
-	    $size_head =	"Größte";
+	    $size_head =	"Größe";
 	    $name_head =	"Datei";
 	    $comment_head =	"Hinweise";
 	    
