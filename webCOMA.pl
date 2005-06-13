@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.63 2005-06-13 20:36:49 mitch Exp $
+# $Id: webCOMA.pl,v 1.64 2005-06-13 20:38:37 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.63 $ ';
+my $version   = ' webCOMA $Revision: 1.64 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -816,21 +816,12 @@ sub navBar($$)
 	}
 
 	while ($el_depth > $olddepth) {
+	    print OUT "<ul>\n";
 	    $olddepth++;
-	    # don't indent first level
-	    if ($olddepth) {
-		print OUT "<li><ul>\n";
-	    } else {
-		print OUT "<ul class=\"noindent\">\n";
-	    }
 	}
 	while ($el_depth < $olddepth) {
 	    $olddepth--;
-	    if ($olddepth) {
-		print OUT "</ul></li>\n";
-	    } else {
-		print OUT "</ul>\n";
-	    }
+	    print OUT "</ul>\n";
 	}
 
 	# shorten title
@@ -851,7 +842,7 @@ sub navBar($$)
 
 
     print OUT "<b>$langtitle{$lang}</b><br>\n";
-    print OUT "<ul class=\"noindent\">\n";
+    print OUT "<ul>\n";
     foreach my $l (@languages) {
 	if ($l ne $lang) {
 	    if (grep { $pagestructure{$lang}[$i] eq $_ } @{$pagestructure{$l}}) {
