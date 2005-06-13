@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.62 2005-06-13 18:26:18 mitch Exp $
+# $Id: webCOMA.pl,v 1.63 2005-06-13 20:36:49 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.62 $ ';
+my $version   = ' webCOMA $Revision: 1.63 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -337,7 +337,7 @@ sub printPage($$)
     $subtitlecount = 0;
     
     print OUT <<"EOF";
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
 <html><head><title>$sitename - $title</title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$baseurl/rssfeed.$lang.xml">
@@ -665,7 +665,7 @@ EOF
     my $uri = "$baseurl/$file.$lang.html";
     if ($cache{$page}{$lang}{VALID}) {
 	print OUT << "EOF";
-<a href="http://validator.w3.org/check?uri=$uri"><b>in</b>valid HTML</a>
+<a href="http://validator.w3.org/check?uri=$uri">valid HTML</a>
 :
 EOF
 ;
@@ -816,12 +816,21 @@ sub navBar($$)
 	}
 
 	while ($el_depth > $olddepth) {
-	    print OUT "<ul>\n";
 	    $olddepth++;
+	    # don't indent first level
+	    if ($olddepth) {
+		print OUT "<li><ul>\n";
+	    } else {
+		print OUT "<ul class=\"noindent\">\n";
+	    }
 	}
 	while ($el_depth < $olddepth) {
-	    print OUT "</ul>\n";
 	    $olddepth--;
+	    if ($olddepth) {
+		print OUT "</ul></li>\n";
+	    } else {
+		print OUT "</ul>\n";
+	    }
 	}
 
 	# shorten title
@@ -829,9 +838,9 @@ sub navBar($$)
 	$title =~ s/^.* - //;
 
 	if ($element eq $path.$me) {
-	    print OUT "<li class=\"selected\"><div class=\"ebene$olddepth\">$title</div></li>\n";
+	    print OUT "<li class=\"selected\"><a href=\"#\">$title</a></li>\n";
 	} else {
-	    print OUT "<li><a href=\"$file.$lang.html\" class=\"navbar\"><div class=\"ebene$olddepth\">$title</div></a></li>\n";
+	    print OUT "<li><a href=\"$file.$lang.html\">$title</a></li>\n";
 	}
 
     }
@@ -842,14 +851,14 @@ sub navBar($$)
 
 
     print OUT "<b>$langtitle{$lang}</b><br>\n";
-    print OUT "<ul>\n";
+    print OUT "<ul class=\"noindent\">\n";
     foreach my $l (@languages) {
 	if ($l ne $lang) {
 	    if (grep { $pagestructure{$lang}[$i] eq $_ } @{$pagestructure{$l}}) {
-		print OUT "<li><a href=\"$me.$l.html\" class=\"navbar\">$language{$l}</a></li>\n";
+		print OUT "<li><a href=\"$me.$l.html\">$language{$l}</a></li>\n";
 	    }
 	} else {
-	    print OUT "<li class=\"selected\">$language{$l}</li>\n";
+	    print OUT "<li class=\"selected\"><a href=\"#\">$language{$l}</a></li>\n";
 	}	    
     }
     print OUT "<li><a href=\"$sourcepath/$me.txt\" class=\"navbar\">$langsrc{$lang}</a></li>\n";
