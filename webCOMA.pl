@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.65 2005-06-13 20:44:40 mitch Exp $
+# $Id: webCOMA.pl,v 1.66 2005-06-13 21:04:24 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.65 $ ';
+my $version   = ' webCOMA $Revision: 1.66 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -791,6 +791,7 @@ sub navBar($$)
     print OUT "<b>$navtitle{$lang}</b><br>\n";
     my $depth = $path =~ tr/!/!/;
     my $olddepth = -1;
+    my $li = 0;
     foreach my $element ( @{$pagestructure{$lang}} ) {
 	my @element = (split /!/, $element);
 	my $file = pop @element;
@@ -813,27 +814,36 @@ sub navBar($$)
 	    next unless $path =~ /^$el_path/;
 	}
 
-	while ($el_depth > $olddepth) {
+	if ($el_depth > $olddepth) {
 	    print OUT "<ul>\n";
 	    $olddepth++;
+	} else {
+	    while ($el_depth < $olddepth) {
+		$olddepth--;
+		print OUT "</li>\n</ul>\n";
+		$li--;
+	    }
+	    if ($li) {
+		print OUT "</li>\n";
+	    }
 	}
-	while ($el_depth < $olddepth) {
-	    $olddepth--;
-	    print OUT "</ul>\n";
-	}
-
+	
 	# shorten title
 	my $title = $cache{$element}{$lang}{TITLE};
 	$title =~ s/^.* - //;
-
 	if ($element eq $path.$me) {
-	    print OUT "<li class=\"selected\"><a href=\"#\">$title</a></li>\n";
+	    print OUT "<li><a href=\"#\" class=\"selected\">$title</a>";
 	} else {
-	    print OUT "<li><a href=\"$file.$lang.html\">$title</a></li>\n";
+	    print OUT "<li><a href=\"$file.$lang.html\">$title</a>";
 	}
-
+	$li++;
+	
     }
     while ($olddepth > -1) {
+	if ($li) {
+	    print OUT "</li>\n";
+	    $li--;
+	}
 	print OUT "</ul>\n";
 	$olddepth--;
     }
