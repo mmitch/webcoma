@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.61 2005-06-13 18:08:16 mitch Exp $
+# $Id: webCOMA.pl,v 1.62 2005-06-13 18:26:18 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.61 $ ';
+my $version   = ' webCOMA $Revision: 1.62 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -665,7 +665,7 @@ EOF
     my $uri = "$baseurl/$file.$lang.html";
     if ($cache{$page}{$lang}{VALID}) {
 	print OUT << "EOF";
-<a href="http://validator.w3.org/check?uri=$uri">valid HTML</a>
+<a href="http://validator.w3.org/check?uri=$uri"><b>in</b>valid HTML</a>
 :
 EOF
 ;
@@ -788,7 +788,7 @@ sub navBar($$)
 	$path .= "!";
     }
 
-    print OUT "<b>$navtitle{$lang}</b></br>\n";
+    print OUT "<b>$navtitle{$lang}</b><br>\n";
     my $depth = $path =~ tr/!/!/;
     my $olddepth = -1;
     foreach my $element ( @{$pagestructure{$lang}} ) {
@@ -841,7 +841,7 @@ sub navBar($$)
     }
 
 
-    print OUT "<b>$langtitle{$lang}</b></br>\n";
+    print OUT "<b>$langtitle{$lang}</b><br>\n";
     print OUT "<ul>\n";
     foreach my $l (@languages) {
 	if ($l ne $lang) {
