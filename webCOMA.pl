@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.59 2005-06-13 17:56:29 mitch Exp $
+# $Id: webCOMA.pl,v 1.60 2005-06-13 18:00:06 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.59 $ ';
+my $version   = ' webCOMA $Revision: 1.60 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -372,7 +372,7 @@ EOF
   <div class="titletext" align="left">$sitename - $title</div>
   </td>
   <td width="10%" height="50" valign="top">
-  <a href="http://www.cgarbs.de"><img class="floatright" src="mitchlogo.png" alt="logo" width="37" height="28"></a>
+  <a href="http://www.cgarbs.de"><img class="floatright" src="pics/mitchlogo.png" alt="logo" width="37" height="28"></a>
   </td>
   </tr>
   </table>
