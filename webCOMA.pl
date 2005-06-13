@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.60 2005-06-13 18:00:06 mitch Exp $
+# $Id: webCOMA.pl,v 1.61 2005-06-13 18:08:16 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.60 $ ';
+my $version   = ' webCOMA $Revision: 1.61 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -824,10 +824,14 @@ sub navBar($$)
 	    $olddepth--;
 	}
 
+	# shorten title
+	my $title = $cache{$element}{$lang}{TITLE};
+	$title =~ s/^.* - //;
+
 	if ($element eq $path.$me) {
-	    print OUT "<li class=\"selected\"><div class=\"ebene$olddepth\">$cache{$element}{$lang}{TITLE}</div></li>\n";
+	    print OUT "<li class=\"selected\"><div class=\"ebene$olddepth\">$title</div></li>\n";
 	} else {
-	    print OUT "<li><a href=\"$file.$lang.html\" class=\"navbar\"><div class=\"ebene$olddepth\">$cache{$element}{$lang}{TITLE}</div></a></li>\n";
+	    print OUT "<li><a href=\"$file.$lang.html\" class=\"navbar\"><div class=\"ebene$olddepth\">$title</div></a></li>\n";
 	}
 
     }
