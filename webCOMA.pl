@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.64 2005-06-13 20:38:37 mitch Exp $
+# $Id: webCOMA.pl,v 1.65 2005-06-13 20:44:40 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.64 $ ';
+my $version   = ' webCOMA $Revision: 1.65 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -792,27 +792,25 @@ sub navBar($$)
     my $depth = $path =~ tr/!/!/;
     my $olddepth = -1;
     foreach my $element ( @{$pagestructure{$lang}} ) {
-	my $file = (split /!/, $element)[-1];
+	my @element = (split /!/, $element);
+	my $file = pop @element;
+	my $el_path = join '!', @element;
 	my $el_depth = $element =~ tr/!/!/;
 
-	if ($el_depth != 1) {
-	    #always show 2nd level
-
-	    if ($el_depth == $depth) {
-		# neighbour nodes: check for own tree
-		next unless $element =~ /^$path/;
-		
-	    } elsif ($el_depth > $depth) {
-		# subnodes: check for own tree
-		
-		# skip subsubnodes and the like
-		next if $el_depth > $depth + 1;
-		# test if subnodes are direct siblings
-		next unless $element =~ /^$path$me/;
-	    } else {
-		# super nodes: check for own tree
-		next unless $path =~ /^$element/;
-	    }
+	if ($el_depth == $depth) {
+	    # neighbour nodes: check for own tree
+	    next unless $element =~ /^$path/;
+	    
+	} elsif ($el_depth > $depth) {
+	    # subnodes: check for own tree
+	    
+	    # skip subsubnodes and the like
+	    next if $el_depth > $depth + 1;
+	    # test if subnodes are direct siblings
+	    next unless $element =~ /^$path$me/;
+	} else {
+	    # super nodes: check for own tree
+	    next unless $path =~ /^$el_path/;
 	}
 
 	while ($el_depth > $olddepth) {
