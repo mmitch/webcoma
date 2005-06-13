@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.66 2005-06-13 21:04:24 mitch Exp $
+# $Id: webCOMA.pl,v 1.67 2005-06-13 21:10:09 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.66 $ ';
+my $version   = ' webCOMA $Revision: 1.67 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -857,7 +857,7 @@ sub navBar($$)
 		print OUT "<li><a href=\"$me.$l.html\">$language{$l}</a></li>\n";
 	    }
 	} else {
-	    print OUT "<li class=\"selected\"><a href=\"#\">$language{$l}</a></li>\n";
+	    print OUT "<li><a href=\"#\" class=\"selected\">$language{$l}</a></li>\n";
 	}	    
     }
     print OUT "<li><a href=\"$sourcepath/$me.txt\" class=\"navbar\">$langsrc{$lang}</a></li>\n";
