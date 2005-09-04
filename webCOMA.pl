@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.71 2005-09-04 09:18:25 mitch Exp $
+# $Id: webCOMA.pl,v 1.72 2005-09-04 09:18:53 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.71 $ ';
+my $version   = ' webCOMA $Revision: 1.72 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -1006,7 +1006,7 @@ sub rssfeed($)
 EOF
 ;
     if ($rsspicurl) {
-	print FEED <"EOF";
+	print FEED <<"EOF";
     <image>
       <url>$rsspicurl</url>
       <title>$rsstitle</title>
