@@ -13,34 +13,39 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.70 2005-06-25 18:10:22 mitch Exp $
+# $Id: webCOMA.pl,v 1.71 2005-09-04 09:18:25 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.70 $ ';
+my $version   = ' webCOMA $Revision: 1.71 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
 $version =~ s/\s+$//;
 
-my $favicon = "pics/favicon.ico";  # may also be empty
-my $author    = "Christian Garbs";
+my $favicon = 'pics/favicon.ico';  # may also be empty
+my $author    = 'Christian Garbs';
 my $authormail= 'mitch@cgarbs.de';
-my $sitename  = "Master Mitch";
-my $rsstitle = "Master Mitch on da netz";
+my $sitename  = 'Master Mitch';
+my $rsstitle = 'Master Mitch on da netz';
 my $rssdescription = "Mitch's homepage";
-my $baseurl = "http://www.cgarbs.de";
+my $baseurl = 'http://www.cgarbs.de';
+## RSS definitions
 my $rssmax   = 15; # number or articles in file
-my $amazon_link = "http://www.amazon.de/exec/obidos/ASIN/%/mastemitchondane";
+my $rsspicurl = 'http://www.cgarbs.de/pics/favicon.png'; # may also be empty
+my $rsspicwidth = 16;
+my $rsspicheight = 16;
+## 
+my $amazon_link = 'http://www.amazon.de/exec/obidos/ASIN/%/mastemitchondane';
 my @languages = ('de', 'en');
-my $srcpath   = "in";
-my $destpath  = "out";
-my $startdoc  = "index";
+my $srcpath   = 'in';
+my $destpath  = 'out';
+my $startdoc  = 'index';
 my $template  = "$srcpath/TEMPLATE";
-my $sourcepath= "source";
+my $sourcepath= 'source';
 my %pagestructure;
 my %date;
-my $date_cmd  = "date";
-my $copy_cmd  = "cp";
-my $revisit   = "7 days";
+my $date_cmd  = 'date';
+my $copy_cmd  = 'cp';
+my $revisit   = '7 days';
 my $host      = `hostname -f`;
 chomp $host;
 my %cache;
@@ -48,7 +53,7 @@ my %linkcache;
 $linkcache{$startdoc} = "";
 my %dlinkcache;
 my %news;
-my $dotfile = "homepage.dot";
+my $dotfile = 'homepage.dot';
 my $subtitlecount = 0;
 
 my %lastedited  = ( 'de' => 'letzte Änderung:', 'en' => 'last edited:' );
@@ -999,6 +1004,19 @@ sub rssfeed($)
     <language>$lang</language>
     <generator>$version</generator>
 EOF
+;
+    if ($rsspicurl) {
+	print FEED <"EOF";
+    <image>
+      <url>$rsspicurl</url>
+      <title>$rsstitle</title>
+      <link>$baseurl/index.$lang.html</link>
+      <width>$rsspicwidth</width>
+      <height>$rsspicheight</height>
+    </image>
+EOF
+    ;
+    }
 
     if (keys %dates) {
 	
