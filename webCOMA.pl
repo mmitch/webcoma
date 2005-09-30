@@ -13,9 +13,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.73 2005-09-04 09:32:36 mitch Exp $
+# $Id: webCOMA.pl,v 1.74 2005-09-30 12:53:27 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.73 $ ';
+my $version   = ' webCOMA $Revision: 1.74 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -694,7 +694,6 @@ EOF
 </html>
 EOF
 ;
-    
 
 
     close IN or die "can't close <$srcpath/$file.page>: $!";
@@ -723,7 +722,7 @@ sub convertDate($$)
     chomp(my $date = shift);
     my $ret;
     if ($lang eq "de") {
-	$ret = `$date_cmd +%c -d "$date"`;
+	$ret = `LANG=de_DE $date_cmd +%c -d "$date"`;
     } else {
 	$ret = `LANG=EN $date_cmd -d "$date"`;
     }
