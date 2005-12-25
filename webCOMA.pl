@@ -9,13 +9,14 @@ use POSIX qw(strftime);
 # - DESCRIPTION-Meta-Tag sinnvoll füllen
 # - table summary="" lokalisieren (de/en)
 # - mehrere DLINKs auf einer Zeile nicht möglich!
+# - LINK-check findet keinen Fehler, wenn nur eine Sprachersion vorhanden ist
 #
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.74 2005-09-30 12:53:27 mitch Exp $
+# $Id: webCOMA.pl,v 1.75 2005-12-25 16:42:29 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.74 $ ';
+my $version   = ' webCOMA $Revision: 1.75 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
