@@ -6,9 +6,9 @@ generate:
 	rm -f out/*.html
 	LANG=C ./webCOMA.pl
 #	time tidy -m -e -q -wrap 72 -f tidyerrlog out/*.html || echo "TIDY ERRORS!"
-	cp out/*.html $(DESTPATH)
-	cp out/*.xml $(DESTPATH)
-	cp in/*.css $(DESTPATH)
+	install out/*.html $(DESTPATH)
+	install out/*.xml $(DESTPATH)
+	install in/*.css $(DESTPATH)
 
 dist:
 	shuttleupdate
@@ -20,12 +20,12 @@ zip:
 	(cd $(DESTPATH)/source; mmv "*.page" "#1.txt")
 
 	mkdir -p webCOMA/in webCOMA/out
-	cp webCOMA.pl webCOMA
+	install webCOMA.pl webCOMA
 	chmod 755 webCOMA/webCOMA.pl
-	cp in/*.page webCOMA/in
-	cp in/*.css webCOMA/in
-	cp in/TEMPLATE webCOMA/in
+	install in/*.page webCOMA/in
+	install in/*.css webCOMA/in
+	install in/TEMPLATE webCOMA/in
 	tar -czvf webCOMA.tar.gz webCOMA
 	rm -rf webCOMA
 
-	cp webCOMA.tar.gz $(DESTPATH)/stuff
+	install webCOMA.tar.gz $(DESTPATH)/stuff
