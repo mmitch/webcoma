@@ -14,9 +14,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.75 2005-12-25 16:42:29 mitch Exp $
+# $Id: webCOMA.pl,v 1.76 2006-08-20 18:37:39 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.75 $ ';
+my $version   = ' webCOMA $Revision: 1.76 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -374,11 +374,15 @@ EOF
 <td width="100%">
   <table width="100%" border="0" cellspacing="0" cellpadding="15">
   <tr>
-  <td width="90%" height="50" valign="top">
+  <td width="80%" height="50" valign="top">
   <div class="titletext" align="left">$sitename - $title</div>
   </td>
-  <td width="10%" height="50" valign="top">
-  <a href="http://www.cgarbs.de"><img class="floatright" src="pics/mitchlogo.png" alt="logo" width="37" height="28"></a>
+  <td width="20%" height="50" valign="top" align="right">
+  <a href="http://www.cgarbs.de"><img src="pics/mitchlogo_web.png" alt="WEBSITE" width="37" height="35"></a>
+  &nbsp;
+  <a href="http://www.cgarbs.de/blog/"><img src="pics/mitchlogo_blog.png" alt="BLOG" width="37" height="35"></a>
+  &nbsp;
+  <a href="http://flickr.com/photos/mitchmaster/"><img src="pics/mitchlogo_flickr.png" alt="FLICKR" width="37" height="35"></a>
   </td>
   </tr>
   </table>
