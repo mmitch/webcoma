@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
 use strict;
 use POSIX qw(strftime);
+use Digest::MD5 qw(md5_hex);
 
 ##
 ##  [ 2do ]
@@ -14,9 +15,9 @@ use POSIX qw(strftime);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.77 2006-08-20 18:41:23 mitch Exp $
+# $Id: webCOMA.pl,v 1.78 2006-11-26 01:07:46 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.77 $ ';
+my $version   = ' webCOMA $Revision: 1.78 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -1032,6 +1033,8 @@ EOF
 
 	    foreach my $elem (@{$dates{$date}}) {
 
+		my $guid = md5_hex( $elem->{TEXT} . $elem->{TITLE} . $datum );
+
 		print FEED "    <item>\n";
 		print FEED "      <title><![CDATA[$sitename - $elem->{'TITLE'}]]></title>\n";
 #		print FEED "      <description>see content</description>\n"; ## TODO
@@ -1039,7 +1042,7 @@ EOF
 		print FEED "      <pubDate>$datum</pubDate>\n";
 		print FEED "      <dc:creator>$author (mailto:$authormail)</dc:creator>\n";
 #		print FEED "      <category domain=\"URL\">category</category>\n"; ## TODO
-#		print FEED "      <guid isPermaLink="true">URL</guid>\n"; ## TODO
+		print FEED "      <guid isPermaLink=\"false\">$guid</guid>\n"; ## TODO
 		print FEED "      <link>$baseurl/$elem->{'LINK'}.$lang.html</link>\n";
 #		print FEED "      <comments>URL</comments>\n";
 		print FEED "    </item>\n";
