@@ -11,13 +11,14 @@ use Digest::MD5 qw(md5_hex);
 # - table summary="" lokalisieren (de/en)
 # - mehrere DLINKs auf einer Zeile nicht möglich!
 # - LINK-check findet keinen Fehler, wenn nur eine Sprachersion vorhanden ist
+# - mit <link>s im Header arbeiten (http://www.w3.org/QA/Tips/use-links)
 #
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.78 2006-11-26 01:07:46 mitch Exp $
+# $Id: webCOMA.pl,v 1.79 2006-12-27 11:19:49 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.78 $ ';
+my $version   = ' webCOMA $Revision: 1.79 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
