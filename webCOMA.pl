@@ -16,9 +16,9 @@ use Digest::MD5 qw(md5_hex);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.79 2006-12-27 11:19:49 mitch Exp $
+# $Id: webCOMA.pl,v 1.80 2007-09-17 21:02:06 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.79 $ ';
+my $version   = ' webCOMA $Revision: 1.80 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -343,12 +343,15 @@ sub printPage($$)
     my @keywords = $temp[0];
 
     $subtitlecount = 0;
-    
+
+# ohne Feedburner:    
+# <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$baseurl/rssfeed.$lang.xml">
+
     print OUT <<"EOF";
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
 <html><head><title>$sitename - $title</title>
 <link rel="stylesheet" type="text/css" href="style.css">
-<link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$baseurl/rssfeed.$lang.xml">
+<link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="http://feeds.feedburner.com/MasterMitchOnDaNetz_$lang">
 EOF
 ;
     print OUT "<link rel=\"shortcut icon\" type=\"image/ico\" href=\"$favicon\">\n" if $favicon;
