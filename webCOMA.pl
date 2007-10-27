@@ -16,9 +16,9 @@ use Digest::MD5 qw(md5_hex);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.81 2007-09-18 11:31:39 mitch Exp $
+# $Id: webCOMA.pl,v 1.82 2007-10-27 11:03:56 mitch Exp $
 
-my $version   = ' webCOMA $Revision: 1.81 $ ';
+my $version   = ' webCOMA $Revision: 1.82 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -963,7 +963,7 @@ sub newsBox($$)
 	    }
 	    
 	    foreach my $elem (@{$dates{$date}}) {
-		print OUT "<p<a href=\"$elem->{'LINK'}.$lang.html\">$datum: $elem->{'TITLE'}</a><br>\n";
+		print OUT "<p><a href=\"$elem->{'LINK'}.$lang.html\">$datum: $elem->{'TITLE'}</a><br>\n";
 		print OUT "$elem->{'TEXT'}</p>\n";
 		$count++ unless $path eq "";
 	    }
