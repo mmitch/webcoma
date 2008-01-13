@@ -16,13 +16,7 @@ use Digest::MD5 qw(md5_hex);
 ##
 ##
 
-# $Id: webCOMA.pl,v 1.82 2007-10-27 11:03:56 mitch Exp $
-
-my $version   = ' webCOMA $Revision: 1.82 $ ';
-$version =~ tr/$//d;
-$version =~ s/Revision: /v/;
-$version =~ s/^\s+//;
-$version =~ s/\s+$//;
+my $version   = 'webCOMA (git)';
 
 my $favicon = 'pics/favicon.ico';  # may also be empty
 my $author    = 'Christian Garbs';
