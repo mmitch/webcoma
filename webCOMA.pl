@@ -340,7 +340,7 @@ sub printPage($$)
     $subtitlecount = 0;
 
     print OUT <<"EOF";
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head><title>$sitename - $title</title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$baseurl/rssfeed.$lang.xml">
