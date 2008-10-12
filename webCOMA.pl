@@ -358,7 +358,7 @@ EOF
 <meta name="language" content="$lang">
 <meta http-equiv="revisit-after" content="$revisit">
 <meta http-equiv="content-language" content="$lang">
-<meta http-equiv="content-type" content="text/html; charset=ISO-8859-15">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 </head>
 <body>
 EOF
