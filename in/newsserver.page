@@ -46,7 +46,7 @@ I am setting up my own newsserver and am currently looking for peers.
 &de:<tr><td>IPv4-Adresse:</td>
 &en:<tr><td>IPv4 Address:</td>
 <td>91.121.182.210</td></tr>
-<tr><td>Reverse Lookup:</td>
+<tr><td>Reverse Lookup: &nbsp; </td>
 <td>www.cgarbs.de</td></tr>
 <tr><td>Path Token:</td>
 <td>news.cgarbs.de</td></tr>
@@ -64,27 +64,27 @@ I am setting up my own newsserver and am currently looking for peers.
 
 <h3>incoming.conf</h3>
 
-<pre>
+<small><pre>
 peer news.cgarbs.de {
      hostname:          www.cgarbs.de
      streaming:         true
      max-connections:   5
 }
-</pre>
+</pre></small>
 
 <h3>innfeed.conf</h3>
 
-<pre>
+<small><pre>
 peer news.cgarbs.de {
      ip-name:           www.cgarbs.de
      port-number:       119
      max-connections:   5
 }
-</pre>
+</pre></small>
 
 <h3>newsfeeds</h3>
 
-<pre>
+<small><pre>
 $asnNOBINARY=\
         @alt.bin*,\
         @alt.dvd*,\
@@ -117,11 +117,11 @@ news.cgarbs.de\
         kiel.*,luebeck.*,microsoft.*,misc.*,muc.*,muenster.*,news.*,nord.*,rec.*,schule.*,sci.*,soc.*,talk.*,\
         $asnNOBINARY/!local\
         :Ap,<128000,Tm:innfeed!
-</pre>
+</pre></small>
 
 <h3>newsfeeds (compact></h3>
 
-<pre>
+<small><pre>
 news.cgarbs.de/news.cgarbs.de:!*,@*,\
         alt.*,at.*,bln.*,ch.*,comp.*,de.*,free.*,ger.ct,gnu.*,hamburg.*,hamster.*,hannover.*,humanities.*,\
         kiel.*,luebeck.*,microsoft.*,misc.*,muc.*,muenster.*,news.*,nord.*,rec.*,schule.*,sci.*,soc.*,talk.*,\
@@ -129,6 +129,6 @@ news.cgarbs.de/news.cgarbs.de:!*,@*,\
         @*bina*,@*.bineries*,@*.binia*,@*.binries*,@*.cd.image*,@*dateien*,@*.files.images*,*.mp3*,*music.bin*,\
         @*.pedophil*,@*.pictures*,@*porno.images*,@unidata.*,@*.warez*\
         /!local:Ap,<128000,Tm:innfeed!
-</pre>
+</pre></small>
 
 #PLAIN>
