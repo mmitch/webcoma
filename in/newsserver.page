@@ -61,8 +61,9 @@ I am setting up my own newsserver and am currently looking for peers.
 <tr><td>Spool:</td>
 <td>DE: 4GB, REGIO: 2 GB, INTL: 10GB</td></tr>
 </tbody></table>
+<p><br></p>
 
-<h3>incoming.conf</h3>
+<h3>incoming.conf:</h3>
 
 <small><pre>
 peer news.cgarbs.de {
@@ -70,9 +71,11 @@ peer news.cgarbs.de {
      streaming:         true
      max-connections:   5
 }
+
+
 </pre></small>
 
-<h3>innfeed.conf</h3>
+<h3>innfeed.conf:</h3>
 
 <small><pre>
 peer news.cgarbs.de {
@@ -80,9 +83,11 @@ peer news.cgarbs.de {
      port-number:       119
      max-connections:   5
 }
+
+
 </pre></small>
 
-<h3>newsfeeds</h3>
+<h3>newsfeeds:</h3>
 
 <small><pre>
 $asnNOBINARY=\
@@ -117,9 +122,11 @@ news.cgarbs.de\
         kiel.*,luebeck.*,microsoft.*,misc.*,muc.*,muenster.*,news.*,nord.*,rec.*,schule.*,sci.*,soc.*,talk.*,\
         $asnNOBINARY/!local\
         :Ap,<128000,Tm:innfeed!
+
+
 </pre></small>
 
-<h3>newsfeeds (compact></h3>
+<h3>newsfeeds (compact):</h3>
 
 <small><pre>
 news.cgarbs.de/news.cgarbs.de:!*,@*,\
@@ -129,6 +136,8 @@ news.cgarbs.de/news.cgarbs.de:!*,@*,\
         @*bina*,@*.bineries*,@*.binia*,@*.binries*,@*.cd.image*,@*dateien*,@*.files.images*,*.mp3*,*music.bin*,\
         @*.pedophil*,@*.pictures*,@*porno.images*,@unidata.*,@*.warez*\
         /!local:Ap,<128000,Tm:innfeed!
+
+
 </pre></small>
 
 #PLAIN>
