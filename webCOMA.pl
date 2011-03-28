@@ -726,7 +726,7 @@ sub convertDate($$)
     chomp(my $date = shift);
     my $ret;
     if ($lang eq "de") {
-	$ret = `LANG=de_DE $date_cmd +%c -d "$date"`;
+	$ret = `LANG=de_DE.UTF-8 $date_cmd +%c -d "$date"`;
     } else {
 	$ret = `LANG=EN $date_cmd -d "$date"`;
     }
