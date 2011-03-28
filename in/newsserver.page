@@ -1,3 +1,4 @@
+#VALID 2011-03-29
 #RCS $Id: newsserver.page,v 1.1 2002/02/03 21:35:13 mitch Exp mitch $
 
 <!-- Template as of 2002-04-28 -->
@@ -69,7 +70,7 @@ I am setting up my own newsserver and am currently looking for peers.
 
 <h3>#SUBTITLE:incoming.conf::</h3>
 
-<small><pre>
+<pre style="font-size: 85%;">
 peer news.cgarbs.de {
      hostname:          www.cgarbs.de
      streaming:         true
@@ -77,11 +78,11 @@ peer news.cgarbs.de {
 }
 
 
-</pre></small>
+</pre>
 
 <h3>#SUBTITLE:innfeed.conf::</h3>
 
-<small><pre>
+<pre style="font-size: 85%;">
 peer news.cgarbs.de {
      ip-name:           www.cgarbs.de
      port-number:       119
@@ -89,11 +90,11 @@ peer news.cgarbs.de {
 }
 
 
-</pre></small>
+</pre>
 
 <h3>#SUBTITLE:newsfeeds::</h3>
 
-<small><pre>
+<pre style="font-size: 85%;">
 $asnNOBINARY=\
         @alt.bin*,\
         @alt.dvd*,\
@@ -128,11 +129,11 @@ news.cgarbs.de\
         :Ap,<128000,Tm:innfeed!
 
 
-</pre></small>
+</pre>
 
 <h3>#SUBTITLE:newsfeeds (compact)::</h3>
 
-<small><pre>
+<pre style="font-size: 85%;">
 news.cgarbs.de/news.cgarbs.de:!*,@*,\
         alt.*,at.*,bln.*,ch.*,comp.*,de.*,free.*,ger.ct,gnu.*,hamburg.*,hamster.*,hannover.*,humanities.*,\
         kiel.*,luebeck.*,microsoft.*,misc.*,muc.*,muenster.*,news.*,nord.*,rec.*,schule.*,sci.*,soc.*,talk.*,\
@@ -142,6 +143,6 @@ news.cgarbs.de/news.cgarbs.de:!*,@*,\
         /!local:Ap,<128000,Tm:innfeed!
 
 
-</pre></small>
+</pre>
 
 #PLAIN>
