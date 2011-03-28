@@ -1,0 +1,134 @@
+#RCS $Id: index.page,v 1.1 2002/02/03 21:35:13 mitch Exp mitch $
+
+<!-- Template as of 2002-04-28 -->
+
+#LANG<
+de
+en
+#LANG>
+
+#TYPE<
+plain
+#TYPE>
+
+#NEWS<
+#DATE:2011-03-28
+&de:Neue Seite: Newsserver. Ich suche Peerings!
+&en:New page: Newsserver. Looking for peers!
+#NEWS>
+
+#TITLE<
+Newsserver news.cgarbs.de
+#TITLE>
+
+#KEYWORDS<
+usenet newsserver news nnet
+#KEYWORDS>
+
+#PLAIN<
+&de<
+Ich will einen eigenen Newsserver aufbauen und suche momentan noch Peerings.
+&de>
+
+&en<
+I am setting up my own newsserver and am currently looking for peers.
+&en>
+
+<h3>Peering</h3>
+
+<table><tbody>
+<tr><td>Feed-to:</td>
+<td>www.cgarbs.de</td></tr>
+<tr><td>Accept-from:</td>
+<td>www.cgarbs.de</td></tr>
+<tr><td>Port:</td>
+<td>119</td></tr>
+&de:<tr><td>IPv4-Adresse:</td>
+&en:<tr><td>IPv4 Address:</td>
+<td>91.121.182.210</td></tr>
+<tr><td>Reverse Lookup:</td>
+<td>www.cgarbs.de</td></tr>
+<tr><td>Path Token:</td>
+<td>news.cgarbs.de</td></tr>
+&de:<tr><td>Serverstandort:</td>
+&en:<tr><td>Server Location:</td>
+&de:<td>Frankreich (<a href="http://www.ovh.de/">OVH</a>)</td></tr>
+&en:<td>France (<a href="http://www.ovh.de/">OVH</a>)</td></tr>
+&de:<tr><td>Gruppen:</td>
+&en:<tr><td>Groups:</td>
+&de:<td>siehe unten, keine Binaries</td></tr>
+&en:<td>siehe below, no binaries</td></tr>
+<tr><td>Spool:</td>
+<td>DE: 4GB, REGIO: 2 GB, INTL: 10GB</td></tr>
+</tbody></table>
+
+<h3>incoming.conf</h3>
+
+<pre>
+peer news.cgarbs.de {
+     hostname:          www.cgarbs.de
+     streaming:         true
+     max-connections:   5
+}
+</pre>
+
+<h3>innfeed.conf</h3>
+
+<pre>
+peer news.cgarbs.de {
+     ip-name:           www.cgarbs.de
+     port-number:       119
+     max-connections:   5
+}
+</pre>
+
+<h3>newsfeeds</h3>
+
+<pre>
+$asnNOBINARY=\
+        @alt.bin*,\
+        @alt.dvd*,\
+        @alt.mag.*,\
+        @alt.sex,\
+        @alt.sex.*,\
+        @*.bain*,\
+        @*.biana*,\
+        @*.biinaries*,\
+        @*.bilder*,\
+        @*bina*,\
+        @*.bineries*,\
+        @*.binia*,\
+        @*.binries*,\
+        @*.cd.image*,\
+        @*dateien*,\
+        @*.files.images*,\
+        @*.mp3*,\
+        @*music.bin*,\
+        @*.pedophil*,\
+        @*.pictures*,\
+        @*porno.images*,\
+        @unidata.*,\
+        @*.warez*
+
+news.cgarbs.de/\
+news.cgarbs.de\
+        :!*,@*,\
+        alt.*,at.*,bln.*,ch.*,comp.*,de.*,free.*,ger.ct,gnu.*,hamburg.*,hamster.*,hannover.*,humanities.*,\
+        kiel.*,luebeck.*,microsoft.*,misc.*,muc.*,muenster.*,news.*,nord.*,rec.*,schule.*,sci.*,soc.*,talk.*,\
+        $asnNOBINARY/!local\
+        :Ap,<128000,Tm:innfeed!
+</pre>
+
+<h3>newsfeeds (compact></h3>
+
+<pre>
+news.cgarbs.de/news.cgarbs.de:!*,@*,\
+        alt.*,at.*,bln.*,ch.*,comp.*,de.*,free.*,ger.ct,gnu.*,hamburg.*,hamster.*,hannover.*,humanities.*,\
+        kiel.*,luebeck.*,microsoft.*,misc.*,muc.*,muenster.*,news.*,nord.*,rec.*,schule.*,sci.*,soc.*,talk.*,\
+        @alt.bin*,@alt.dvd*,@alt.mag.*,@alt.sex,@alt.sex.*,@*.bain*,@*.biana*,@*.biinaries*,@*.bilder*,\
+        @*bina*,@*.bineries*,@*.binia*,@*.binries*,@*.cd.image*,@*dateien*,@*.files.images*,*.mp3*,*music.bin*,\
+        @*.pedophil*,@*.pictures*,@*porno.images*,@unidata.*,@*.warez*\
+        /!local:Ap,<128000,Tm:innfeed!
+</pre>
+
+#PLAIN>
