@@ -30,6 +30,7 @@ my $rssmax   = 15; # number or articles in file
 my $rsspicurl = 'http://www.cgarbs.de/pics/favicon.feed.png'; # may also be empty
 my $rsspicwidth = 22;
 my $rsspicheight = 18;
+my $flattr = 'http://flattr.com/thing/570000/Master-Mitch-on-da-netz'; # may also be empty
 ## 
 my $amazon_link = 'http://www.amazon.de/exec/obidos/ASIN/%/mastemitchondane';
 my @languages = ('de', 'en');
@@ -689,6 +690,16 @@ EOF
 <a href="http://jigsaw.w3.org/css-validator/validator?uri=$uri">valid CSS</a>
 :
 <a href="http://www.feedvalidator.org/check.cgi?url=$baseurl/rssfeed.$lang.xml">valid RSS</a>
+EOF
+;
+    if ($flattr) {
+	print OUT << "EOF";
+:
+<a href="$flattr" target="_blank" style="color: black">Flattr this!</a>
+EOF
+;
+    }
+    print OUT << "EOF";
 &nbsp;
 </div>
 </td>
