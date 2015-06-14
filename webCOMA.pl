@@ -406,9 +406,12 @@ EOF
   &nbsp; -->
   <a href="http://www.cgarbs.de/blog/"><img src="pics/mitchlogo_blog.png" alt="BLOG" width="37" height="35"></a>
   &nbsp;
+  <a href="https://github.com/mmitch"><img src="pics/mitchlogo_git.png" alt="GIT" width="37" height="35"></a>
+  &nbsp;
+  <a href="http://twitter.com/master_mitch"><img src="pics/mitchlogo_twitter.png" alt="TWITTER" width="37" height="35"></a>
+  &nbsp;
   <a href="http://flickr.com/photos/mitchmaster/"><img src="pics/mitchlogo_flickr.png" alt="FLICKR" width="37" height="35"></a>
   &nbsp;
-  <a href="http://github.com/mmitch"><img src="pics/mitchlogo_git.png" alt="GIT" width="37" height="35"></a>
   </td>
   </tr>
   </table>
