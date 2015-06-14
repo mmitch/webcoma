@@ -4,6 +4,10 @@ use POSIX qw(strftime);
 use Digest::MD5 qw(md5_hex);
 
 ##
+## when commandline arguments are given, only those pages are generated
+## otherwise all pages are generated
+
+##
 ##  [ 2do ]
 ##
 #
@@ -77,7 +81,15 @@ sub getLeft($$);
 sub getRight($$);
 
 
+my $pagefilter = undef;
 {
+    # parse commandline arguments to available pages
+    if (@ARGV)
+    {
+	$pagefilter = {};
+	$pagefilter->{$_}++ foreach @ARGV;
+    }
+    
     print "Initializing dates.\n";
     initDates();
     print "\n";
@@ -126,7 +138,14 @@ sub getRight($$);
     print "Generating pages:\n";
     foreach my $lang (@languages) {
 	for (my $page = 0; $page < @{$pagestructure{$lang}}; $page++) {
-	    printPage($page,$lang);
+	    if (defined $pagefilter)
+	    {
+		printPage($page,$lang) if (exists $pagefilter->{$pagestructure{$lang}[$page]});
+	    }
+	    else
+	    {
+		printPage($page,$lang);
+	    }
 	}
     }
     print "\n";
