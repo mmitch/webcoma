@@ -1280,7 +1280,7 @@ sub rssBox($$$)
 		# remove HTML validator warning (we're only HTML 4.x, not XHTML)
 		$text =~ s,/>,>,g;
 		$text =~ s/border=0 target/target/g;
-		$text =~ s/img src=/img alt='twitter avatar icon' src=/g;
+		$text =~ s/img src='http:/img alt='twitter avatar icon' src='https:/g;
 		print OUT "$text<p></p>\n";
 	    }
 	    else
