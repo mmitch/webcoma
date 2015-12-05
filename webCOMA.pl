@@ -31,15 +31,15 @@ my $authormail= 'mitch@cgarbs.de';
 my $sitename  = 'Master Mitch';
 my $rsstitle = 'Master Mitch on da netz';
 my $rssdescription = "Mitch's homepage";
-my $baseurl = 'http://www.cgarbs.de';
+my $baseurl = 'https://www.cgarbs.de';
 ## RSS definitions
 my $rssmax   = 15; # number or articles in file
-my $rsspicurl = 'http://www.cgarbs.de/pics/favicon.feed.png'; # may also be empty
+my $rsspicurl = 'https://www.cgarbs.de/pics/favicon.feed.png'; # may also be empty
 my $rsspicwidth = 22;
 my $rsspicheight = 18;
-my $flattr = 'http://flattr.com/thing/570000/Master-Mitch-on-da-netz'; # may also be empty
+my $flattr = 'https://flattr.com/thing/570000/Master-Mitch-on-da-netz'; # may also be empty
 ## 
-my $amazon_link = 'http://www.amazon.de/exec/obidos/ASIN/%/mastemitchondane';
+my $amazon_link = 'https://www.amazon.de/exec/obidos/ASIN/%/mastemitchondane';
 my @languages = ('de', 'en');
 my $srcpath   = 'in';
 my $destpath  = 'out';
