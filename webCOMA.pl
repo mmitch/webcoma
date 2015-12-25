@@ -1281,6 +1281,7 @@ sub rssBox($$$)
 		$text =~ s,/>,>,g;
 		$text =~ s/border=0 target/target/g;
 		$text =~ s/img src='http:/img alt='twitter avatar icon' src='https:/g;
+		$text =~ s/img src="http:/img alt='image from twitter' src="https:/g;
 		print OUT "$text<p></p>\n";
 	    }
 	    else
