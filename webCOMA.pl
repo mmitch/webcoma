@@ -368,33 +368,38 @@ sub printPage($$)
 
     print OUT <<"EOF";
 <!DOCTYPE html>
-<html><head><title>$sitename - $title</title>
-<link rel="stylesheet" type="text/css" href="style.css">
-<link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$baseurl/rssfeed.$lang.xml">
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="author" content="$author ($authormail)">
+  <meta name="generating_host" content="$host">
+  <meta name="generation_date" content="$date{$lang}">
+  <meta name="generator" content="$version">
+  <meta name="keywords" content="@keywords">
+  <meta name="language" content="$lang">
+  <meta name="rcs_tag" content="$cache{$page}{'RCS'}">
+  <meta name="revisit-after" content="$revisit">
+  <meta name="robots" content="index,follow">
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>$sitename - $title</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$baseurl/rssfeed.$lang.xml">
 EOF
 ;
-    print OUT "<link rel=\"shortcut icon\" type=\"image/ico\" href=\"$favicon\">\n" if $favicon;
+    print OUT "  <link rel=\"shortcut icon\" type=\"image/ico\" href=\"$favicon\">\n" if $favicon;
     print OUT <<"EOF";
-<meta name="generator" content="$version">
-<meta name="generating_host" content="$host">
-<meta name="generation_date" content="$date{$lang}">
-<meta name="rcs_tag" content="$cache{$page}{'RCS'}">
-<meta name="robots" content="index,follow">
-<meta name="keywords" content="@keywords">
-<meta name="author" content="$author ($authormail)">
-<meta name="language" content="$lang">
-<meta http-equiv="revisit-after" content="$revisit">
-<meta http-equiv="content-language" content="$lang">
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 </head>
-<body>
+<body lang="$lang">
 EOF
     ;
-#<meta name="DESCRIPTION" content="$sitename - $title">
+
+# lohnt nicht, weil es den Inhalt nicht beschreibt:
+#  <meta name="description" content="$sitename - $title">
     
     print OUT << "EOF";
 <header>
-  <h1>$sitename - $title
+  <section>
+    <h1>$sitename - $title</h1>
     <div class="imagebar">
       <!--  <a href="https://www.cgarbs.de"><img src="pics/mitchlogo_web.png" alt="WEBSITE" width="37" height="35"></a> -->
       <a href="https://www.cgarbs.de/blog/"><img src="pics/mitchlogo_blog.png" alt="BLOG" width="37" height="35"></a>
@@ -402,13 +407,13 @@ EOF
       <a href="https://twitter.com/master_mitch"><img src="pics/mitchlogo_twitter.png" alt="TWITTER" width="37" height="35"></a>
       <a href="https://flickr.com/photos/mitchmaster/"><img src="pics/mitchlogo_flickr.png" alt="FLICKR" width="37" height="35"></a>
     </div>
-  </h1>
-  <div style="clear: both;" />
+  </section>
+  <div style="clear: both;"></div>
 </header>
 EOF
     ;
 
-    print OUT "<div class='columnsContainer'>\n";
+    print OUT "<div class=\"columnsContainer\">\n";
 
     print OUT " <article>\n";
 
