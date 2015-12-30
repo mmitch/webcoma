@@ -540,10 +540,12 @@ EOF
 	}
 	print OUT "</p>";
 
-	print OUT "<table class=\"noborder\" width=\"100%\"><tr><td align=\"center\">";
-	print OUT "<table class=\"dwn\" summary=\"list of files\"><tr>";
+	#
+	# TODO FIXME: get this table centered again?!
+	#
+	print OUT "<table class=\"dwn\"><tr>";
 	if ($autor_schalter eq "JA") {
-	    print OUT "<th class=\"dwn\" align=\"left\">$autor_head</th>";
+	    print OUT "<th class=\"dwn\">$autor_head</th>";
 	};
 	print OUT "<th class=\"dwn\">$datum_head</th>";
 	print OUT "<th class=\"dwn\">$version_head</th>";
@@ -603,7 +605,7 @@ EOF
 	    print "\n\nFEHLER [$fehler]: <!--END oder ZEILE fehlt \n\n";
 	}
 	
-	print OUT "</table><p><br></p></td></tr></table>";
+	print OUT "</table>";
  	print OUT "$typ\n";
 	
 
