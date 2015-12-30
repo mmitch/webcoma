@@ -432,67 +432,6 @@ EOF
 	    $line = expand($line, $lang);
 	    if ($line =~ /#SITEMAP#/) {
 		includeSiteMap($lang);
-	    } elsif ($line =~ /\#GRAPHBOX</) {
-
-		my @amazon;
-		my ($x, $y, $file, $amazon, $alt) = split /!/, shift @lines, 5;
-		die "Error in GRAPHBOX in $page:\n$x!$y!$file!$amazon$alt\n" unless defined $alt;
-
-		if ($amazon =~ /,/)
-		{
-		    ($amazon, @amazon) = split /,/, $amazon;
-		}
-
-		print OUT "<center><table width=\"95%\" border=0><tr>\n";
-
-		my ($align, $align2);
-		if ($gbAlign) {
-		    $gbAlign = 0;
-		    $align='align="left"';
-		    $align2='align="right"';
-		} else {
-		    $gbAlign = 1;
-		    $align='align="right"';
-		    $align2='align="left"';
-		}
-		if (($amazon eq "") || ($lang ne "de")) {
-		    print OUT "<td $align><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y $align2 hspace=5 vspace=5>";
-		} else {
-		    my $link = $amazon_link;
-		    die "wrong ASIN chksum: <$amazon> @ GRAPHBOX in $page:\n$x!$y!$file!$amazon$alt\n" unless CheckISBN($amazon);
-		    $link =~ s/%/$amazon/;
-		    print OUT "<td $align><a href=\"$link\"><img src=\"pics/$file\" alt=\"$alt\" width=$x height=$y $align2 hspace=5 vspace=5 border=0></a>";
-		}
-
-		while (@lines) {
-		    my $line = shift @lines;
-		    last if $line =~ /\#GRAPHBOX>/;
-		    $line = expand($line, $lang);
-		    print OUT "$line\n";
-		}
-
-		if (($amazon ne "") && ($lang eq "de")) {
-		    my $link = $amazon_link;
-		    $link =~ s/%/$amazon/;
-		    die "wrong ASIN chksum: <$amazon> @ GRAPHBOX in $page:\n$x!$y!$file!$amazon$alt\n" unless CheckISBN($amazon);
-		    print OUT "<ul><li><small>Einkaufen bei <a href=\"$link\">amazon.de</a>";
-		    if (@amazon)
-		    {
-			print OUT ":<br>Band ";
-			while (@amazon)
-			{
-			    my ($ep, $amazon) = split /:/, shift @amazon;
-			    my $link = $amazon_link;
-			    $link =~ s/%/$amazon/;
-			    die "wrong ASIN chksum: <$ep:$amazon> @ GRAPHBOX in $page:\n$x!$y!$file![...]$alt\n" unless CheckISBN($amazon);
-			    print OUT "<a href=\"$link\">$ep</a>";
-			    print OUT " - " if (@amazon);
-			}
-		    }
-		    print OUT "</small></li></ul>";
-		}
-
-		print OUT "</td></tr></table></center>\n";
 	    } elsif ($line =~ /\#NEWS\#/) {
 		if ($typ eq "plain") {
 		    newsBox($page, $lang);
