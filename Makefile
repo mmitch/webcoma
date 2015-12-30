@@ -2,6 +2,8 @@ DESTPATH=/home/mitch/html/homepage
 
 all:	generate zip dist
 
+fast:	generate dist-fast
+
 generate:
 	rm -f out/*.html
 	LANG=C ./webCOMA.pl
@@ -23,6 +25,9 @@ generate-startpage: update-rss
 
 dist:
 	shuttleupdate
+
+dist-fast:
+	shuttleupdate -dontask
 
 zip:
 	rm -rf $(DESTPATH)/source

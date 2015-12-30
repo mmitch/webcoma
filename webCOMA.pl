@@ -16,7 +16,7 @@ use Date::Parse;
 # - DESCRIPTION-Meta-Tag sinnvoll füllen
 # - table summary="" lokalisieren (de/en)
 # - mehrere DLINKs auf einer Zeile nicht möglich!
-# - LINK-check findet keinen Fehler, wenn nur eine Sprachersion vorhanden ist
+# - LINK-check findet keinen Fehler, wenn nur eine Sprachversion vorhanden ist
 # - mit <link>s im Header arbeiten (http://www.w3.org/QA/Tips/use-links)
 # - convertDate() ist eklig, außerdem kann man das mal cachen!
 #
@@ -367,7 +367,7 @@ sub printPage($$)
     $subtitlecount = 0;
 
     print OUT <<"EOF";
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html><head><title>$sitename - $title</title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$baseurl/rssfeed.$lang.xml">
@@ -393,40 +393,24 @@ EOF
 #<meta name="DESCRIPTION" content="$sitename - $title">
     
     print OUT << "EOF";
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr id="topbox">
-<td width="100%">
-  <table width="100%" border="0" cellspacing="0" cellpadding="15">
-  <tr>
-  <td width="80%" height="50" valign="top">
-  <div class="titletext" align="left">$sitename - $title</div>
-  </td>
-  <td width="20%" height="50" valign="top" align="right">
-<!--  <a href="https://www.cgarbs.de"><img src="pics/mitchlogo_web.png" alt="WEBSITE" width="37" height="35"></a>
-  &nbsp; -->
-  <a href="https://www.cgarbs.de/blog/"><img src="pics/mitchlogo_blog.png" alt="BLOG" width="37" height="35"></a>
-  &nbsp;
-  <a href="https://github.com/mmitch"><img src="pics/mitchlogo_git.png" alt="GIT" width="37" height="35"></a>
-  &nbsp;
-  <a href="https://twitter.com/master_mitch"><img src="pics/mitchlogo_twitter.png" alt="TWITTER" width="37" height="35"></a>
-  &nbsp;
-  <a href="https://flickr.com/photos/mitchmaster/"><img src="pics/mitchlogo_flickr.png" alt="FLICKR" width="37" height="35"></a>
-  &nbsp;
-  </td>
-  </tr>
-  </table>
-</td>
-<tr>
-<td width="100%">
-  <table width="100%" border="0" cellspacing="0" cellpadding="10">
-  <tr>
-  <td width="15%" valign="top" id="leftbox">
-  <div id="navcontainer" align="left">
+<header>
+  <h1>$sitename - $title
+    <div class="imagebar">
+      <!--  <a href="https://www.cgarbs.de"><img src="pics/mitchlogo_web.png" alt="WEBSITE" width="37" height="35"></a> -->
+      <a href="https://www.cgarbs.de/blog/"><img src="pics/mitchlogo_blog.png" alt="BLOG" width="37" height="35"></a>
+      <a href="https://github.com/mmitch"><img src="pics/mitchlogo_git.png" alt="GIT" width="37" height="35"></a>
+      <a href="https://twitter.com/master_mitch"><img src="pics/mitchlogo_twitter.png" alt="TWITTER" width="37" height="35"></a>
+      <a href="https://flickr.com/photos/mitchmaster/"><img src="pics/mitchlogo_flickr.png" alt="FLICKR" width="37" height="35"></a>
+    </div>
+  </h1>
+  <div style="clear: both;" />
+</header>
 EOF
     ;
 
-    navBar($i, $lang);
-    print OUT "</div></td>\n<td width=\"85%\" valign=\"top\">\n";
+    print OUT "<div class='columnsContainer'>\n";
+
+    print OUT " <article>\n";
 
     if (($typ eq "plain") or ($typ eq "news")) {
 
@@ -684,58 +668,62 @@ EOF
 	die "UNKNOWN TYPE <$typ>\n";
     }
 
+    print OUT " </article>\n";
+
+    print OUT "</div>\n"; # columnsContainer
+
+    #
+    # Navigation
+    #
+
+    print OUT " <nav>\n";
+    navBar($i, $lang);
+    print OUT " </nav>\n";
+
     #
     # Seitenfuß
     #
 
     print OUT << "EOF";
-  </td>
-  </tr>
-  </table>
-</td>
-<tr>
-<td width="100%" id="footbox">
-<div align="right"><a href="mailto:$authormail">$author</a>
-:
-<a href="webcoma.$lang.html">$version</a>
-:
-$date
-:
+<footer>
+  <a href="mailto:$authormail">$author</a>
+  :
+  <a href="webcoma.$lang.html">$version</a>
+  :
+  $date
+  :
 EOF
 ;
     my $uri = "$baseurl/$file.$lang.html";
     if ($cache{$page}{$lang}{VALID}) {
 	print OUT << "EOF";
-<a href="http://validator.w3.org/check?uri=$uri">valid HTML</a>
-:
+  <a href="http://validator.w3.org/check?uri=$uri">valid HTML</a>
+  :
 EOF
 ;
     } else {
 	print OUT << "EOF";
-<a href="http://validator.w3.org/check?uri=$uri">HTML not yet validated!</a>
-:
+  <a href="http://validator.w3.org/check?uri=$uri">HTML not yet validated!</a>
+  :
 EOF
 ;
     }
     print OUT << "EOF";
-<a href="http://jigsaw.w3.org/css-validator/validator?uri=$uri">valid CSS</a>
-:
-<a href="http://www.feedvalidator.org/check.cgi?url=$baseurl/rssfeed.$lang.xml">valid RSS</a>
+  <a href="http://jigsaw.w3.org/css-validator/validator?uri=$uri">valid CSS</a>
+  :
+  <a href="http://www.feedvalidator.org/check.cgi?url=$baseurl/rssfeed.$lang.xml">valid RSS</a>
 EOF
 ;
     if ($flattr) {
 	print OUT << "EOF";
-:
-<a href="$flattr" target="_blank" style="color: black">Flattr this!</a>
+  :
+  <a href="$flattr" target="_blank" style="color: black">Flattr this!</a>
 EOF
 ;
     }
     print OUT << "EOF";
-&nbsp;
-</div>
-</td>
-</tr>
-</table>
+  &nbsp;
+</footer>
 </body>
 </html>
 EOF
@@ -839,7 +827,7 @@ sub navBar($$)
 	$path .= "!";
     }
 
-    print OUT "<b>$navtitle{$lang}</b><br>\n";
+    print OUT "<h2>$navtitle{$lang}</h2>\n";
     my $depth = $path =~ tr/!/!/;
     my $olddepth = -1;
     my $li = 0;
@@ -900,7 +888,7 @@ sub navBar($$)
     }
 
 
-    print OUT "<b>$langtitle{$lang}</b><br>\n";
+    print OUT "<h2>$langtitle{$lang}</h2>\n";
     print OUT "<ul>\n";
     foreach my $l (@languages) {
 	if ($l ne $lang) {
@@ -914,7 +902,7 @@ sub navBar($$)
     print OUT "<li><a href=\"$sourcepath/$me.txt\" class=\"navbar\">$langsrc{$lang}</a></li>\n";
     print OUT "</ul>\n";
 
-    print OUT "<b>$feedtitle{$lang}</b><br>\n";
+    print OUT "<h2>$feedtitle{$lang}</h2>\n";
     print OUT "<ul>\n";
     print OUT "<li><a href=\"$baseurl/rssfeed.$lang.xml\" class=\"navbar\">$feedtitle{$lang}</a></li>\n";
     print OUT "</ul>\n";
