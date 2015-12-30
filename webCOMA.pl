@@ -1101,39 +1101,6 @@ sub includeSiteMap($)
 #
 
 
-sub CheckISBN($)
-{
-
-    return 0 unless (my $isbn = $_[0]);
-    return 0 unless ($isbn =~ /^(\d{9})([\dxX])$/);
-
-    my ($nummer, $pruef) = ($1, $2);
-
-    my $erg=0;
-    my $stelle=2;
-
-    while ($nummer) {
-	$erg    += (substr $nummer, -1, 1) * $stelle;
-	$nummer  =  substr $nummer, 0, length($nummer) - 1;
-	$stelle++;
-    }
-
-    $erg = 11 - $erg % 11;
-
-    if ($erg eq "10") {
-	$erg = "X";
-    } elsif ($erg == 11) {
-	$erg = 0;
-    }
-
-    return ((lc $erg) eq (lc $pruef));
-
-}
-
-
-#
-
-
 sub getLeft($$)
 {
     my ($i, $lang) = @_;
