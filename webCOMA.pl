@@ -23,7 +23,14 @@ use Date::Parse;
 ##
 ##
 
-my $version   = 'webCOMA (git)';
+my $version = `git describe --tag --always --dirty`;
+if (defined $version) {
+    chomp $version;
+    $version = " $version" if ($version);
+} else {
+    $version = '';
+}
+$version   = "webCOMA (git$version)";
 
 my $favicon = 'pics/favicon.ico';  # may also be empty
 my $author    = 'Christian Garbs';
