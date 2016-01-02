@@ -639,43 +639,42 @@ EOF
 
     print OUT << "EOF";
 <footer>
-  <a href="mailto:$authormail">$author</a>
+  <span><a href="mailto:$authormail">$author</a></span>
   :
-  <a href="webcoma.$lang.html">$version</a>
+  <span><a href="webcoma.$lang.html">$version</a></span>
   :
-  $date
+  <span>$date</span>
   :
 EOF
 ;
     my $uri = "$baseurl/$file.$lang.html";
     if ($cache{$page}{$lang}{VALID}) {
 	print OUT << "EOF";
-  <a href="http://validator.w3.org/check?uri=$uri">valid HTML</a>
+  <span><a href="http://validator.w3.org/check?uri=$uri">valid HTML</a></span>
   :
 EOF
 ;
     } else {
 	print OUT << "EOF";
-  <a href="http://validator.w3.org/check?uri=$uri">HTML not yet validated!</a>
+  <span><a href="http://validator.w3.org/check?uri=$uri">HTML not yet validated!</a></span>
   :
 EOF
 ;
     }
     print OUT << "EOF";
-  <a href="http://jigsaw.w3.org/css-validator/validator?uri=$uri">valid CSS</a>
+  <span><a href="http://jigsaw.w3.org/css-validator/validator?uri=$uri">valid CSS</a></span>
   :
-  <a href="http://www.feedvalidator.org/check.cgi?url=$baseurl/rssfeed.$lang.xml">valid RSS</a>
+  <span><a href="http://www.feedvalidator.org/check.cgi?url=$baseurl/rssfeed.$lang.xml">valid RSS</a></span>
 EOF
 ;
     if ($flattr) {
 	print OUT << "EOF";
   :
-  <a href="$flattr" target="_blank" style="color: black">Flattr this!</a>
+  <span><a href="$flattr" target="_blank" style="color: black">Flattr this!</a></span>
 EOF
 ;
     }
     print OUT << "EOF";
-  &nbsp;
 </footer>
 </body>
 </html>
