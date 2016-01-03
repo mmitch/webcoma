@@ -219,7 +219,7 @@ sub scanStructure($$)
 		if ($news =~ /#DATE:(.*)/) {
 		    if (defined $olddate) {
 
-		        # vvv UGLY -- DOUPLICATE CODE !!! -- UGLY vvv
+		        # vvv UGLY -- DUPLICATE CODE !!! -- UGLY vvv
 		        if ($text =~ /#DLINK:([^#]*)#/) {
 			    my $link = $1;
 			    $link =~ s/\!.*$//;
@@ -233,7 +233,7 @@ sub scanStructure($$)
 			    }
 			    
 			}
-		        # ^^^ UGLY -- DOUPLICATE CODE !!! -- UGLY ^^^
+		        # ^^^ UGLY -- DUPLICATE CODE !!! -- UGLY ^^^
 			
 			## COPY BEGIN
 			$text =~ s/\s+$//;
@@ -285,7 +285,7 @@ sub scanStructure($$)
 		}
 	    }
 
-	    # vvv UGLY -- DOUPLICATE CODE !!! -- UGLY vvv
+	    # vvv UGLY -- DUPLICATE CODE !!! -- UGLY vvv
 	    if ($line =~ /#DLINK:([^#]*)#/) {
 		my $link = $1;
 		$link =~ s/\!.*$//;
@@ -298,7 +298,7 @@ sub scanStructure($$)
 		    print DOT "\t$from -> $to [style=dotted];\n";
 		}
 	    }
-	    # ^^^ UGLY -- DOUPLICATE CODE !!! -- UGLY ^^^
+	    # ^^^ UGLY -- DUPLICATE CODE !!! -- UGLY ^^^
 
 	    if ($line =~ /#SUBTITLE:(.*):([^:]*):/) {
 		my ($show, $title) = ($1, $2);
