@@ -177,6 +177,24 @@ my $pagefilter = undef;
 
 #
 
+
+sub printDLINK($$)
+{
+    my ($doc, $parm) = (@_);
+    
+    my $link = $parm;
+    $link =~ s/\!.*$//;
+    $dlinkcache{$link} = "";
+    
+    my ($from, $to) = ($doc, $parm);
+    $from =~ s/-/_/g;
+    $to =~ s/-/_/g;
+    print DOT "\t$from -> $to [style=dotted];\n";
+}
+    
+
+#
+
 		  
 sub scanStructure($$)
 {
@@ -219,21 +237,9 @@ sub scanStructure($$)
 		if ($news =~ /#DATE:(.*)/) {
 		    if (defined $olddate) {
 
-		        # vvv UGLY -- DUPLICATE CODE !!! -- UGLY vvv
 		        if ($text =~ /#DLINK:([^#]*)#/) {
-			    my $link = $1;
-			    $link =~ s/\!.*$//;
-			    $dlinkcache{$link} = "";
-			    
-			    {
-			      my ($from, $to) = ($doc, $1);
-			      $from =~ s/-/_/g;
-			      $to =~ s/-/_/g;
-			      print DOT "\t$from -> $to [style=dotted];\n";
-			    }
-			    
+			    printDLINK($doc, $1);
 			}
-		        # ^^^ UGLY -- DUPLICATE CODE !!! -- UGLY ^^^
 			
 			## COPY BEGIN
 			$text =~ s/\s+$//;
@@ -285,20 +291,9 @@ sub scanStructure($$)
 		}
 	    }
 
-	    # vvv UGLY -- DUPLICATE CODE !!! -- UGLY vvv
 	    if ($line =~ /#DLINK:([^#]*)#/) {
-		my $link = $1;
-		$link =~ s/\!.*$//;
-		$dlinkcache{$link} = "";
-
-		{
-		    my ($from, $to) = ($doc, $1);
-		    $from =~ s/-/_/g;
-		    $to =~ s/-/_/g;
-		    print DOT "\t$from -> $to [style=dotted];\n";
-		}
+		printDLINK($doc, $1);
 	    }
-	    # ^^^ UGLY -- DUPLICATE CODE !!! -- UGLY ^^^
 
 	    if ($line =~ /#SUBTITLE:(.*):([^:]*):/) {
 		my ($show, $title) = ($1, $2);
