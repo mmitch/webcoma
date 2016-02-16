@@ -436,7 +436,7 @@ EOF
 		}
 	    } elsif ($line =~ /#RSSBOX:([^:]+):([^:]+)#/) {
 		rssBox($1, $2, $lang);
-	    } elsif ($line =~ /\#SUBTITLES(\/s)?\#/) {
+	    } elsif ($line =~ /\#SUBTITLES(\/s)?\#/) { # TODO: wrap SUBTITLES in a <nav> element - remove <p> from individual pages
 		my $count = 0;
 		if (defined $1) {
 		    my %sorthash;
