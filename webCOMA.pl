@@ -383,7 +383,7 @@ sub printPage($$)
   <meta name="revisit-after" content="$revisit">
   <meta name="robots" content="index,follow">
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=0.7">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>$sitename - $title</title>
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$baseurl/rssfeed.$lang.xml">
