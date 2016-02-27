@@ -403,18 +403,24 @@ EOF
 <header>
   <section>
     <h1>$sitename - $title</h1>
-    <div class="imagebar">
-      <!--  <a href="https://www.cgarbs.de"><img src="pics/mitchlogo_web.png" alt="WEBSITE" width="37" height="35"></a> -->
-      <a href="https://www.cgarbs.de/blog/"><img src="pics/mitchlogo_blog.png" alt="BLOG" width="37" height="35"></a>
-      <a href="https://github.com/mmitch"><img src="pics/mitchlogo_git.png" alt="GIT" width="37" height="35"></a>
-      <a href="https://twitter.com/master_mitch"><img src="pics/mitchlogo_twitter.png" alt="TWITTER" width="37" height="35"></a>
-      <a href="https://flickr.com/photos/mitchmaster/"><img src="pics/mitchlogo_flickr.png" alt="FLICKR" width="37" height="35"></a>
-    </div>
   </section>
+  <nav>
+    <a href="https://www.cgarbs.de/blog/">blog</a>
+    <a href="https://github.com/mmitch">github</a>
+    <a href="https://twitter.com/master_mitch">twitter</a>
+    <a href="https://flickr.com/photos/mitchmaster/">flickr</a>
+  </nav>
   <div style="clear: both;"></div>
 </header>
 EOF
     ;
+#    <div class="imagebar">
+#      <!--  <a href="https://www.cgarbs.de"><img src="pics/mitchlogo_web.png" alt="WEBSITE" width="37" height="35"></a> -->
+#      <a href="https://www.cgarbs.de/blog/"><img src="pics/mitchlogo_blog.png" alt="BLOG" width="37" height="35"></a>
+#      <a href="https://github.com/mmitch"><img src="pics/mitchlogo_git.png" alt="GIT" width="37" height="35"></a>
+#      <a href="https://twitter.com/master_mitch"><img src="pics/mitchlogo_twitter.png" alt="TWITTER" width="37" height="35"></a>
+#      <a href="https://flickr.com/photos/mitchmaster/"><img src="pics/mitchlogo_flickr.png" alt="FLICKR" width="37" height="35"></a>
+#    </div>
 
     print OUT "<div class=\"columnsContainer\">\n";
 
@@ -625,7 +631,7 @@ EOF
     # Navigation
     #
 
-    print OUT " <nav>\n";
+    print OUT " <nav id='sidebar'>\n";
     navBar($i, $lang);
     print OUT " </nav>\n";
 
