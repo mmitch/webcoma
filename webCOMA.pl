@@ -1025,8 +1025,8 @@ EOF
 
 		print FEED "    <item>\n";
 		print FEED "      <title><![CDATA[$sitename - $elem->{'TITLE'}]]></title>\n";
-#		print FEED "      <description>see content</description>\n"; ## TODO
-		print FEED "      <content:encoded>\n<![CDATA[$elem->{'TEXT'}]]></content:encoded>\n";
+		print FEED "      <description>\n<![CDATA[$elem->{'TEXT'}]]></description>\n";
+#		print FEED "      <content:encoded>\n<![CDATA[$elem->{'TEXT'}]]></content:encoded>\n";
 		print FEED "      <pubDate>$datum</pubDate>\n";
 		print FEED "      <dc:creator>$author (mailto:$authormail)</dc:creator>\n";
 #		print FEED "      <category domain=\"URL\">category</category>\n"; ## TODO
