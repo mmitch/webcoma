@@ -970,13 +970,17 @@ sub rssfeed($)
 	my $link = $file;
 	$link =~ s/.*!//g;
 	foreach my $date (keys %{$news{$file}}) {
-	    if (defined $news{$file}{$date}{$lang}) {
-		push @{$dates{$date}},
-		{
-		    'LINK' => $link,
-		    'TEXT' => $news{$file}{$date}{$lang},
-		    'TITLE'=> $cache{$file}{$lang}{'TITLE'}
-		};
+	    if ($date =~ /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/) {
+		if (defined $news{$file}{$date}{$lang}) {
+		    push @{$dates{$date}},
+		    {
+			'LINK' => $link,
+			'TEXT' => $news{$file}{$date}{$lang},
+			'TITLE'=> $cache{$file}{$lang}{'TITLE'}
+		    };
+		}
+	    } else {
+		warn "skipped wrong date `$date' in `$file'";
 	    }
 	}
     }
@@ -1016,7 +1020,7 @@ EOF
 	my $count = 1;
 	foreach my $date (reverse sort keys %dates) {
 	    last if $count > $rssmax;
-	    
+
 	    my $datum = strftime("%a, %d %b %Y %H:%M:%S +0000", 0, 0, 12, substr($date,8,2), substr($date,5,2)-1, substr($date,0,4)-1900);
 
 	    foreach my $elem (@{$dates{$date}}) {
