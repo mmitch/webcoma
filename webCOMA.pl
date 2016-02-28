@@ -988,7 +988,7 @@ sub rssfeed($)
     open FEED, ">$destpath/$feedfile" or die "can't open <$destpath/$feedfile>: $!";
 
     print FEED <<"EOF";
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0"
  xmlns:dc="http://purl.org/dc/elements/1.1/"
  xmlns:content="http://purl.org/rss/1.0/modules/content/"
