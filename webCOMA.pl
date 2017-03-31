@@ -382,7 +382,6 @@ sub printPage($$)
   <meta name="rcs_tag" content="$cache{$page}{'RCS'}">
   <meta name="revisit-after" content="$revisit">
   <meta name="robots" content="index,follow">
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>$sitename - $title</title>
   <link rel="stylesheet" type="text/css" href="style.css">
