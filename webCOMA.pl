@@ -889,7 +889,9 @@ sub expand($$)
 	$zeile =~ s/#D?LINK:[^#]*#/<a href="$link.$lang.html$hash"${class}>/;
     }
 
-    if ($zeile =~ s/#SUBTITLE:(.*):[^:]*:/<a name="$subtitlecount">$1<\/a>/) {
+    if ($zeile =~ /#SUBTITLE:(.*):[^:]*:/) {
+	die '#SUBTITLE, but did not find surrounding container!' unless $zeile =~ />#SUBTITLE:(.*):[^:]*:/;
+	$zeile =~ s/>#SUBTITLE:(.*):[^:]*:/ id="$subtitlecount">$1/;
 	$subtitlecount++;
     }
 
