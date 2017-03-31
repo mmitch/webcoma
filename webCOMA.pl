@@ -356,7 +356,7 @@ sub printPage($$)
     my $title = $cache{$page}{$lang}{'TITLE'};
     my $gbAlign = 1;
     
-    print "$file.$lang.html\t<$title>\t[$typ]\n";
+    printf "%-34s %-10s %s\n", "$file.$lang.html", $typ, $title;
 
     open IN, '<', "$srcpath/$file.page" or die "can't open <$srcpath/$file.page>: $!";
     open OUT, '>', "$destpath/$file.$lang.html" or die "can't open <$destpath/$file.$lang.html>: $!";
