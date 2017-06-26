@@ -36,10 +36,10 @@ my $favicon = 'pics/favicon.ico';  # may also be empty
 my $author    = 'Christian Garbs';
 my $authormail= 'mitch@cgarbs.de';
 my $sitename  = 'Master Mitch';
-my $rsstitle = 'Master Mitch on da netz';
-my $rssdescription = "Mitch's homepage";
 my $baseurl = 'https://www.cgarbs.de';
 ## RSS definitions
+my $rsstitle = 'Master Mitch on da netz';
+my $rssdescription = "Mitch's homepage";
 my $rssmax   = 15; # number or articles in file
 my $rsspicurl = 'https://www.cgarbs.de/pics/favicon.feed.png'; # may also be empty
 my $rsspicwidth = 22;
@@ -974,11 +974,16 @@ sub rssfeed($)
 	foreach my $date (keys %{$news{$file}}) {
 	    if ($date =~ /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/) {
 		if (defined $news{$file}{$date}{$lang}) {
+
+		    # remove &shy; from title, only relevant for page tree on webpage
+		    my $stripped_title = $cache{$file}{$lang}{'TITLE'};
+		    $stripped_title =~ s/&shy;//g;
+
 		    push @{$dates{$date}},
 		    {
 			'LINK' => $link,
 			'TEXT' => $news{$file}{$date}{$lang},
-			'TITLE'=> $cache{$file}{$lang}{'TITLE'}
+			'TITLE'=> $stripped_title,
 		    };
 		}
 	    } else {
