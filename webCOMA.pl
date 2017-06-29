@@ -410,7 +410,7 @@ EOF
     <a href="https://plus.google.com/+ChristianGarbs/">google+</a>
     <a href="https://flickr.com/photos/mitchmaster/">flickr</a>
   </nav>
-  <div style="clear: both;"></div>
+  <div class="clearboth"></div>
 </header>
 EOF
     ;
@@ -672,7 +672,7 @@ EOF
     if ($flattr) {
 	print OUT << "EOF";
   :
-  <span><a href="$flattr" target="_blank" style="color: black">Flattr this!</a></span>
+  <span><a href="$flattr" target="_blank" class="flattr">Flattr this!</a></span>
 EOF
 ;
     }
@@ -1199,6 +1199,7 @@ sub rssBox($$$)
 		my $text = $item->{description};
 		# remove HTML validator warning (we're only HTML 4.x, not XHTML)
 		$text =~ s,/>,>,g;
+		$text =~ s,style='float:left;margin: 0 6px 6px 0;',class="twitterfloatleft",g;
 		$text =~ s/border=0 target/target/g;
 		$text =~ s/img src='http:/img alt='twitter avatar icon' src='https:/g;
 		$text =~ s/img src="http:/img alt='image from twitter' src="https:/g;
