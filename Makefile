@@ -8,6 +8,10 @@ generate:
 	rm -f out/*.html
 	LANG=C ./webCOMA.pl
 #	time tidy -m -e -q -wrap 72 -f tidyerrlog out/*.html || echo "TIDY ERRORS!"
+
+# until GDPR is available in English: remove english files
+	(cd out; for EN in *en.html; do DE=$${EN%%en.html}de.html ; cp $$DE $$EN ; done)
+
 	install -m 644 out/*.html $(DESTPATH)
 	install -m 644 out/*.xml $(DESTPATH)
 	install -m 644 in/*.css $(DESTPATH)

@@ -843,6 +843,8 @@ sub navBar($$)
     print OUT "<h2>$langtitle{$lang}</h2>\n";
     print OUT "<ul>\n";
     foreach my $l (@languages) {
+	# until GDPR is available in English: remove english files
+	next if $l eq 'en';
 	if ($l ne $lang) {
 	    if (grep { $pagestructure{$lang}[$i] eq $_ } @{$pagestructure{$l}}) {
 		print OUT "<li><a href=\"$me.$l.html\">$language{$l}</a></li>\n";
