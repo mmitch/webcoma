@@ -58,7 +58,7 @@ my %date;
 my $date_cmd  = 'date';
 my $copy_cmd  = 'cp';
 my $revisit   = '7 days';
-my $host      = `hostname -f`;
+my $host      = `hostname -s`;
 chomp $host;
 my %cache;
 my %linkcache;
