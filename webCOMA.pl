@@ -407,7 +407,6 @@ EOF
     <a href="https://www.cgarbs.de/blog/">blog</a>
     <a href="https://github.com/mmitch">github</a>
     <a href="https://twitter.com/master_mitch">twitter</a>
-    <a href="https://plus.google.com/+ChristianGarbs/">google+</a>
   </nav>
   <div class="clearboth"></div>
 </header>
