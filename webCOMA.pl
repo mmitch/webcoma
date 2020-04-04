@@ -413,9 +413,7 @@ EOF
 EOF
     ;
 
-    print OUT "<div class=\"columnsContainer\">\n";
-
-    print OUT " <article>\n";
+    print OUT "<article>\n";
 
     if (($typ eq "plain") or ($typ eq "news")) {
 
@@ -614,9 +612,7 @@ EOF
 	die "UNKNOWN TYPE <$typ>\n";
     }
 
-    print OUT " </article>\n";
-
-    print OUT "</div>\n"; # columnsContainer
+    print OUT "</article>\n";
 
     #
     # Navigation
