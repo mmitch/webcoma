@@ -32,7 +32,8 @@ if (defined $version) {
 }
 $version   = "webCOMA (git$version)";
 
-my $favicon = 'pics/favicon.ico';  # may also be empty
+my $favicon_ico = '/favicon.ico';  # may also be empty; MUST live in the root directory
+my $favicon_svg = '/favicon.svg';  # may also be empty
 my $author    = 'Christian Garbs';
 my $authormail= 'mitch@cgarbs.de';
 my $sitename  = 'Master Mitch';
@@ -388,7 +389,8 @@ sub printPage($$)
   <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$baseurl/rssfeed.$lang.xml">
 EOF
 ;
-    print OUT "  <link rel=\"shortcut icon\" type=\"image/ico\" href=\"$favicon\">\n" if $favicon;
+    print OUT "  <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"$favicon_ico\">\n"       if $favicon_ico;
+    print OUT "  <link rel=\"icon\" type=\"image/svg+xml\" href=\"$favicon_svg\" sizes=\"any\">\n" if $favicon_svg;
     print OUT <<"EOF";
 </head>
 <body lang="$lang">
