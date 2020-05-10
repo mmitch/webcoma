@@ -630,7 +630,7 @@ EOF
 
     print OUT << "EOF";
 <footer>
-  <span><a href="mailto:$authormail">$author</a></span>
+  <span><a class="h-card" href="$baseurl">$author</a></span>
   :
   <span><a href="webcoma.$lang.html">$version</a></span>
   :
