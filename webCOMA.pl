@@ -406,9 +406,9 @@ EOF
     <h1>$sitename - $title</h1>
   </section>
   <nav>
-    <a href="https://www.cgarbs.de/blog/">blog</a>
-    <a href="https://github.com/mmitch">github</a>
-    <a href="https://twitter.com/master_mitch">twitter</a>
+    <a href="https://www.cgarbs.de/blog/" rel="me">blog</a>
+    <a href="https://github.com/mmitch" rel="me">github</a>
+    <a href="https://twitter.com/master_mitch" rel="me">twitter</a>
   </nav>
   <div class="clearboth"></div>
 </header>
