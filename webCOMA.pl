@@ -82,7 +82,7 @@ my %language    = ( 'de' => 'Deutsch', 'en' => 'English' );
 my %langsrc     = ( 'de' => 'Quellcode', 'en' => 'source' );
 my %feedtitle   = ( 'de' => 'Feed', 'en' => 'feed' );
 
-sub scanStructure($$);
+sub scanStructure($$$);
 sub printPage($$);
 sub initDates();
 sub convertDate($$);
@@ -110,23 +110,23 @@ my $pagefilter = undef;
     initDates();
     print "\n";
 
-    open DOT, ">$dotfile" or die "can't open dotfile <$dotfile>: $!";
-    print DOT "digraph \"$sitename\" {\n";
-    print DOT "\tsize=\"7,8\";\n";
-    print DOT "\tratio=stretch;\n";
-    print DOT "\t$_ [shape=box];\n" foreach @startdocs;
+    open my $dot_fh, '>', $dotfile or die "can't open dotfile <$dotfile>: $!";
+    print $dot_fh "digraph \"$sitename\" {\n";
+    print $dot_fh "\tsize=\"7,8\";\n";
+    print $dot_fh "\tratio=stretch;\n";
+    print $dot_fh "\t$_ [shape=box];\n" foreach @startdocs;
 
     print "Scanning site structure:\n";
-    scanStructure($_,"") foreach @startdocs;
+    scanStructure($dot_fh, $_, '') foreach @startdocs;
     foreach my $lang (@languages) {
 	print "$lang: ";
 	print (scalar @{$pagestructure{$lang}});
 	print " pages found.\n";
     }
 
-    print DOT "}\n";
+    print $dot_fh "}\n";
     print "\n";
-    close DOT or die "can't close dotfile <$dotfile>: $!";
+    close $dot_fh or die "can't close dotfile <$dotfile>: $!";
 
     print "Scanning dlink integrity: ";
     foreach my $dlink (keys %dlinkcache) {
@@ -180,9 +180,9 @@ my $pagefilter = undef;
 #
 
 
-sub printDLINK($$)
+sub printDLINK($$$)
 {
-    my ($doc, $parm) = (@_);
+    my ($dot_fh, $doc, $parm) = @_;
     
     my $link = $parm;
     $link =~ s/\!.*$//;
@@ -191,7 +191,7 @@ sub printDLINK($$)
     my ($from, $to) = ($doc, $parm);
     $from =~ s/-/_/g;
     $to =~ s/-/_/g;
-    print DOT "\t$from -> $to [style=dotted];\n";
+    print $dot_fh "\t$from -> $to [style=dotted];\n";
 }
 
 
@@ -225,10 +225,9 @@ sub getGitCommit($)
 #
 
 
-sub scanStructure($$)
+sub scanStructure($$$)
 {
-    my $doc    = shift;
-    my $parent = shift;
+    my ($dot_fh, $doc, $parent) = @_;
 
     my @files;
 
@@ -262,7 +261,7 @@ sub scanStructure($$)
 		    if (defined $olddate) {
 
 		        if ($text =~ /#DLINK:([^#]*)#/) {
-			    printDLINK($doc, $1);
+			    printDLINK($dot_fh, $doc, $1);
 			}
 			
 			## COPY BEGIN
@@ -316,7 +315,7 @@ sub scanStructure($$)
 	    }
 
 	    if ($line =~ /#DLINK:([^#]*)#/) {
-		printDLINK($doc, $1);
+		printDLINK($dot_fh, $doc, $1);
 	    }
 
 	    if ($line =~ /#SUBTITLE:(.*):([^:]*):/) {
@@ -353,10 +352,10 @@ sub scanStructure($$)
 		my ($from, $to) = ($doc, $file);
 		$from =~ s/-/_/g;
 		$to =~ s/-/_/g;
-		print DOT "\t$from -> $to;\n";
+		print $dot_fh "\t$from -> $to;\n";
 	    }
 
-	    scanStructure($file, "$parent$doc!");
+	    scanStructure($dot_fh, $file, "$parent$doc!");
 	}
     }
 }
