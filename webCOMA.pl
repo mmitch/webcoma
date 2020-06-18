@@ -87,14 +87,14 @@ sub printPage($$);
 sub initDates();
 sub convertDate($$);
 sub readTag($$$);
-sub navBar($$);
+sub navBar($$$);
 sub expand($$);
-sub newsBox($$);
-sub includeSiteMap($);
+sub newsBox($$$);
+sub includeSiteMap($$);
 sub rssfeed($);
 sub getLeft($$);
 sub getRight($$);
-sub rssBox($$$);
+sub rssBox($$$$);
 
 
 my $pagefilter = undef;
@@ -381,7 +381,7 @@ sub printPage($$)
     printf "%-34s %-10s %s\n", "$file.$lang.html", $typ, $title;
 
     open my $in, '<', "$srcpath/$file.page" or die "can't open <$srcpath/$file.page>: $!";
-    open OUT, '>', "$destpath/$file.$lang.html" or die "can't open <$destpath/$file.$lang.html>: $!";
+    open my $out, '>', "$destpath/$file.$lang.html" or die "can't open <$destpath/$file.$lang.html>: $!";
     
     my @news = readTag($in, "NEWS", $lang);
     
@@ -390,7 +390,7 @@ sub printPage($$)
 
     $subtitlecount = 0;
 
-    print OUT <<"EOF";
+    print $out <<"EOF";
 <!DOCTYPE html>
 <html lang="$lang">
 <head>
@@ -410,9 +410,9 @@ sub printPage($$)
   <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$baseurl/rssfeed.$lang.xml">
 EOF
 ;
-    print OUT "  <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"$favicon_ico\">\n"       if $favicon_ico;
-    print OUT "  <link rel=\"icon\" type=\"image/svg+xml\" href=\"$favicon_svg\" sizes=\"any\">\n" if $favicon_svg;
-    print OUT <<"EOF";
+    print $out "  <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"$favicon_ico\">\n"       if $favicon_ico;
+    print $out "  <link rel=\"icon\" type=\"image/svg+xml\" href=\"$favicon_svg\" sizes=\"any\">\n" if $favicon_svg;
+    print $out <<"EOF";
 </head>
 <body lang="$lang">
 EOF
@@ -421,7 +421,7 @@ EOF
 # lohnt nicht, weil es den Inhalt nicht beschreibt:
 #  <meta name="description" content="$sitename - $title">
     
-    print OUT << "EOF";
+    print $out <<"EOF";
 <header>
   <section>
     <h1>$sitename - $title</h1>
@@ -436,7 +436,7 @@ EOF
 EOF
     ;
 
-    print OUT "<article>\n";
+    print $out "<article>\n";
 
     if (($typ eq "plain") or ($typ eq "news")) {
 
@@ -445,31 +445,31 @@ EOF
 	    my $line = shift @lines;
 	    $line = expand($line, $lang);
 	    if ($line =~ /#SITEMAP#/) {
-		includeSiteMap($lang);
+		includeSiteMap($out, $lang);
 	    } elsif ($line =~ /\#NEWS\#/) {
 		if ($typ eq "plain") {
-		    newsBox($page, $lang);
+		    newsBox($out, $page, $lang);
 		} else {
-		    newsBox("", $lang);
+		    newsBox($out, '', $lang);
 		}
 	    } elsif ($line =~ /#RSSBOX:([^:]+):([^:]+)#/) {
-		rssBox($1, $2, $lang);
+		rssBox($out, $1, $2, $lang);
 	    } elsif ($line =~ /\#SUBTITLES(\/s)?\#/) { # TODO: wrap SUBTITLES in a <nav> element - remove <p> from individual pages
 		my $count = 0;
 		if (defined $1) {
 		    my %sorthash;
 		    map {$sorthash{$_} = $count++} @{$cache{"$page"}{$lang}{'SUBTITLES'}};
 		    foreach my $key (sort {uc($a) cmp uc($b)} keys %sorthash) {
-			print OUT "[<a href=\"#$sorthash{$key}\">$key</a>] ";
+			print $out "[<a href=\"#$sorthash{$key}\">$key</a>] ";
 		    }
 		} else {
 		    foreach my $subtitle (@{$cache{"$page"}{$lang}{'SUBTITLES'}}) {
-			print OUT "[<a href=\"#$count\">$subtitle</a>] ";
+			print $out "[<a href=\"#$count\">$subtitle</a>] ";
 			$count++;
 		    }
 		}
 	    } else {
-		print OUT "$line\n";
+		print $out "$line\n";
 	    }
 	}
 	
@@ -505,7 +505,7 @@ EOF
 	while ($zeile !~ /^<!--.BEG/) {
 	    $zeile= shift @input;
 	}
-	print OUT "$zeile";
+	print $out "$zeile";
 	
 	# Autor-Spalte ?
 	
@@ -534,8 +534,8 @@ EOF
 	}
 	my $sprungmarke=shift @input;
 	
-	print OUT "<h2 class=\"centered\">Download</h2>";
-	print OUT "<h1 class=\"centered\">$programmname</h1>";
+	print $out "<h2 class=\"centered\">Download</h2>";
+	print $out "<h1 class=\"centered\">$programmname</h1>";
 
 	# Der Freitext		
 	
@@ -545,28 +545,28 @@ EOF
 	    printf "\n\nFEHLER [$fehler]: FREITEXT fehlt\n\n";
 	}
 
-	print OUT "<p>";
+	print $out "<p>";
 	$zeile = shift @input;
 	while ($zeile ne "ZEILE") {
 	    $zeile = expand($zeile,$lang);
-	    print OUT "$zeile\n";	
+	    print $out "$zeile\n";
 	    $zeile = shift @input;
 	}
-	print OUT "</p>";
+	print $out "</p>";
 
 	#
 	# TODO FIXME: get this table centered again?!
 	#
-	print OUT "<table class=\"dwn\"><tr>";
+	print $out "<table class=\"dwn\"><tr>";
 	if ($autor_schalter eq "JA") {
-	    print OUT "<th class=\"dwn\">$autor_head</th>";
+	    print $out "<th class=\"dwn\">$autor_head</th>";
 	};
-	print OUT "<th class=\"dwn\">$datum_head</th>";
-	print OUT "<th class=\"dwn\">$version_head</th>";
-	print OUT "<th class=\"dwn\">$size_head</th>";
-	print OUT "<th class=\"dwn\">$name_head</th>";
-	print OUT "<th class=\"dwn\">$comment_head</th>";
-	print OUT "</tr>";
+	print $out "<th class=\"dwn\">$datum_head</th>";
+	print $out "<th class=\"dwn\">$version_head</th>";
+	print $out "<th class=\"dwn\">$size_head</th>";
+	print $out "<th class=\"dwn\">$name_head</th>";
+	print $out "<th class=\"dwn\">$comment_head</th>";
+	print $out "</tr>";
 	
 	# Die einzelnen Zeilen
 	
@@ -575,13 +575,13 @@ EOF
 
 	    if ($typ eq "--HLINE--") {
 		
-		print OUT "<tr><td colspan=";
+		print $out "<tr><td colspan=";
 		if ($autor_schalter eq "JA") {
-		    print OUT "6";
+		    print $out "6";
 		} else {
-		    print OUT "5";
+		    print $out "5";
 		}
-		print OUT "><hr></td></tr>\n";
+		print $out "><hr></td></tr>\n";
 		
 	    } else {
 		
@@ -596,16 +596,16 @@ EOF
 		my $name = shift @input;
 		my $comment = shift @input;
 		
-		print OUT "<tr>";
+		print $out "<tr>";
 		if ($autor_schalter eq "JA") {
-		    print OUT "<td class=\"dwnauthor\">$autor</td>";
+		    print $out "<td class=\"dwnauthor\">$autor</td>";
 		};
-		print OUT "<td class=\"dwndate\">$datum</td>";
-		print OUT "<td class=\"dwnversion\">$version</td>";
-		print OUT "<td class=\"dwnsize\">$size</td>";
-		print OUT "<td class=\"dwnlink\"><a href=\"$url\">$name</a></td>";
-		print OUT "<td class=\"dwncomment\">$comment</td>";
-		print OUT "</tr>\n";
+		print $out "<td class=\"dwndate\">$datum</td>";
+		print $out "<td class=\"dwnversion\">$version</td>";
+		print $out "<td class=\"dwnsize\">$size</td>";
+		print $out "<td class=\"dwnlink\"><a href=\"$url\">$name</a></td>";
+		print $out "<td class=\"dwncomment\">$comment</td>";
+		print $out "</tr>\n";
 		
 	    }
 	    
@@ -619,8 +619,8 @@ EOF
 	    print "\n\nFEHLER [$fehler]: <!--END oder ZEILE fehlt \n\n";
 	}
 	
-	print OUT "</table>";
- 	print OUT "$typ\n";
+	print $out "</table>";
+	print $out "$typ\n";
 	
 
 	if ($fehler > 0) {
@@ -629,27 +629,27 @@ EOF
 	    
 	}
 
-	newsBox($page, $lang);
+	newsBox($out, $page, $lang);
 
     } else {
 	die "UNKNOWN TYPE <$typ>\n";
     }
 
-    print OUT "</article>\n";
+    print $out "</article>\n";
 
     #
     # Navigation
     #
 
-    print OUT " <nav id='sidebar'>\n";
-    navBar($i, $lang);
-    print OUT " </nav>\n";
+    print $out " <nav id='sidebar'>\n";
+    navBar($out, $i, $lang);
+    print $out " </nav>\n";
 
     #
     # Seitenfuß
     #
 
-    print OUT << "EOF";
+    print $out <<"EOF";
 <footer>
   <span><a class="h-card" href="$baseurl">$author</a></span>
   :
@@ -661,32 +661,32 @@ EOF
 ;
     my $uri = "$baseurl/$file.$lang.html";
     if ($cache{$page}{$lang}{VALID}) {
-	print OUT << "EOF";
+	print $out <<"EOF";
   <span><a href="http://validator.w3.org/check?uri=$uri">valid HTML</a></span>
   :
 EOF
 ;
     } else {
-	print OUT << "EOF";
+	print $out <<"EOF";
   <span><a href="http://validator.w3.org/check?uri=$uri">HTML not yet validated!</a></span>
   :
 EOF
 ;
     }
-    print OUT << "EOF";
+    print $out <<"EOF";
   <span><a href="http://jigsaw.w3.org/css-validator/validator?uri=$uri">valid CSS</a></span>
   :
   <span><a href="http://www.feedvalidator.org/check.cgi?url=$baseurl/rssfeed.$lang.xml">valid RSS</a></span>
 EOF
 ;
     if ($flattr) {
-	print OUT << "EOF";
+	print $out <<"EOF";
   :
   <span><a href="$flattr" target="_blank" class="flattr">Flattr this!</a></span>
 EOF
 ;
     }
-    print OUT << "EOF";
+    print $out <<"EOF";
 </footer>
 </body>
 </html>
@@ -695,7 +695,7 @@ EOF
 
 
     close $in or die "can't close <$srcpath/$file.page>: $!";
-    close OUT or die "can't close <$destpath/$file.$lang.html>: $!";
+    close $out or die "can't close <$destpath/$file.$lang.html>: $!";
 }
 
 
@@ -780,9 +780,9 @@ sub readTag($$$)
 #
 
 
-sub navBar($$)
+sub navBar($$$)
 {
-    my ($i, $lang) = @_;
+    my ($out, $i, $lang) = @_;
 
     my ($me, $path) = getStuff($i, $lang);
     $me =~ s/^.*!//;
@@ -790,7 +790,7 @@ sub navBar($$)
 	$path .= "!";
     }
 
-    print OUT "<h2>$navtitle{$lang}</h2>\n";
+    print $out "<h2>$navtitle{$lang}</h2>\n";
     my $depth = $path =~ tr/!/!/;
     my $olddepth = -1;
     my $li = 0;
@@ -817,16 +817,16 @@ sub navBar($$)
 	}
 
 	if ($el_depth > $olddepth) {
-	    print OUT "<ul>\n";
+	    print $out "<ul>\n";
 	    $olddepth++;
 	} else {
 	    while ($el_depth < $olddepth) {
 		$olddepth--;
-		print OUT "</li>\n</ul>\n";
+		print $out "</li>\n</ul>\n";
 		$li--;
 	    }
 	    if ($li) {
-		print OUT "</li>\n";
+		print $out "</li>\n";
 	    }
 	}
 	
@@ -834,43 +834,43 @@ sub navBar($$)
 	my $title = $cache{$element}{$lang}{TITLE};
 	$title =~ s/^.* - //;
 	if ($element eq $path.$me) {
-	    print OUT "<li><a href=\"#\" class=\"selected\">$title</a>";
+	    print $out "<li><a href=\"#\" class=\"selected\">$title</a>";
 	} else {
-	    print OUT "<li><a href=\"$file.$lang.html\">$title</a>";
+	    print $out "<li><a href=\"$file.$lang.html\">$title</a>";
 	}
 	$li++;
 	
     }
     while ($olddepth > -1) {
 	if ($li) {
-	    print OUT "</li>\n";
+	    print $out "</li>\n";
 	    $li--;
 	}
-	print OUT "</ul>\n";
+	print $out "</ul>\n";
 	$olddepth--;
     }
 
 
-    print OUT "<h2>$langtitle{$lang}</h2>\n";
-    print OUT "<ul>\n";
+    print $out "<h2>$langtitle{$lang}</h2>\n";
+    print $out "<ul>\n";
     foreach my $l (@languages) {
 	# until GDPR is available in English: remove english files
 	next if $l eq 'en';
 	if ($l ne $lang) {
 	    if (grep { $pagestructure{$lang}[$i] eq $_ } @{$pagestructure{$l}}) {
-		print OUT "<li><a href=\"$me.$l.html\">$language{$l}</a></li>\n";
+		print $out "<li><a href=\"$me.$l.html\">$language{$l}</a></li>\n";
 	    }
 	} else {
-	    print OUT "<li><a href=\"#\" class=\"selected\">$language{$l}</a></li>\n";
+	    print $out "<li><a href=\"#\" class=\"selected\">$language{$l}</a></li>\n";
 	}	    
     }
-    print OUT "<li><a href=\"$sourcepath/$me.txt\" class=\"navbar\">$langsrc{$lang}</a></li>\n";
-    print OUT "</ul>\n";
+    print $out "<li><a href=\"$sourcepath/$me.txt\" class=\"navbar\">$langsrc{$lang}</a></li>\n";
+    print $out "</ul>\n";
 
-    print OUT "<h2>$feedtitle{$lang}</h2>\n";
-    print OUT "<ul>\n";
-    print OUT "<li><a href=\"$baseurl/rssfeed.$lang.xml\" class=\"navbar\">$feedtitle{$lang}</a></li>\n";
-    print OUT "</ul>\n";
+    print $out "<h2>$feedtitle{$lang}</h2>\n";
+    print $out "<ul>\n";
+    print $out "<li><a href=\"$baseurl/rssfeed.$lang.xml\" class=\"navbar\">$feedtitle{$lang}</a></li>\n";
+    print $out "</ul>\n";
 
 
 }
@@ -913,10 +913,9 @@ sub expand($$)
 #
 
 
-sub newsBox($$)
+sub newsBox($$$)
 {
-    my $path = shift;
-    my $lang = shift;
+    my ($out, $path, $lang) = @_;
 
     my %dates;
 
@@ -939,7 +938,7 @@ sub newsBox($$)
 
     if (keys %dates) {
 	
-	print OUT "<div class=\"newsbox\"><p><b>&nbsp;&nbsp;News</b></p>\n";
+	print $out "<div class=\"newsbox\"><p><b>&nbsp;&nbsp;News</b></p>\n";
 
 	my $count = 1;
 	foreach my $date (reverse sort keys %dates) {
@@ -955,13 +954,13 @@ sub newsBox($$)
 	    }
 	    
 	    foreach my $elem (@{$dates{$date}}) {
-		print OUT "<p><a href=\"$elem->{'LINK'}.$lang.html\">$datum: $elem->{'TITLE'}</a><br>\n";
-		print OUT "$elem->{'TEXT'}</p>\n";
+		print $out "<p><a href=\"$elem->{'LINK'}.$lang.html\">$datum: $elem->{'TITLE'}</a><br>\n";
+		print $out "$elem->{'TEXT'}</p>\n";
 		$count++ unless $path eq "";
 	    }
 	}
 
-	print OUT "</div>\n";
+	print $out "</div>\n";
 
     }
     
@@ -973,7 +972,7 @@ sub newsBox($$)
 
 sub rssfeed($)
 {
-    my $lang = shift;
+    my ($lang) = @_;
 
     my $feedfile = "rssfeed.$lang.xml";
 
@@ -1076,12 +1075,13 @@ EOF
 #
 
 
-sub includeSiteMap($)
+sub includeSiteMap($$)
 {
-    my $lang = shift;
+    my ($out, $lang) = @_;
+
     my @oldpath = ("");
     my @list = @{$pagestructure{$lang}};
-    print OUT "<ul>\n";
+    print $out "<ul>\n";
     while (my $page = shift @list) {
 
 	my ($path, $file);
@@ -1097,27 +1097,27 @@ sub includeSiteMap($)
 	if ($path ne $oldpath[0]) {
 	    if ($path !~ /^$oldpath[0]/) {
 		while ($path ne $oldpath[0]) {
-		    print OUT "</li></ul></li>\n";
+		    print $out "</li></ul></li>\n";
 		    shift @oldpath;
 		}
 	    } else {
-		print OUT "<ul>\n";
+		print $out "<ul>\n";
 		unshift @oldpath, $path;
 	    }
 	} else {
-	    print OUT "</li>\n" unless @oldpath == 1;
+	    print $out "</li>\n" unless @oldpath == 1;
 	}
 
-	print OUT "<li><a href=\"$file.$lang.html\">$cache{$page}{$lang}{'TITLE'}</a>";
+	print $out "<li><a href=\"$file.$lang.html\">$cache{$page}{$lang}{'TITLE'}</a>";
 	if ($cache{$page}{$lang}{VALID}) {
-	    print OUT " (V)";
+	    print $out " (V)";
 	}
-	print OUT "\n";
+	print $out "\n";
 
     }
     
     foreach (@oldpath) {
-	print OUT "</li></ul>\n";
+	print $out "</li></ul>\n";
     }
 
 }
@@ -1179,11 +1179,9 @@ sub getStuff($$)
 #
 
 
-sub rssBox($$$)
+sub rssBox($$$$)
 {
-    my $file  = shift;
-    my $title = shift;
-    my $lang  = shift;
+    my ($out, $file, $title, $lang) = @_;
 
     $file = "rsscache/$file";
 
@@ -1200,7 +1198,7 @@ sub rssBox($$$)
     if (@{$rss->{items}})
     {
 	my $count = 0;
-	print OUT "<div class=\"newsbox\"><p><b>&nbsp;&nbsp;$title</b></p>\n";
+	print $out "<div class=\"newsbox\"><p><b>&nbsp;&nbsp;$title</b></p>\n";
 	foreach my $item (@{$rss->{items}})
 	{
 	    last if ++$count > $MAXBOXENTRIES;
@@ -1214,7 +1212,7 @@ sub rssBox($$$)
 		$text =~ s/border=0 target/target/g;
 		$text =~ s/img src='http:/img alt='twitter avatar icon' src='https:/g;
 		$text =~ s/img src="http:/img alt='image from twitter' src="https:/g;
-		print OUT "$text<p></p>\n";
+		print $out "$text<p></p>\n";
 	    }
 	    else
 	    {
@@ -1227,9 +1225,9 @@ sub rssBox($$$)
 		{
 		    $date = strftime('%Y-%m-%d', localtime($date));
 		}
-		print OUT "<ul><li><a href=\"$item->{link}\">$date: $item->{title}</a></li></ul>\n";
+		print $out "<ul><li><a href=\"$item->{link}\">$date: $item->{title}</a></li></ul>\n";
 	    }
 	}
-	print OUT "</div>\n";
+	print $out "</div>\n";
     }
 }
