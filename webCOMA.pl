@@ -1002,9 +1002,9 @@ sub rssfeed($)
 	}
     }
 
-    open FEED, ">$destpath/$feedfile" or die "can't open <$destpath/$feedfile>: $!";
+    open my $feed, '>', "$destpath/$feedfile" or die "can't open <$destpath/$feedfile>: $!";
 
-    print FEED <<"EOF";
+    print $feed <<"EOF";
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0"
  xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -1020,7 +1020,7 @@ sub rssfeed($)
 EOF
 ;
     if ($rsspicurl) {
-	print FEED <<"EOF";
+	print $feed <<"EOF";
     <image>
       <url>$rsspicurl</url>
       <title>$rsstitle</title>
@@ -1044,17 +1044,17 @@ EOF
 
 		my $guid = md5_hex( $elem->{TEXT} . $elem->{TITLE} . $datum );
 
-		print FEED "    <item>\n";
-		print FEED "      <title><![CDATA[$sitename - $elem->{'TITLE'}]]></title>\n";
-		print FEED "      <description>\n<![CDATA[$elem->{'TEXT'}]]></description>\n";
-#		print FEED "      <content:encoded>\n<![CDATA[$elem->{'TEXT'}]]></content:encoded>\n";
-		print FEED "      <pubDate>$datum</pubDate>\n";
-		print FEED "      <dc:creator>$author (mailto:$authormail)</dc:creator>\n";
-#		print FEED "      <category domain=\"URL\">category</category>\n"; ## TODO
-		print FEED "      <guid isPermaLink=\"false\">$guid</guid>\n"; ## TODO
-		print FEED "      <link>$baseurl/$elem->{'LINK'}.$lang.html</link>\n";
-#		print FEED "      <comments>URL</comments>\n";
-		print FEED "    </item>\n";
+		print $feed "    <item>\n";
+		print $feed "      <title><![CDATA[$sitename - $elem->{'TITLE'}]]></title>\n";
+		print $feed "      <description>\n<![CDATA[$elem->{'TEXT'}]]></description>\n";
+#		print $feed "      <content:encoded>\n<![CDATA[$elem->{'TEXT'}]]></content:encoded>\n";
+		print $feed "      <pubDate>$datum</pubDate>\n";
+		print $feed "      <dc:creator>$author (mailto:$authormail)</dc:creator>\n";
+#		print $feed "      <category domain=\"URL\">category</category>\n"; ## TODO
+		print $feed "      <guid isPermaLink=\"false\">$guid</guid>\n"; ## TODO
+		print $feed "      <link>$baseurl/$elem->{'LINK'}.$lang.html</link>\n";
+#		print $feed "      <comments>URL</comments>\n";
+		print $feed "    </item>\n";
 		$count++;
 		last if $count > $rssmax;
 	    }
@@ -1062,10 +1062,10 @@ EOF
 
     }
 
-    print FEED "  </channel>\n";
-    print FEED "</rss>\n";
+    print $feed "  </channel>\n";
+    print $feed "</rss>\n";
 
-    close FEED or die "can't close <$destpath/$feedfile>: $!";
+    close $feed or die "can't close <$destpath/$feedfile>: $!";
 
     print "  $feedfile\n";
     
