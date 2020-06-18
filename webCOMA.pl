@@ -1186,14 +1186,14 @@ sub rssBox($$$$)
     $file = "rsscache/$file";
 
     my $rss = XML::RSS->new;
-    open RSSFILE, '<', $file or die "can't open rssfile <$file>: $!";
-    binmode RSSFILE, ':encoding(latin-1)'; # WTF! die Files sind utf8-kodiert, aber nur so bleiben die Umlaute heile?!
+    open my $rssfile, '<', $file or die "can't open rssfile <$file>: $!";
+    binmode $rssfile, ':encoding(latin-1)'; # WTF! die Files sind utf8-kodiert, aber nur so bleiben die Umlaute heile?!
     {
 	local $/ = undef;
-	my $filecontent = <RSSFILE>;
+	my $filecontent = <$rssfile>;
 	$rss->parse($filecontent);
     }
-    close RSSFILE or die "can't open rssfile <$file>: $!";
+    close $rssfile or die "can't open rssfile <$file>: $!";
 
     if (@{$rss->{items}})
     {
