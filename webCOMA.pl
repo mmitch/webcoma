@@ -390,50 +390,51 @@ sub printPage($$)
 
     $subtitlecount = 0;
 
-    print $out <<"EOF";
-<!DOCTYPE html>
-<html lang="$lang">
-<head>
-  <meta charset="UTF-8">
-  <meta name="author" content="$author ($authormail)">
-  <meta name="generating_host" content="$host">
-  <meta name="generation_date" content="$date{$lang}">
-  <meta name="generator" content="$version">
-  <meta name="keywords" content="@keywords">
-  <meta name="language" content="$lang">
-  <meta name="git_commit" content="$cache{$page}{'git-commit'}">
-  <meta name="revisit-after" content="$revisit">
-  <meta name="robots" content="index,follow">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>$sitename - $title</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$baseurl/rssfeed.$lang.xml">
-EOF
-;
-    print $out "  <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"$favicon_ico\">\n"       if $favicon_ico;
-    print $out "  <link rel=\"icon\" type=\"image/svg+xml\" href=\"$favicon_svg\" sizes=\"any\">\n" if $favicon_svg;
-    print $out <<"EOF";
-</head>
-<body lang="$lang">
-EOF
+    print $out <<~"EOF";
+    <!DOCTYPE html>
+    <html lang="$lang">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="author" content="$author ($authormail)">
+      <meta name="generating_host" content="$host">
+      <meta name="generation_date" content="$date{$lang}">
+      <meta name="generator" content="$version">
+      <meta name="keywords" content="@keywords">
+      <meta name="language" content="$lang">
+      <meta name="git_commit" content="$cache{$page}{'git-commit'}">
+      <meta name="revisit-after" content="$revisit">
+      <meta name="robots" content="index,follow">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>$sitename - $title</title>
+      <link rel="stylesheet" type="text/css" href="style.css">
+      <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="$baseurl/rssfeed.$lang.xml">
+    EOF
     ;
 
-# lohnt nicht, weil es den Inhalt nicht beschreibt:
-#  <meta name="description" content="$sitename - $title">
+    print $out "  <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"$favicon_ico\">\n"       if $favicon_ico;
+    print $out "  <link rel=\"icon\" type=\"image/svg+xml\" href=\"$favicon_svg\" sizes=\"any\">\n" if $favicon_svg;
+    print $out <<~"EOF";
+    </head>
+    <body lang="$lang">
+    EOF
+    ;
+
+    # lohnt nicht, weil es den Inhalt nicht beschreibt:
+    #  <meta name="description" content="$sitename - $title">
     
-    print $out <<"EOF";
-<header>
-  <section>
-    <h1>$sitename - $title</h1>
-  </section>
-  <nav>
-    <a href="https://www.cgarbs.de/blog/" rel="me">blog</a>
-    <a href="https://github.com/mmitch" rel="me">github</a>
-    <a href="https://twitter.com/master_mitch" rel="me">twitter</a>
-  </nav>
-  <div class="clearboth"></div>
-</header>
-EOF
+    print $out <<~"EOF";
+    <header>
+      <section>
+        <h1>$sitename - $title</h1>
+      </section>
+      <nav>
+        <a href="https://www.cgarbs.de/blog/" rel="me">blog</a>
+        <a href="https://github.com/mmitch" rel="me">github</a>
+        <a href="https://twitter.com/master_mitch" rel="me">twitter</a>
+      </nav>
+      <div class="clearboth"></div>
+    </header>
+    EOF
     ;
 
     print $out "<article>\n";
@@ -649,52 +650,51 @@ EOF
     # Seitenfuß
     #
 
-    print $out <<"EOF";
-<footer>
-  <span><a class="h-card" href="$baseurl">$author</a></span>
-  :
-  <span><a href="webcoma.$lang.html">$version</a></span>
-  :
-  <span>$date</span>
-  :
-EOF
-;
+    print $out <<~"EOF";
+    <footer>
+      <span><a class="h-card" href="$baseurl">$author</a></span>
+      :
+      <span><a href="webcoma.$lang.html">$version</a></span>
+      :
+      <span>$date</span>
+      :
+    EOF
+    ;
     my $uri = "$baseurl/$file.$lang.html";
     if ($cache{$page}{$lang}{VALID}) {
-	print $out <<"EOF";
-  <span><a href="http://validator.w3.org/check?uri=$uri">valid HTML</a></span>
-  :
-EOF
-;
+	print $out <<~"EOF";
+          <span><a href="http://validator.w3.org/check?uri=$uri">valid HTML</a></span>
+          :
+        EOF
+	;
     } else {
-	print $out <<"EOF";
-  <span><a href="http://validator.w3.org/check?uri=$uri">HTML not yet validated!</a></span>
-  :
-EOF
-;
+	print $out <<~"EOF";
+          <span><a href="http://validator.w3.org/check?uri=$uri">HTML not yet validated!</a></span>
+          :
+        EOF
+	;
     }
-    print $out <<"EOF";
-  <span><a href="http://jigsaw.w3.org/css-validator/validator?uri=$uri">valid CSS</a></span>
-  :
-  <span><a href="http://www.feedvalidator.org/check.cgi?url=$baseurl/rssfeed.$lang.xml">valid RSS</a></span>
-EOF
-;
+    print $out <<~"EOF";
+      <span><a href="http://jigsaw.w3.org/css-validator/validator?uri=$uri">valid CSS</a></span>
+      :
+      <span><a href="http://www.feedvalidator.org/check.cgi?url=$baseurl/rssfeed.$lang.xml">valid RSS</a></span>
+    EOF
+    ;
     if ($flattr) {
-	print $out <<"EOF";
-  :
-  <span><a href="$flattr" target="_blank" class="flattr">Flattr this!</a></span>
-EOF
-;
+	print $out <<~"EOF";
+      :
+      <span><a href="$flattr" target="_blank" class="flattr">Flattr this!</a></span>
+    EOF
+    ;
     }
-    print $out <<"EOF";
-</footer>
-</body>
-</html>
-EOF
-;
+    print $out <<~"EOF";
+    </footer>
+    </body>
+    </html>
+    EOF
+    ;
 
-
-    close $in or die "can't close <$srcpath/$file.page>: $!";
+    close $in  or die "can't close <$srcpath/$file.page>: $!";
     close $out or die "can't close <$destpath/$file.$lang.html>: $!";
 }
 
@@ -1004,32 +1004,32 @@ sub rssfeed($)
 
     open my $feed, '>', "$destpath/$feedfile" or die "can't open <$destpath/$feedfile>: $!";
 
-    print $feed <<"EOF";
-<?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"
- xmlns:dc="http://purl.org/dc/elements/1.1/"
- xmlns:content="http://purl.org/rss/1.0/modules/content/"
- xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <atom:link href="$baseurl/$feedfile" rel="self" type="application/rss+xml" />
-    <title>$rsstitle</title>
-    <link>$baseurl/index.$lang.html</link>
-    <description>$rssdescription</description>
-    <language>$lang</language>
-    <generator>$version</generator>
-EOF
-;
-    if ($rsspicurl) {
-	print $feed <<"EOF";
-    <image>
-      <url>$rsspicurl</url>
-      <title>$rsstitle</title>
-      <link>$baseurl/index.$lang.html</link>
-      <width>$rsspicwidth</width>
-      <height>$rsspicheight</height>
-    </image>
-EOF
+    print $feed <<~"EOF";
+    <?xml version="1.0" encoding="utf-8"?>
+    <rss version="2.0"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:atom="http://www.w3.org/2005/Atom">
+      <channel>
+        <atom:link href="$baseurl/$feedfile" rel="self" type="application/rss+xml" />
+        <title>$rsstitle</title>
+        <link>$baseurl/index.$lang.html</link>
+        <description>$rssdescription</description>
+        <language>$lang</language>
+        <generator>$version</generator>
+    EOF
     ;
+    if ($rsspicurl) {
+	print $feed <<~"EOF";
+            <image>
+              <url>$rsspicurl</url>
+              <title>$rsstitle</title>
+              <link>$baseurl/index.$lang.html</link>
+              <width>$rsspicwidth</width>
+              <height>$rsspicheight</height>
+            </image>
+        EOF
+	;
     }
 
     if (keys %dates) {
