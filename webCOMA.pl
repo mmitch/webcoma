@@ -138,8 +138,8 @@ my $pagefilter = undef;
     print "OK\n\n";
 
     print "Looking for stale files: ";
-    open FILES, "find $srcpath -maxdepth 1 -name *.page |" or die "can't list directory: $!";
-    while (my $file = <FILES>) {
+    open my $files, '-|', "find \"$srcpath\" -maxdepth 1 -name *.page" or die "can't list directory: $!";
+    while (my $file = <$files>) {
 	chomp $file;
 	$file =~ s/^$srcpath\///;
 	$file =~ s/\.page$//;
@@ -148,7 +148,7 @@ my $pagefilter = undef;
 	    die "STALE FILE $file.page DETECTED\n";
 	}
     }
-    close FILES or die "can't close directory list: $!";
+    close $files or die "can't close directory list: $!";
     print "OK\n\n";
 
     print "Generating pages:\n";
