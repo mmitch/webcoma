@@ -86,7 +86,7 @@ sub scanStructure($$$);
 sub printPage($$);
 sub initDates();
 sub convertDate($$);
-sub readTag($$);
+sub readTag($$$);
 sub navBar($$);
 sub expand($$);
 sub newsBox($$);
@@ -240,15 +240,15 @@ sub scanStructure($$$)
 	my $filename = "$srcpath/$doc.page";
 	$cache{"$parent$doc"}{'git-commit'} = getGitCommit($filename);
 
-	open IN, '<', $filename or die "can't open <$filename>: $!";
+	open my $page_fh, '<', $filename or die "can't open <$filename>: $!";
 
-	next unless grep { $lang eq $_ } readTag("LANG", $lang);
+	next unless grep { $lang eq $_ } readTag($page_fh, 'LANG', $lang);
 
 	print "$lang:  $parent$doc\n";
 	push @{$pagestructure{$lang}}, "$parent$doc";
 
 	my @temp;
-	@temp = readTag("TYPE", $lang);
+	@temp = readTag($page_fh, 'TYPE', $lang);
 	
 	$cache{"$parent$doc"}{$lang}{'TYPE'}  = $temp[0];
 	$cache{"$parent$doc"}{$lang}{'VALID'} = $valid;
@@ -256,7 +256,7 @@ sub scanStructure($$$)
 	{
 	    my $olddate;
 	    my $text = "";
-	    foreach my $news (readTag("NEWS", $lang)) {
+	    foreach my $news (readTag($page_fh, 'NEWS', $lang)) {
 		if ($news =~ /#DATE:(.*)/) {
 		    if (defined $olddate) {
 
@@ -288,20 +288,20 @@ sub scanStructure($$$)
 	    ## COPY END
 	}
 	    
-	@temp = readTag("TITLE", $lang);
+	@temp = readTag($page_fh, 'TITLE', $lang);
 	$cache{"$parent$doc"}{$lang}{'TITLE'} = $temp[0];
 
 	$cache{"$parent$doc"}{$lang}{'DATE'} = convertDate($lang, $filedate);
 	
-	@temp = readTag("KEYWORDS", $lang);
+	@temp = readTag($page_fh, 'KEYWORDS', $lang);
 	my @keywords = $temp[0];
 
 	my $subtitles = [];
 
 	if ($cache{"$parent$doc"}{$lang}{'TYPE'} eq "oldschool") {
-	    @temp = readTag("OLDSCHOOL", $lang);
+	    @temp = readTag($page_fh, 'OLDSCHOOL', $lang);
 	} else {
-	    @temp = readTag("PLAIN", $lang);
+	    @temp = readTag($page_fh, 'PLAIN', $lang);
 	}
 	
 	foreach my $line (@temp) {
@@ -330,7 +330,7 @@ sub scanStructure($$$)
 	    }
 
 	}
-	close IN or die "can't close <$filename>: $!";
+	close $page_fh or die "can't close <$filename>: $!";
 
 	$cache{"$parent$doc"}{$lang}{'SUBTITLES'} = $subtitles;
 
@@ -380,12 +380,12 @@ sub printPage($$)
     
     printf "%-34s %-10s %s\n", "$file.$lang.html", $typ, $title;
 
-    open IN, '<', "$srcpath/$file.page" or die "can't open <$srcpath/$file.page>: $!";
+    open my $in, '<', "$srcpath/$file.page" or die "can't open <$srcpath/$file.page>: $!";
     open OUT, '>', "$destpath/$file.$lang.html" or die "can't open <$destpath/$file.$lang.html>: $!";
     
-    my @news = readTag("NEWS", $lang);
+    my @news = readTag($in, "NEWS", $lang);
     
-    my @temp = readTag("KEYWORDS", $lang);
+    my @temp = readTag($in, "KEYWORDS", $lang);
     my @keywords = $temp[0];
 
     $subtitlecount = 0;
@@ -440,7 +440,7 @@ EOF
 
     if (($typ eq "plain") or ($typ eq "news")) {
 
-	my @lines = readTag("PLAIN", $lang);
+	my @lines = readTag($in, 'PLAIN', $lang);
 	while (@lines) {
 	    my $line = shift @lines;
 	    $line = expand($line, $lang);
@@ -499,7 +499,7 @@ EOF
 	};
 	
 	# Vorlage durchgehen
-	my @input = readTag("OLDSCHOOL", $lang);
+	my @input = readTag($in, 'OLDSCHOOL', $lang);
 
 	my $zeile= shift @input;
 	while ($zeile !~ /^<!--.BEG/) {
@@ -694,7 +694,7 @@ EOF
 ;
 
 
-    close IN or die "can't close <$srcpath/$file.page>: $!";
+    close $in or die "can't close <$srcpath/$file.page>: $!";
     close OUT or die "can't close <$destpath/$file.$lang.html>: $!";
 }
 
@@ -732,18 +732,17 @@ sub convertDate($$)
 #
 
 
-sub readTag($$)
+sub readTag($$$)
 {
-    my $tag = shift;
-    my $lang = shift;
+    my ($fh, $tag, $lang) = @_;
 
     my @ret;
 
-    while (<IN>) {
+    while (<$fh>) {
 	last if /#$tag</;
     }
     
-    while (my $line = <IN>) {
+    while (my $line = <$fh>) {
 	last if $line =~ /#$tag>/;
 	chomp $line;
 
@@ -757,13 +756,13 @@ sub readTag($$)
 	# Language-Block
 	elsif ($line =~ /^&(.*)</) {
 	    if ($1 eq $lang) {
-		while (my $line = <IN>) {
+		while (my $line = <$fh>) {
 		    last if $line =~ /^&$lang>/;
 		    chomp $line;
 		    push @ret, $line;
 		}
 	    } else {
-		while (<IN>) {
+		while (<$fh>) {
 		    last if /^&$1>/;
 		}
 	    }
