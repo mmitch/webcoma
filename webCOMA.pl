@@ -4,6 +4,7 @@ use POSIX qw(strftime);
 use Digest::MD5 qw(md5_hex);
 use XML::RSS;
 use Date::Parse;
+use File::Basename;
 
 ##
 ## when commandline arguments are given, only those pages are generated
@@ -192,11 +193,38 @@ sub printDLINK($$)
     $to =~ s/-/_/g;
     print DOT "\t$from -> $to [style=dotted];\n";
 }
-    
+
 
 #
 
-		  
+
+sub getGitCommit($)
+{
+    my ($filename) = @_;
+
+    # this needs to be done inside the directory, because we have two git repositories:
+    # in/ - contains the website sources (this is what we want)
+    # .   - is the webCOMA repository (contains no pages)
+    my $dirname  = dirname($filename);
+    my $basename = basename($filename);
+
+    open my $git_log_pipe, '-|', "cd \"$dirname\" && git log -n 1 --pretty=format:%h -- \"$basename\""
+	or die "can't get git commit for <$filename> :$1";
+
+    my $git_commit = <$git_log_pipe>;
+
+    close $git_log_pipe or die "can't get git commit for <$filename>: $!";
+
+    chomp $git_commit;
+    die "git commit for <$filename> is empty" unless $git_commit;
+
+    return $git_commit;
+}
+
+
+#
+
+
 sub scanStructure($$)
 {
     my $doc    = shift;
@@ -205,20 +233,15 @@ sub scanStructure($$)
     my @files;
 
     my $filedate = `$date_cmd -r "$srcpath/$doc.page" +%Y%m%d\\ %H:%M:%S`;
-    
 
     foreach my $lang (@languages) {
-	
-	open IN, "<$srcpath/$doc.page" or die "can't open <$srcpath/$doc.page>: $!";
 
 	my $valid = 0;
 
-	while (<IN>) {
-	    $valid = 1 if $_ =~ /^#VALID/;
-	    last if $_ =~ /^#RCS/;
-	}
-	$_ =~ /(\$(Id):.*\$)/;  # (Id) because RCS should not find and substitute this line
-        $cache{"$parent$doc"}{'RCS'} = ($1 or die "no rcs tag in $srcpath/$doc.page");
+	my $filename = "$srcpath/$doc.page";
+	$cache{"$parent$doc"}{'git-commit'} = getGitCommit($filename);
+
+	open IN, '<', $filename or die "can't open <$filename>: $!";
 
 	next unless grep { $lang eq $_ } readTag("LANG", $lang);
 
@@ -307,9 +330,8 @@ sub scanStructure($$)
 
 	    }
 
-	    
 	}
-	close IN or die "can't close <$srcpath/$doc.page>: $!";
+	close IN or die "can't close <$filename>: $!";
 
 	$cache{"$parent$doc"}{$lang}{'SUBTITLES'} = $subtitles;
 
@@ -380,7 +402,7 @@ sub printPage($$)
   <meta name="generator" content="$version">
   <meta name="keywords" content="@keywords">
   <meta name="language" content="$lang">
-  <meta name="rcs_tag" content="$cache{$page}{'RCS'}">
+  <meta name="git_commit" content="$cache{$page}{'git-commit'}">
   <meta name="revisit-after" content="$revisit">
   <meta name="robots" content="index,follow">
   <meta name="viewport" content="width=device-width, initial-scale=1">
