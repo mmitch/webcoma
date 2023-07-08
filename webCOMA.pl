@@ -430,7 +430,6 @@ sub printPage($$)
       <nav>
         <a href="https://www.cgarbs.de/blog/" rel="me">blog</a>
         <a href="https://github.com/mmitch" rel="me">github</a>
-        <a href="https://twitter.com/master_mitch" rel="me">twitter</a>
       </nav>
       <div class="clearboth"></div>
     </header>
