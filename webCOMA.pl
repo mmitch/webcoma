@@ -403,7 +403,7 @@ sub printPage($$)
       <meta name="language" content="$lang">
       <meta name="git_commit" content="$cache{$page}{'git-commit'}">
       <meta name="revisit-after" content="$revisit">
-      <meta name="robots" content="index,follow">
+      <meta name="robots" content="index, follow, noai, noimageai">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>$sitename - $title</title>
       <link rel="stylesheet" type="text/css" href="style.css">
